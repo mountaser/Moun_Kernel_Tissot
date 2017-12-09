@@ -557,7 +557,7 @@
 
 		qcom,vdd-gfx-rstr {
 			qcom,vdd-rstr-reg = "vdd-gfx";
-			qcom,levels = <5 7 7>; /* Nominal, Turbo, Turbo */
+			qcom,levels = <5 7 8>; /* Nominal, Turbo+, Turbo+ */
 			qcom,min-level = <1>; /* No Request */
 		};
 
@@ -935,13 +935,14 @@
 		vdd_gfx-supply = <&gfx_vreg_corner>;
 		qcom,gfxfreq-corner =
 			<         0   0 >,
-			< 133330000   1 >,  /* Min SVS   */
-			< 216000000   2 >,  /* Low SVS   */
-			< 320000000   3 >,  /* SVS       */
-			< 400000000   4 >,  /* SVS Plus  */
-			< 510000000   5 >,  /* NOM       */
-			< 560000000   6 >,  /* Nom Plus  */
-			< 650000000   7 >;  /* Turbo     */
+			< 133330000   1 >,  /* Min SVS    */
+			< 216000000   2 >,  /* Low SVS    */
+			< 320000000   3 >,  /* SVS        */
+			< 400000000   4 >,  /* SVS Plus   */
+			< 510000000   5 >,  /* NOM        */
+			< 560000000   6 >,  /* Nom Plus   */
+			< 650000000   7 >,  /* Turbo      */
+			< 700000000   8 >;  /* Turbo Plus */
 		#clock-cells = <1>;
 	};
 
