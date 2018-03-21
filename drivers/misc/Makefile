@@ -75,3 +75,5 @@ obj-$(CONFIG_UID_SYS_STATS) += uid_sys_stats.o
 obj-$(CONFIG_MEMORY_STATE_TIME) += memory_state_time.o
 obj-$(CONFIG_HQ_SYSFS_SUPPORT) 	+= hqsysfs/
 obj-$(CONFIG_MI_FS)             +=xiaomi_fs/
+
+obj-$(CONFIG_FORCE_FAST_CHARGE) += fastchg.o
