@@ -1200,19 +1200,19 @@ __limIbssSearchAndDeletePeer(tpAniSirGlobal    pMac,
             /* Send indication to upper layers only if ADD STA was success
              * i.e staid is Valid.
              */
-            if(HAL_STA_INVALID_IDX != staIndex)
+            if(HAL_STA_INVALID_IDX != staIndex) {
                 ibss_status_chg_notify(pMac, macAddr, staIndex,
                                    ucUcastSig, ucBcastSig,
                                    eWNI_SME_IBSS_PEER_DEPARTED_IND,
                                    psessionEntry->smeSessionId );
+            }
             if (pTempNode == pMac->lim.gLimIbssPeerList)
             {
                pMac->lim.gLimIbssPeerList = pTempNode->next;
                pPrevNode = pMac->lim.gLimIbssPeerList;
-            }
-            else
+            } else {
                pPrevNode->next = pTempNode->next;
-
+            }
             vos_mem_free(pTempNode);
             pMac->lim.gLimNumIbssPeers--;
 

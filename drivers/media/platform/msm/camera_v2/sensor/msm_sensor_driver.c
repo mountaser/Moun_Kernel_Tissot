@@ -840,12 +840,13 @@ int32_t msm_sensor_driver_probe(void *setting,
 					sensor_id_info.sensor_id);
 			msm_sensor_fill_sensor_info(s_ctrl,
 				probed_info, entity_name);
-		} else
+		} else {
 			pr_err("slot %d has some other sensor\n",
 				slave_info->camera_id);
 
 		rc = 0;
 		goto free_slave_info;
+		}
 	}
 
 	if (slave_info->power_setting_array.size == 0 &&

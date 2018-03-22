@@ -18029,16 +18029,17 @@ eHalStatus csrRoamOffloadScan(tpAniSirGlobal pMac, tANI_U8 command, tANI_U8 reas
           /* If the profile changes as to what it was earlier, inform the FW through
            * FLUSH as ChannelCacheType in which case, the FW will flush the occupied channels
            * for the earlier profile and try to learn them afresh.*/
-          if (reason == REASON_FLUSH_CHANNEL_LIST)
+          if (reason == REASON_FLUSH_CHANNEL_LIST) {
               pRequestBuf->ChannelCacheType = CHANNEL_LIST_DYNAMIC_FLUSH;
-          else {
+          } else {
                  if ((csrNeighborRoamIsNewConnectedProfile(pMac)) ||
-                      (pMac->roam.configParam.nRoamIntraBand))
+                      (pMac->roam.configParam.nRoamIntraBand)) {
                        pRequestBuf->ChannelCacheType =
                                                    CHANNEL_LIST_DYNAMIC_INIT;
-                 else
+                 } else {
                        pRequestBuf->ChannelCacheType =
                                                    CHANNEL_LIST_DYNAMIC_UPDATE;
+                 }
           }
        }
     }

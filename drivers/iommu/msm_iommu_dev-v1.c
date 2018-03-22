@@ -518,6 +518,12 @@ static int msm_iommu_remove(struct platform_device *pdev)
 	return 0;
 }
 
+#define FILL_ARRAY(ar, val, size) \
+{\
+  void *temp_ptr = (void*)(ar);\
+  memset((temp_ptr), (val), (size) * sizeof(*(ar)));\
+}
+
 static int msm_iommu_ctx_parse_dt(struct platform_device *pdev,
 				struct msm_iommu_ctx_drvdata *ctx_drvdata)
 {
@@ -617,7 +623,7 @@ static int msm_iommu_ctx_parse_dt(struct platform_device *pdev,
 
 	if (!of_get_property(pdev->dev.of_node, "qcom,iommu-sid-mask",
 						&n_sid_mask)) {
-		memset(ctx_drvdata->sid_mask, 0, MAX_NUM_SMR);
+		FILL_ARRAY(ctx_drvdata->sid_mask, 0, MAX_NUM_SMR);
 		goto out;
 	}
 

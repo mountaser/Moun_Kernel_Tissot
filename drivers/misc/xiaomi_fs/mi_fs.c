@@ -64,10 +64,11 @@ void read_cpumaxfreq(char *cpumaxfreq_buf)
 	char path[128] = {0};
 	long cpumaxfreq = 0;
 	int core_count = 0;
+	ssize_t len = 0;
 	core_count = get_core_count();
 
 	while (i < core_count) {
-		memset(buf, sizeof(buf), 0);
+		memset(buf, sizeof(buf), len);
 		snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu%d/cpufreq/cpuinfo_max_freq", i);
 		read_file(path, buf, sizeof(buf));
 		if (simple_strtoul(buf, NULL, 0) > cpumaxfreq)
