@@ -4,7 +4,7 @@
 ## AnyKernel setup
 # begin properties
 properties() {
-kernel.string=MiNTKernel by GamingDevisCC @ xda-developers
+kernel.string=Moun Kernel by Mountaser Halak @ xda-developers
 do.devicecheck=1
 do.modules=0
 do.cleanup=1
