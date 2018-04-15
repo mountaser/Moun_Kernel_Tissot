@@ -236,8 +236,7 @@ zip -r9 Moun_Kernel_V$KV-Tissot.zip * -x Moun_Kernel_V$KV-Tissot.zip
 
 
 echo " uploading to Mega "; 
-megamkdir /Root/XDA/Moun_Kernel_Tissot/V$KV
-megaput --path /Root/XDA/Moun_Kernel_Tissot/V$KV ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot/Moun_Kernel_V$KV-Tissot.zip
+megaput --path /Root/XDA/Moun_Kernel_Tissot/ ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot/Moun_Kernel_V$KV-Tissot.zip
 
 echo " ";
 echo " ";
