@@ -14,3 +14,9 @@ config ASMP
 	  For MPU based protection-enabled targets please refer to
 	  MSM_KERNEL_PROTECT_MPU
 
+config LAZYPLUG
+	bool "Lazyplug Conservative hotplugging for generic devices"
+	default n
+	help
+	  This enables the conservative hotplugging, lazyplug by arter97
+	  based on intelli_plug. Refer to the comments for more info.
