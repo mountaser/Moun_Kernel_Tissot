@@ -17,10 +17,10 @@ sleep 1
 
 
 #Build.prop
-echo "net.rmnet0.dns1=176.103.130.130" >> /system/build.prop
-echo "net.rmnet0.dns2=176.103.130.131" >> /system/build.prop
-echo "net.dns1=176.103.130.130" >> /system/build.prop
-echo "net.dns2=176.103.130.131" >> /system/build.prop
+echo "net.rmnet0.dns1=1.1.1.1" >> /system/build.prop
+echo "net.rmnet0.dns2=8.8.8.8" >> /system/build.prop
+echo "net.dns1=1.1.1.1" >> /system/build.prop
+echo "net.dns2=8.8.8.8" >> /system/build.prop
 
 
 #Finish
