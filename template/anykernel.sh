@@ -34,14 +34,33 @@ chown -R root:root $ramdisk/*;
 ## AnyKernel install
 dump_boot;
 
+# begin ramdisk changes
+
+# sepolicy
+$bin/magiskpolicy --load sepolicy --save sepolicy \
+  "allow init rootfs file execute_no_trans" \
+;
+
 if [ -d $ramdisk/.subackup -o -d $ramdisk/.backup ]; then
   patch_cmdline "skip_override" "skip_override";
 else
   patch_cmdline "skip_override" "";
 fi;
 
-# begin ramdisk changes
+if [ -d $ramdisk/.backup ]; then
+  overlay=$ramdisk/overlay;
+elif [ -d $ramdisk/.subackup ]; then
+  overlay=$ramdisk/boot;
+fi;
 
+list="init.rc";
+for rdfile in $list; do
+  rddir=$(dirname $rdfile);
+  mkdir -p $overlay/$rddir;
+  test ! -f $overlay/$rdfile && cp -rp /system/$rdfile $overlay/$rddir/;
+done;
+
+insert_line $overlay/init.rc "init.spectrum.rc" before "import /init.usb.rc" "import /init.spectrum.rc";
 
 # end ramdisk changes
 

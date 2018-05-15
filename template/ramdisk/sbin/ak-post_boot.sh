@@ -2,18 +2,12 @@
 BB=/sbin/busybox;
 echo "[AK] Boot Script Started" | tee /dev/kmsg
 
+
 # Mount root as RW to apply tweaks and settings Start
 $BB mount -o remount,rw /
 $BB mount -o rw,remount /system
 
 sleep 5
-
-#Kcal
-echo 262 > /sys/devices/platform/kcal_ctrl.0/kcal_sat
-echo 253 > /sys/devices/platform/kcal_ctrl.0/kcal_val
-echo 248 > /sys/devices/platform/kcal_ctrl.0/kcal_cont
-
-sleep 1
 
 
 #Build.prop
