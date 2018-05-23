@@ -95,3 +95,7 @@ x509.genkey
 
 # Kconfig presets
 all.config
+
+# Flasher
+template/*.dtb.lz4
+template/Image.gz*
