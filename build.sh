@@ -232,7 +232,7 @@ cd ~/Moun_Kernel/Moun_Kernel_V$KV-TissotTreble
 zip -r9 Moun_Kernel_V$KV-TissotTreble.zip * -x Moun_Kernel_V$KV-TissotTreble.zip
 
 echo " uploading to Mega "; 
-megamkdir /Root/Moun_Kernel_Tissot/V$KV
+
 megaput --path /Root/XDA/Moun_Kernel_Tissot/V$KV ~/Moun_Kernel/Moun_Kernel_V$KV-TissotTreble/Moun_Kernel_V$KV-TissotTreble.zip
 
 
