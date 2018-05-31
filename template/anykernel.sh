@@ -35,7 +35,15 @@ chown -R root:root $ramdisk/*;
 dump_boot;
 
 # begin ramdisk changes
+mount -o ro /system || mount -o remount,ro /system
 
+if [ -e /dev/block/bootdevice/by-name/vendor_a ] && [ ! -L /system/vendor ]; then
+        cat treble.dtb >> Image.gz
+else
+        cat base.dtb >> Image.gz
+fi
+
+umount /system
 # sepolicy
 $bin/magiskpolicy --load sepolicy --save sepolicy \
   "allow init rootfs file execute_no_trans" \
