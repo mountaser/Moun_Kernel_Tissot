@@ -89,7 +89,7 @@ on property:persist.spectrum.profile=2
 
  #GPU
    write /sys/class/kgsl/kgsl-3d0/devfreq/min_freq 133330000
-   write /sys/class/kgsl/kgsl-3d0/max_gpuclk  455000000
+   write /sys/class/kgsl/kgsl-3d0/max_gpuclk  650000000
    write /sys/module/adreno_idler/parameters/adreno_idler_active 1
 
 # Gaming
