@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/arm64 3.18.110 Kernel Configuration
+# Linux/arm64 3.18.112 Kernel Configuration
 #
 CONFIG_CUSTOM=y
 CONFIG_ARM64=y
