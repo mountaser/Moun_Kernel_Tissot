@@ -94,3 +94,4 @@ obj-$(CONFIG_TOUCHSCREEN_FT5435)	+= ft5435_custom/
 obj-$(CONFIG_TOUCHSCREEN_FTS)		+= ft8716/
 obj-$(CONFIG_TOUCHSCREEN_TD4310)    += td4310/
 obj-$(CONFIG_VITURALSAR)		+= vituralsar_driver.o
+obj-$(CONFIG_TOUCHSCREEN_HIMAX_CHIPSET)	+= hxchipset/
