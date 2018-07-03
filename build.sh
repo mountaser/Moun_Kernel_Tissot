@@ -119,6 +119,7 @@ echo " ";
 echo " Cleaning old build directories ";
 echo " ";
 echo " ";
+rm -rf ~/Moun_Kernel
 echo " ";
 echo " ";
 echo " ";
@@ -138,11 +139,14 @@ echo " ";
 echo " ";
 echo " ";
 echo " ";
-mkdir outputdTissotTreble
+mkdir outputdTissot
+mkdir outputdTissotStock
 
 mkdir ~/Moun_Kernel
 
-mkdir ~/Moun_Kernel/Moun_Kernel_V$KV-TissotTreble
+mkdir ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot
+mkdir ~/Moun_Kernel/Moun_Kernel_V$KV-TissotStock
+
 echo " Started Building the Kernels ! ";
 echo " ";
 echo " ";
@@ -154,7 +158,7 @@ echo " ";
 
 ##########################################
 
-echo " Started Building TissotTreble ! ";
+echo " Started Building Tissot ! ";
 echo " ";
 echo " ";
 echo " ";
@@ -175,8 +179,35 @@ echo " ";
 echo " ";
 echo " ";
 echo " ";
-make -C $(pwd) O=outputdTissotTreble custom_tissot-perf_defconfig
-make -j8 -C $(pwd) O=outputdTissotTreble
+make -C $(pwd) O=outputdTissot custom_tissot-perf_defconfig
+make -j32 -C $(pwd) O=outputdTissot
+
+##########################################
+
+echo " Started Building Tissot Stock! ";
+echo " ";
+echo " ";
+echo " ";
+echo " ";
+echo " ";
+echo " ";
+echo " ";
+echo " ";
+echo " ";
+echo " ";
+echo " ";
+echo " ";
+echo " ";
+echo " ";
+echo " ";
+echo " ";
+echo " ";
+echo " ";
+echo " ";
+echo " ";
+make -C $(pwd) O=outputdTissotStock tissot-perf_defconfig
+make -j32 -C $(pwd) O=outputdTissotStock
+
 ##########################################
 
 echo " copying zImage and dtb and the template over to the output directory ";
@@ -195,9 +226,11 @@ echo " ";
 echo " ";
 
 
-cp outputdTissotTreble/arch/arm64/boot/Image.gz-dtb ~/Moun_Kernel/Moun_Kernel_V$KV-TissotTreble/Image.gz-dtb
+cp outputdTissot/arch/arm64/boot/Image.gz-dtb ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot/Image.gz-dtb
+cp outputdTissotStock/arch/arm64/boot/Image.gz-dtb ~/Moun_Kernel/Moun_Kernel_V$KV-TissotStock/Image.gz-dtb
 
-cp -r template/. ~/Moun_Kernel/Moun_Kernel_V$KV-TissotTreble
+cp -r template/. ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot
+cp -r template/. ~/Moun_Kernel/Moun_Kernel_V$KV-TissotStock
 
 echo " Zipping Kernel Files ";
 echo " ";
@@ -228,13 +261,17 @@ echo " ";
 echo " ";
 
 ##########################################
-cd ~/Moun_Kernel/Moun_Kernel_V$KV-TissotTreble
-zip -r9 Moun_Kernel_V$KV-TissotTreble.zip * -x Moun_Kernel_V$KV-TissotTreble.zip
+cd ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot
+zip -r9 Moun_Kernel_V$KV-Tissot.zip * -x Moun_Kernel_V$KV-Tissot.zip
+
+cd ~/Moun_Kernel/Moun_Kernel_V$KV-TissotStock
+zip -r9 Moun_Kernel_V$KV-TissotStock.zip * -x Moun_Kernel_V$KV-TissotStock.zip
+
 
 echo " uploading to Mega "; 
-
-megaput --path /Root/XDA/Moun_Kernel_Tissot/$KV ~/Moun_Kernel/Moun_Kernel_V$KV-TissotTreble/Moun_Kernel_V$KV-TissotTreble.zip
-
+megamkdir /Root/XDA/Moun_Kernel_Tissot/V$KV
+megaput --path /Root/XDA/Moun_Kernel_Tissot/V$KV ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot/Moun_Kernel_V$KV-Tissot.zip
+megaput --path /Root/XDA/Moun_Kernel_Tissot/V$KV ~/Moun_Kernel/Moun_Kernel_V$KV-TissotStock/Moun_Kernel_V$KV-TissotStock.zip
 
 echo " ";
 echo " ";
