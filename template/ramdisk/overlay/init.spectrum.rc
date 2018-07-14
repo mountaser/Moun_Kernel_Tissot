@@ -79,9 +79,9 @@ on property:persist.spectrum.profile=1
 # Battery
 on property:persist.spectrum.profile=2
  #CPU
-   write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor relaxed
+   write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor interactive
    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 652800
-   write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 2016000
+   write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1689000
 
  #Hotplug
    write /sys/module/autosmp/parameters/enabled Y
