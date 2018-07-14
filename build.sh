@@ -270,9 +270,9 @@ zip -r9 Moun_Kernel_V$KV-TissotStock.zip * -x Moun_Kernel_V$KV-TissotStock.zip
 
 
 echo " uploading to Mega "; 
-megamkdir /Root/XDA/Moun_Kernel_Tissot/V$KV
-megaput --path /Root/XDA/Moun_Kernel_Tissot/V$KV ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot/Moun_Kernel_V$KV-Tissot.zip
-megaput --path /Root/XDA/Moun_Kernel_Tissot/V$KV ~/Moun_Kernel/Moun_Kernel_V$KV-TissotStock/Moun_Kernel_V$KV-TissotStock.zip
+megamkdir /Root/XDA/Moun_Kernel_Tissot/$KV
+megaput --path /Root/XDA/Moun_Kernel_Tissot/$KV ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot/Moun_Kernel_V$KV-Tissot.zip
+megaput --path /Root/XDA/Moun_Kernel_Tissot/$KV ~/Moun_Kernel/Moun_Kernel_V$KV-TissotStock/Moun_Kernel_V$KV-TissotStock.zip
 
 echo " ";
 echo " ";
