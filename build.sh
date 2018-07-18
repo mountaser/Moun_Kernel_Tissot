@@ -140,12 +140,12 @@ echo " ";
 echo " ";
 echo " ";
 echo " ";
-mkdir outputdTissot
+mkdir outputdTissotCustom
 mkdir outputdTissotStock
 
 mkdir ~/Moun_Kernel
 
-mkdir ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot
+mkdir ~/Moun_Kernel/Moun_Kernel_V$KV-TissotCustom
 mkdir ~/Moun_Kernel/Moun_Kernel_V$KV-TissotStock
 
 echo " Started Building the Kernels ! ";
@@ -180,8 +180,8 @@ echo " ";
 echo " ";
 echo " ";
 echo " ";
-make -C $(pwd) O=outputdTissot custom_tissot-perf_defconfig
-make -j32 -C $(pwd) O=outputdTissot
+make -C $(pwd) O=outputdTissotCustom custom_tissot-perf_defconfig
+make -j32 -C $(pwd) O=outputdTissotCustom
 
 ##########################################
 
@@ -227,10 +227,10 @@ echo " ";
 echo " ";
 
 
-cp outputdTissot/arch/arm64/boot/Image.gz-dtb ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot/Image.gz-dtb
+cp outputdTissotCustom/arch/arm64/boot/Image.gz-dtb ~/Moun_Kernel/Moun_Kernel_V$KV-TissotCustom/Image.gz-dtb
 cp outputdTissotStock/arch/arm64/boot/Image.gz-dtb ~/Moun_Kernel/Moun_Kernel_V$KV-TissotStock/Image.gz-dtb
 
-cp -r template/. ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot
+cp -r template/. ~/Moun_Kernel/Moun_Kernel_V$KV-TissotCustom
 cp -r template/. ~/Moun_Kernel/Moun_Kernel_V$KV-TissotStock
 
 echo " Zipping Kernel Files ";
