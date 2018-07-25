@@ -119,7 +119,7 @@ echo " ";
 echo " Cleaning old build directories ";
 echo " ";
 echo " ";
-rm -rf ~/Moun_Kernel
+#rm -rf ~/Moun_Kernel
 echo " ";
 echo " ";
 echo " ";
@@ -262,8 +262,8 @@ echo " ";
 echo " ";
 
 ##########################################
-cd ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot
-zip -r9 Moun_Kernel_V$KV-Tissot.zip * -x Moun_Kernel_V$KV-Tissot.zip
+cd ~/Moun_Kernel/Moun_Kernel_V$KV-TissotCustom
+zip -r9 Moun_Kernel_V$KV-TissotCustom.zip * -x Moun_Kernel_V$KV-TissotCustom.zip
 
 cd ~/Moun_Kernel/Moun_Kernel_V$KV-TissotStock
 zip -r9 Moun_Kernel_V$KV-TissotStock.zip * -x Moun_Kernel_V$KV-TissotStock.zip
@@ -271,7 +271,7 @@ zip -r9 Moun_Kernel_V$KV-TissotStock.zip * -x Moun_Kernel_V$KV-TissotStock.zip
 
 echo " uploading to Mega "; 
 megamkdir /Root/XDA/Moun_Kernel_Tissot/$KV
-megaput --path /Root/XDA/Moun_Kernel_Tissot/$KV ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot/Moun_Kernel_V$KV-Tissot.zip
+megaput --path /Root/XDA/Moun_Kernel_Tissot/$KV ~/Moun_Kernel/Moun_Kernel_V$KV-TissotCustom/Moun_Kernel_V$KV-TissotCustom.zip
 megaput --path /Root/XDA/Moun_Kernel_Tissot/$KV ~/Moun_Kernel/Moun_Kernel_V$KV-TissotStock/Moun_Kernel_V$KV-TissotStock.zip
 
 echo " ";
