@@ -177,7 +177,7 @@ echo " ";
 echo " ";
 echo " ";
 make -C $(pwd) O=outputdTissotTreble custom_tissot-perf_defconfig
-make -j8 -C $(pwd) O=outputdTissotTreble
+make -j32 -C $(pwd) O=outputdTissotTreble
 ##########################################
 
 echo " copying zImage and dtb and the template over to the output directory ";
