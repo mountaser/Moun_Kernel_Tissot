@@ -3,6 +3,7 @@
  * FocalTech TouchScreen driver.
  *
  * Copyright (c) 2010-2016, Focaltech Ltd. All rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -95,11 +96,13 @@ static void esd_process(u8 *writebuf, int buflen, bool flag)
 		} else {
 			fts_esdcheck_proc_busy(1);
 		}
-	} else {
+	}
+	else {
 		if ((writebuf[1] == 0x07) && (buflen == 0x02)) {
 			FTS_DEBUG("[ESD]: Upgrade finish-trigger reset(07)(%x %x)!!", writebuf[0], writebuf[1]);
 			fts_esdcheck_switch(ENABLE);
-		} else {
+		}
+		else {
 			fts_esdcheck_proc_busy(0);
 		}
 	}
@@ -131,85 +134,92 @@ static ssize_t fts_debug_write(struct file *filp, const char __user *buff, size_
 #endif
 	proc_operate_mode = writebuf[0];
 	switch (proc_operate_mode) {
-	case PROC_UPGRADE:
-	{
-		char upgrade_file_path[FILE_NAME_LENGTH];
-		memset(upgrade_file_path, 0, sizeof(upgrade_file_path));
-		sprintf(upgrade_file_path, "%s", writebuf + 1);
-		upgrade_file_path[buflen-1] = '\0';
-		FTS_DEBUG("%s\n", upgrade_file_path);
-		fts_irq_disable();
+		case PROC_UPGRADE:
+		{
+			char upgrade_file_path[FILE_NAME_LENGTH];
+			memset(upgrade_file_path, 0, sizeof(upgrade_file_path));
+			sprintf(upgrade_file_path, "%s", writebuf + 1);
+			upgrade_file_path[buflen-1] = '\0';
+			FTS_DEBUG("%s\n", upgrade_file_path);
+			fts_irq_disable();
 #if FTS_ESDCHECK_EN
-		fts_esdcheck_switch(DISABLE);
-#endif
-		if (fts_updatefun_curr.upgrade_with_app_bin_file)
-			ret = fts_updatefun_curr.upgrade_with_app_bin_file(fts_i2c_client, upgrade_file_path);
-#if FTS_ESDCHECK_EN
-		fts_esdcheck_switch(ENABLE);
-#endif
-		fts_irq_enable();
-		if (ret < 0) {
-			FTS_ERROR("[APK]: upgrade failed!!");
-		}
-	}
-	break;
-
-	case PROC_SET_TEST_FLAG:
-		FTS_DEBUG("[APK]: PROC_SET_TEST_FLAG = %x!!", writebuf[1]);
-#if FTS_ESDCHECK_EN
-		if (writebuf[1] == 0) {
 			fts_esdcheck_switch(DISABLE);
-		} else {
-			fts_esdcheck_switch(ENABLE);
-		}
 #endif
-		break;
-	case PROC_READ_REGISTER:
-		writelen = 1;
-		ret = fts_i2c_write(fts_i2c_client, writebuf + 1, writelen);
-		if (ret < 0) {
-			FTS_ERROR("[APK]: write iic error!!");
+			if (fts_updatefun_curr.upgrade_with_app_bin_file)
+				ret = fts_updatefun_curr.upgrade_with_app_bin_file(fts_i2c_client, upgrade_file_path);
+#if FTS_ESDCHECK_EN
+			fts_esdcheck_switch(ENABLE);
+#endif
+			fts_irq_enable();
+			if (ret < 0) {
+				FTS_ERROR("[APK]: upgrade failed!!");
+			}
 		}
 		break;
-	case PROC_WRITE_REGISTER:
-		writelen = 2;
-		ret = fts_i2c_write(fts_i2c_client, writebuf + 1, writelen);
-		if (ret < 0) {
-			FTS_ERROR("[APK]: write iic error!!");
-		}
-		break;
-	case PROC_SET_SLAVE_ADDR:
-		ret = fts_i2c_client->addr;
-		FTS_DEBUG("Original i2c addr 0x%x ", ret<<1);
-		if (writebuf[1] != fts_i2c_client->addr) {
-			fts_i2c_client->addr = writebuf[1];
-			FTS_DEBUG("Change i2c addr 0x%x to 0x%x", ret<<1, writebuf[1]<<1);
-		}
-		break;
-	case PROC_HW_RESET:
-		sprintf(tmp, "%s", writebuf + 1);
-		tmp[buflen - 1] = '\0';
-		if (strncmp(tmp, "focal_driver", 12) == 0) {
-			FTS_DEBUG("Begin HW Reset");
-			fts_reset_proc(1);
-		}
-		break;
-	case PROC_AUTOCLB:
-		FTS_DEBUG("[APK]: autoclb!!");
-		fts_ctpm_auto_clb_sharp(fts_i2c_client);
-		break;
-	case PROC_READ_DATA:
-	case PROC_WRITE_DATA:
-		writelen = count - 1;
-		if (writelen > 0) {
+
+		case PROC_SET_TEST_FLAG:
+			FTS_DEBUG("[APK]: PROC_SET_TEST_FLAG = %x!!", writebuf[1]);
+#if FTS_ESDCHECK_EN
+			if (writebuf[1] == 0) {
+				fts_esdcheck_switch(DISABLE);
+			}
+			else {
+				fts_esdcheck_switch(ENABLE);
+			}
+#endif
+			break;
+		case PROC_READ_REGISTER:
+			writelen = 1;
 			ret = fts_i2c_write(fts_i2c_client, writebuf + 1, writelen);
 			if (ret < 0) {
 				FTS_ERROR("[APK]: write iic error!!");
 			}
-		}
-		break;
-	default:
-		break;
+			break;
+		case PROC_WRITE_REGISTER:
+			writelen = 2;
+			ret = fts_i2c_write(fts_i2c_client, writebuf + 1, writelen);
+			if (ret < 0) {
+				FTS_ERROR("[APK]: write iic error!!");
+			}
+			break;
+		case PROC_SET_SLAVE_ADDR:
+
+			ret = fts_i2c_client->addr;
+			FTS_DEBUG("Original i2c addr 0x%x ", ret<<1);
+			if (writebuf[1] != fts_i2c_client->addr) {
+				fts_i2c_client->addr = writebuf[1];
+				FTS_DEBUG("Change i2c addr 0x%x to 0x%x", ret<<1, writebuf[1]<<1);
+
+			}
+			break;
+
+		case PROC_HW_RESET:
+
+			sprintf(tmp, "%s", writebuf + 1);
+			tmp[buflen - 1] = '\0';
+			if (strncmp(tmp,"focal_driver",12) == 0) {
+				FTS_DEBUG("Begin HW Reset");
+				fts_reset_proc(1);
+			}
+
+			break;
+
+		case PROC_AUTOCLB:
+			FTS_DEBUG("[APK]: autoclb!!");
+			fts_ctpm_auto_clb_sharp(fts_i2c_client);
+			break;
+		case PROC_READ_DATA:
+		case PROC_WRITE_DATA:
+			writelen = count - 1;
+			if (writelen > 0) {
+				ret = fts_i2c_write(fts_i2c_client, writebuf + 1, writelen);
+				if (ret < 0) {
+					FTS_ERROR("[APK]: write iic error!!");
+				}
+			}
+			break;
+		default:
+			break;
 	}
 
 #if FTS_ESDCHECK_EN
@@ -218,7 +228,8 @@ static ssize_t fts_debug_write(struct file *filp, const char __user *buff, size_
 
 	if (ret < 0) {
 		return ret;
-	} else {
+	}
+	else {
 		return count;
 	}
 }
@@ -243,44 +254,44 @@ static ssize_t fts_debug_read(struct file *filp, char __user *buff, size_t count
 	fts_esdcheck_proc_busy(1);
 #endif
 	switch (proc_operate_mode) {
-	case PROC_UPGRADE:
+		case PROC_UPGRADE:
 
-		regaddr = FTS_REG_FW_VER;
-		ret = fts_i2c_read_reg(fts_i2c_client, regaddr, &regvalue);
-		if (ret < 0)
-			num_read_chars = sprintf(buf, "%s", "get fw version failed.\n");
-		else
-			num_read_chars = sprintf(buf, "current fw version:0x%02x\n", regvalue);
-		break;
-	case PROC_READ_REGISTER:
-		readlen = 1;
-		ret = fts_i2c_read(fts_i2c_client, NULL, 0, buf, readlen);
-		if (ret < 0) {
+			regaddr = FTS_REG_FW_VER;
+			ret = fts_i2c_read_reg(fts_i2c_client, regaddr, &regvalue);
+			if (ret < 0)
+				num_read_chars = sprintf(buf, "%s", "get fw version failed.\n");
+			else
+				num_read_chars = sprintf(buf, "current fw version:0x%02x\n", regvalue);
+			break;
+		case PROC_READ_REGISTER:
+			readlen = 1;
+			ret = fts_i2c_read(fts_i2c_client, NULL, 0, buf, readlen);
+			if (ret < 0) {
 #if FTS_ESDCHECK_EN
-			fts_esdcheck_proc_busy(0);
+				fts_esdcheck_proc_busy(0);
 #endif
-			FTS_ERROR("[APK]: read iic error!!");
-			return ret;
-		}
-		num_read_chars = 1;
-		break;
-	case PROC_READ_DATA:
-		readlen = count;
-		ret = fts_i2c_read(fts_i2c_client, NULL, 0, buf, readlen);
-		if (ret < 0) {
+				FTS_ERROR("[APK]: read iic error!!");
+				return ret;
+			}
+			num_read_chars = 1;
+			break;
+		case PROC_READ_DATA:
+			readlen = count;
+			ret = fts_i2c_read(fts_i2c_client, NULL, 0, buf, readlen);
+			if (ret < 0) {
 #if FTS_ESDCHECK_EN
-			fts_esdcheck_proc_busy(0);
+				fts_esdcheck_proc_busy(0);
 #endif
-			FTS_ERROR("[APK]: read iic error!!");
-			return ret;
-		}
+				FTS_ERROR("[APK]: read iic error!!");
+				return ret;
+			}
 
-		num_read_chars = readlen;
-		break;
-	case PROC_WRITE_DATA:
-		break;
-	default:
-		break;
+			num_read_chars = readlen;
+			break;
+		case PROC_WRITE_DATA:
+			break;
+		default:
+			break;
 	}
 
 #if FTS_ESDCHECK_EN
@@ -294,7 +305,8 @@ static ssize_t fts_debug_read(struct file *filp, char __user *buff, size_t count
 
 	return num_read_chars;
 }
-static const struct file_operations fts_proc_fops = {
+static const struct file_operations fts_proc_fops =
+{
 	.owner  = THIS_MODULE,
 	.read   = fts_debug_read,
 	.write  = fts_debug_write,
@@ -309,7 +321,7 @@ static const struct file_operations fts_proc_fops = {
 * Return: data len
 ***********************************************************************/
 static int fts_debug_write(struct file *filp,
-						  const char __user *buff, unsigned long len, void *data)
+					       const char __user *buff, unsigned long len, void *data)
 {
 	unsigned char writebuf[WRITE_BUF_SIZE];
 	int buflen = len;
@@ -325,92 +337,103 @@ static int fts_debug_write(struct file *filp,
 	esd_process(writebuf, buflen, 1);
 #endif
 	proc_operate_mode = writebuf[0];
-	switch (proc_operate_mode) {
-
-	case PROC_UPGRADE:
+	switch (proc_operate_mode)
 	{
-		char upgrade_file_path[FILE_NAME_LENGTH];
-		memset(upgrade_file_path, 0, sizeof(upgrade_file_path));
-		sprintf(upgrade_file_path, "%s", writebuf + 1);
-		upgrade_file_path[buflen-1] = '\0';
-		FTS_DEBUG("%s\n", upgrade_file_path);
-		fts_irq_disable();
+
+		case PROC_UPGRADE:
+		{
+			char upgrade_file_path[FILE_NAME_LENGTH];
+			memset(upgrade_file_path, 0, sizeof(upgrade_file_path));
+			sprintf(upgrade_file_path, "%s", writebuf + 1);
+			upgrade_file_path[buflen-1] = '\0';
+			FTS_DEBUG("%s\n", upgrade_file_path);
+			fts_irq_disable();
 #if FTS_ESDCHECK_EN
-		fts_esdcheck_switch(DISABLE);
-#endif
-		if (fts_updatefun_curr.upgrade_with_app_bin_file)
-			ret = fts_updatefun_curr.upgrade_with_app_bin_file(fts_i2c_client, upgrade_file_path);
-#if FTS_ESDCHECK_EN
-		fts_esdcheck_switch(ENABLE);
-#endif
-		fts_irq_enable();
-		if (ret < 0) {
-			FTS_ERROR("[APK]: upgrade failed!!");
-		}
-	}
-	break;
-	case PROC_SET_TEST_FLAG:
-		FTS_DEBUG("[APK]: PROC_SET_TEST_FLAG = %x!!", writebuf[1]);
-#if FTS_ESDCHECK_EN
-		if (writebuf[1] == 0) {
 			fts_esdcheck_switch(DISABLE);
-		} else {
-			fts_esdcheck_switch(ENABLE);
-		}
 #endif
-		break;
-	case PROC_READ_REGISTER:
-		writelen = 1;
-		ret = fts_i2c_write(fts_i2c_client, writebuf + 1, writelen);
-		if (ret < 0) {
-			FTS_ERROR("[APK]: write iic error!!n");
-		}
-		break;
-	case PROC_WRITE_REGISTER:
-		writelen = 2;
-		ret = fts_i2c_write(fts_i2c_client, writebuf + 1, writelen);
-		if (ret < 0) {
-			FTS_ERROR("[APK]: write iic error!!");
-		}
-		break;
-	case PROC_SET_SLAVE_ADDR:
-
-		ret = fts_i2c_client->addr;
-		FTS_DEBUG("Original i2c addr 0x%x ", ret<<1);
-		if (writebuf[1] != fts_i2c_client->addr) {
-			fts_i2c_client->addr = writebuf[1];
-			FTS_DEBUG("Change i2c addr 0x%x to 0x%x", ret<<1, writebuf[1]<<1);
-
-		}
-		break;
-
-	case PROC_HW_RESET:
-
-		sprintf(tmp, "%s", writebuf + 1);
-		tmp[buflen - 1] = '\0';
-		if (strncmp(tmp, "focal_driver", 12) == 0) {
-			FTS_DEBUG("Begin HW Reset");
-			fts_reset_proc(1);
-		}
-
-		break;
-
-	case PROC_AUTOCLB:
-		FTS_DEBUG("[APK]: autoclb!!");
-		fts_ctpm_auto_clb_sharp(fts_i2c_client);
-		break;
-	case PROC_READ_DATA:
-	case PROC_WRITE_DATA:
-		writelen = len - 1;
-		if (writelen > 0) {
-			ret = fts_i2c_write(fts_i2c_client, writebuf + 1, writelen);
-			if (ret < 0) {
-				FTS_ERROR("[APK]: write iic error!!");
+			if (fts_updatefun_curr.upgrade_with_app_bin_file)
+				ret = fts_updatefun_curr.upgrade_with_app_bin_file(fts_i2c_client, upgrade_file_path);
+#if FTS_ESDCHECK_EN
+			fts_esdcheck_switch(ENABLE);
+#endif
+			fts_irq_enable();
+			if (ret < 0)
+			{
+				FTS_ERROR("[APK]: upgrade failed!!");
 			}
 		}
 		break;
-	default:
-		break;
+		case PROC_SET_TEST_FLAG:
+			FTS_DEBUG("[APK]: PROC_SET_TEST_FLAG = %x!!", writebuf[1]);
+#if FTS_ESDCHECK_EN
+			if (writebuf[1] == 0)
+			{
+				fts_esdcheck_switch(DISABLE);
+			}
+			else
+			{
+				fts_esdcheck_switch(ENABLE);
+			}
+#endif
+			break;
+		case PROC_READ_REGISTER:
+			writelen = 1;
+			ret = fts_i2c_write(fts_i2c_client, writebuf + 1, writelen);
+			if (ret < 0)
+			{
+				FTS_ERROR("[APK]: write iic error!!n");
+			}
+			break;
+		case PROC_WRITE_REGISTER:
+			writelen = 2;
+			ret = fts_i2c_write(fts_i2c_client, writebuf + 1, writelen);
+			if (ret < 0)
+			{
+				FTS_ERROR("[APK]: write iic error!!");
+			}
+			break;
+		case PROC_SET_SLAVE_ADDR:
+
+			ret = fts_i2c_client->addr;
+			FTS_DEBUG("Original i2c addr 0x%x ", ret<<1);
+			if (writebuf[1] != fts_i2c_client->addr)
+			{
+				fts_i2c_client->addr = writebuf[1];
+				FTS_DEBUG("Change i2c addr 0x%x to 0x%x", ret<<1, writebuf[1]<<1);
+
+			}
+			break;
+
+		case PROC_HW_RESET:
+
+			sprintf(tmp, "%s", writebuf + 1);
+			tmp[buflen - 1] = '\0';
+			if (strncmp(tmp,"focal_driver",12) == 0)
+			{
+				FTS_DEBUG("Begin HW Reset");
+				fts_reset_proc(1);
+			}
+
+			break;
+
+		case PROC_AUTOCLB:
+			FTS_DEBUG("[APK]: autoclb!!");
+			fts_ctpm_auto_clb_sharp(fts_i2c_client);
+			break;
+		case PROC_READ_DATA:
+		case PROC_WRITE_DATA:
+			writelen = len - 1;
+			if (writelen > 0)
+			{
+				ret = fts_i2c_write(fts_i2c_client, writebuf + 1, writelen);
+				if (ret < 0)
+				{
+					FTS_ERROR("[APK]: write iic error!!");
+				}
+			}
+			break;
+		default:
+			break;
 	}
 
 #if FTS_ESDCHECK_EN
@@ -433,7 +456,7 @@ static int fts_debug_write(struct file *filp,
 * Return: read char number
 ***********************************************************************/
 static int fts_debug_read(char *page, char **start,
-						  off_t off, int count, int *eof, void *data)
+					       off_t off, int count, int *eof, void *data)
 {
 	int ret = 0;
 	unsigned char buf[READ_BUF_SIZE];
@@ -444,45 +467,48 @@ static int fts_debug_read(char *page, char **start,
 #if FTS_ESDCHECK_EN
 	fts_esdcheck_proc_busy(1);
 #endif
-	switch (proc_operate_mode) {
-	case PROC_UPGRADE:
+	switch (proc_operate_mode)
+	{
+		case PROC_UPGRADE:
 
-		regaddr = FTS_REG_FW_VER;
-		ret = fts_i2c_read_reg(fts_i2c_client, regaddr, &regvalue);
-		if (ret < 0)
-			num_read_chars = sprintf(buf, "%s", "get fw version failed.\n");
-		else
-			num_read_chars = sprintf(buf, "current fw version:0x%02x\n", regvalue);
-		break;
-	case PROC_READ_REGISTER:
-		readlen = 1;
-		ret = fts_i2c_read(fts_i2c_client, NULL, 0, buf, readlen);
-		if (ret < 0) {
+			regaddr = FTS_REG_FW_VER;
+			ret = fts_i2c_read_reg(fts_i2c_client, regaddr, &regvalue);
+			if (ret < 0)
+				num_read_chars = sprintf(buf, "%s", "get fw version failed.\n");
+			else
+				num_read_chars = sprintf(buf, "current fw version:0x%02x\n", regvalue);
+			break;
+		case PROC_READ_REGISTER:
+			readlen = 1;
+			ret = fts_i2c_read(fts_i2c_client, NULL, 0, buf, readlen);
+			if (ret < 0)
+			{
 #if FTS_ESDCHECK_EN
-			fts_esdcheck_proc_busy(0);
+				fts_esdcheck_proc_busy(0);
 #endif
-			FTS_ERROR("[APK]: read iic error!!");
-			return ret;
-		}
-		num_read_chars = 1;
-		break;
-	case PROC_READ_DATA:
-		readlen = count;
-		ret = fts_i2c_read(fts_i2c_client, NULL, 0, buf, readlen);
-		if (ret < 0) {
+				FTS_ERROR("[APK]: read iic error!!");
+				return ret;
+			}
+			num_read_chars = 1;
+			break;
+		case PROC_READ_DATA:
+			readlen = count;
+			ret = fts_i2c_read(fts_i2c_client, NULL, 0, buf, readlen);
+			if (ret < 0)
+			{
 #if FTS_ESDCHECK_EN
-			fts_esdcheck_proc_busy(0);
+				fts_esdcheck_proc_busy(0);
 #endif
-			FTS_ERROR("[APK]: read iic error!!");
-			return ret;
-		}
+				FTS_ERROR("[APK]: read iic error!!");
+				return ret;
+			}
 
-		num_read_chars = readlen;
-		break;
-	case PROC_WRITE_DATA:
-		break;
-	default:
-		break;
+			num_read_chars = readlen;
+			break;
+		case PROC_WRITE_DATA:
+			break;
+		default:
+			break;
 	}
 
 #if FTS_ESDCHECK_EN
@@ -556,13 +582,13 @@ static ssize_t fts_tpfwver_show(struct device *dev, struct device_attribute *att
 	fts_esdcheck_proc_busy(1);
 #endif
 	if (fts_i2c_read_reg(fts_i2c_client, FTS_REG_FW_VER, &fwver) < 0) {
-		num_read_chars = snprintf(buf, PAGE_SIZE, "I2c transfer error!\n");
+		num_read_chars = snprintf(buf, PAGE_SIZE,"I2c transfer error!\n");
 	}
 #if FTS_ESDCHECK_EN
 	fts_esdcheck_proc_busy(0);
 #endif
 	if (fwver == 255)
-		num_read_chars = snprintf(buf, PAGE_SIZE, "get tp fw version fail!\n");
+		num_read_chars = snprintf(buf, PAGE_SIZE,"get tp fw version fail!\n");
 	else {
 		num_read_chars = snprintf(buf, PAGE_SIZE, "%02X\n", fwver);
 	}
@@ -629,11 +655,11 @@ static int fts_hex_to_str(char *hex, int iHexLen, char *ch, int *iChLen)
 
 	FTS_DEBUG("iHexLen: %d in function:%s!!\n\n", iHexLen, __func__);
 
-	if (iHexLen % 2 == 1) {
+	if (iHexLen %2 == 1) {
 		return -ENOENT;
 	}
 
-	for (i = 0; i < iHexLen; i += 2) {
+	for (i = 0; i < iHexLen; i+= 2) {
 		high = fts_hex_char_to_int(hex[i]);
 		if (high < 0) {
 			ch[iCharLen] = '\0';
@@ -688,13 +714,13 @@ static ssize_t fts_tprwreg_show(struct device *dev, struct device_attribute *att
 		if (g_rwreg_result.result == 0) {
 			count = sprintf(buf, "Read %02X: %02X\n", g_rwreg_result.reg, g_rwreg_result.value);
 		} else {
-			count = sprintf(buf, "Read %02X failed, ret: %d\n", g_rwreg_result.reg,  g_rwreg_result.result);
+			count = sprintf(buf, "Read %02X failed, ret: %d\n",g_rwreg_result.reg,  g_rwreg_result.result);
 		}
 	} else {
 		if (g_rwreg_result.result == 0) {
-			count = sprintf(buf, "Write %02X, %02X success\n", g_rwreg_result.reg,  g_rwreg_result.value);
+			count = sprintf(buf, "Write %02X, %02X success\n",g_rwreg_result.reg,  g_rwreg_result.value);
 		} else {
-			count = sprintf(buf, "Write %02X failed, ret: %d\n", g_rwreg_result.reg,  g_rwreg_result.result);
+			count = sprintf(buf, "Write %02X failed, ret: %d\n",g_rwreg_result.reg,  g_rwreg_result.result);
 		}
 	}
 	mutex_unlock(&fts_input_dev->mutex);
@@ -714,7 +740,7 @@ static ssize_t fts_tprwreg_store(struct device *dev, struct device_attribute *at
 	ssize_t num_read_chars = 0;
 	int retval;
 	long unsigned int wmreg = 0;
-	u8 regaddr = 0xff, regvalue = 0xff;
+	u8 regaddr = 0xff,regvalue = 0xff;
 	u8 valbuf[5] = {0};
 
 	memset(valbuf, 0, sizeof(valbuf));
@@ -728,7 +754,7 @@ static ssize_t fts_tprwreg_store(struct device *dev, struct device_attribute *at
 	}
 	memcpy(valbuf, buf, num_read_chars);
 	retval = kstrtoul(valbuf, 16, &wmreg);
-	fts_str_to_bytes((char *)buf, num_read_chars, valbuf, &retval);
+	fts_str_to_bytes((char*)buf, num_read_chars, valbuf, &retval);
 
 	if (1 == retval) {
 		regaddr = valbuf[0];
@@ -737,7 +763,8 @@ static ssize_t fts_tprwreg_store(struct device *dev, struct device_attribute *at
 		regaddr = valbuf[0];
 		regvalue = valbuf[1];
 		retval = 0;
-	} else
+	}
+	else
 		retval = -1;
 
 	if (0 != retval) {
@@ -771,7 +798,9 @@ static ssize_t fts_tprwreg_store(struct device *dev, struct device_attribute *at
 		if (g_rwreg_result.result < 0) {
 			FTS_ERROR("Could not write the register(0x%02x)", regaddr);
 
-		} else {
+		}
+		else
+		{
 			FTS_INFO("Write 0x%02x into register(0x%02x) successful", regvalue, regaddr);
 			g_rwreg_result.result = 0;
 		}
@@ -1071,7 +1100,7 @@ static ssize_t fts_dumpreg_show(struct device *dev, struct device_attribute *att
 	count += sprintf(tmp + count, "Power Mode:0x%02x\n", regvalue);
 
 	fts_i2c_read_reg(client, FTS_REG_FW_VER, &regvalue);
-	count += sprintf(tmp + count, "FW Ver:0x%02x\n", regvalue);
+	count += sprintf(tmp + count, "FW Ver:0x%02x\n",regvalue);
 
 	fts_i2c_read_reg(client, FTS_REG_VENDOR_ID, &regvalue);
 	count += sprintf(tmp + count, "Vendor ID:0x%02x\n", regvalue);
@@ -1129,7 +1158,8 @@ static DEVICE_ATTR(fts_esd_check, S_IRUGO|S_IWUSR, fts_esdcheck_show, fts_esdche
 #endif
 
 /* add your attr in here*/
-static struct attribute *fts_attributes[] = {
+static struct attribute *fts_attributes[] =
+{
 	&dev_attr_fts_fw_version.attr,
 	&dev_attr_fts_fw_update.attr,
 	&dev_attr_fts_rw_reg.attr,
@@ -1144,7 +1174,8 @@ static struct attribute *fts_attributes[] = {
 	NULL
 };
 
-static struct attribute_group fts_attribute_group = {
+static struct attribute_group fts_attribute_group =
+{
 	.attrs = fts_attributes
 };
 

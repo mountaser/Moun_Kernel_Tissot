@@ -71,7 +71,6 @@
 	ibb-supply = <&ibb_regulator>;
 	/delete-property/ vdd-supply;
 
-	//qcom,dsi-pref-prim-pan = <&dsi_r69006_1080p_cmd>;
 	qcom,dsi-pref-prim-pan = <&dsi_otm1911_fhd_vid>;
 	pinctrl-names = "mdss_default", "mdss_sleep";
 	pinctrl-0 = <&mdss_dsi_active &mdss_te_active>;

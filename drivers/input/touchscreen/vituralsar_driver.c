@@ -82,14 +82,14 @@ static irqreturn_t sar_irq_handler(int irq, void *dev_id)
 
 	data = gpio_get_value(sar_int_gpio);
 
-	input_report_key(sdata->input_dev, KEY_F24, data);
-	printk("input_report_key , status :%d\n", data);
+	input_report_key(sdata->input_dev,KEY_F24, data);
+	printk("input_report_key ,status :%d\n",data);
 	input_sync(sdata->input_dev);
 
 	spin_unlock_irqrestore(&sdata->irq_lock, irqflags);
 
 
-	printk("gpio_get_value : %d\n", data);
+	printk("gpio_get_value : %d\n",data);
 
 	return IRQ_HANDLED;
 }
@@ -100,10 +100,10 @@ static s8 sar_request_irq(struct vituralsar_data *sdata)
 	const u8 irq_table[] = SAR_IRQ_TAB;
 
 	ret  = request_irq(sdata->client->irq,
-					  sar_irq_handler,
-					  irq_table[sdata->int_trigger_type],
-					  sdata->client->name,
-					  sdata);
+					   sar_irq_handler,
+					   irq_table[sdata->int_trigger_type],
+					   sdata->client->name,
+					   sdata);
 	if (ret) {
 		printk("Request IRQ failed!ERRNO:%d.", ret);
 	} else {
@@ -121,8 +121,8 @@ static s8 sar_request_io_port(struct vituralsar_data *sdata)
 	ret = gpio_request(sar_int_gpio, "SAR_INT_IRQ");
 	if (ret < 0) {
 		printk("Failed to request GPIO:%d, ERRNO:%d", (s32)sar_int_gpio, ret);
-	gpio_free(sar_int_gpio);
-	return ret;
+		gpio_free(sar_int_gpio);
+		return ret;
 	} else {
 		gpio_direction_input(sar_int_gpio);
 		sdata->client->irq = gpio_to_irq(sar_int_gpio);
@@ -183,7 +183,8 @@ static int gpio_proc_open (struct inode *inode, struct file *file)
 }
 
 
-static const struct file_operations gpio_status_ops = {
+static const struct file_operations gpio_status_ops =
+{
 	.open = gpio_proc_open,
 	.read = seq_read,
 };
@@ -194,29 +195,33 @@ static int virtualsar_probe (struct i2c_client *client,
 	int ret = 0;
 	struct vituralsar_data *sdata;
 
-	if (!client) {
+	if (!client)
+	{
 		pr_err("SAR  %s - Error: Client structure is NULL!\n", __func__);
 		return -EINVAL;
 	}
 	dev_info(&client->dev, "%s\n", __func__);
 
 	/* Make sure probe was called on a compatible device */
-	if (!of_match_device(virtualsar_dt_match, &client->dev)) {
+	if (!of_match_device(virtualsar_dt_match, &client->dev))
+	{
 		dev_err(&client->dev, "FUSB  %s - Error: Device tree mismatch!\n", __func__);
 		return -EINVAL;
 	}
 	pr_debug("SAR  %s - Device tree matched!\n", __func__);
 
-	sdata = kzalloc(sizeof(*sdata), GFP_KERNEL);
-	if (sdata == NULL) {
-		printk("Alloc GFP_KERNEL memory failed.");
+		sdata = kzalloc(sizeof(*sdata), GFP_KERNEL);
+	if (sdata == NULL)
+		{
+			printk("Alloc GFP_KERNEL memory failed.");
 		return -ENOMEM;
-	}
-	if (client->dev.of_node) {
+		}
+
+		if (client->dev.of_node) {
 		ret = sar_parse_dt(&client->dev);
 		if (!ret)
 			printk("sar_parse_dt success\n");
-	}
+		}
 
 	sdata->int_trigger_type = SAR_INT_TRIGGER;
 
@@ -224,14 +229,17 @@ static int virtualsar_probe (struct i2c_client *client,
 	spin_lock_init(&sdata->irq_lock);
 
 
-	if (gpio_is_valid(sar_int_gpio)) {
+	if (gpio_is_valid(sar_int_gpio))
+	{
 		ret = sar_request_io_port(sdata);
-		if (ret < 0) {
-			printk("SAR %s -request io port fail\n", __func__);
+		if (ret < 0)
+		{
+			printk("SAR %s -request io port fail\n",__func__);
 			return -ENOMEM;
 		}
-	} else {
-		printk("SAR %s -gpio is not valid\n", __func__);
+	} else
+	{
+		printk("SAR %s -gpio is not valid\n",__func__);
 		return -ENOMEM;
 	}
 
@@ -244,19 +252,21 @@ static int virtualsar_probe (struct i2c_client *client,
 
 
 	ret = sar_request_irq(sdata);
-	if (ret < 0) {
-		printk("SAR %s -request irq fail\n", __func__);
+	if (ret < 0)
+	{
+		printk("SAR %s -request irq fail\n",__func__);
 	}
 	__set_bit(EV_REP, sdata->input_dev->evbit);
 
 	if (sdata->use_irq)
-		sar_irq_enable(sdata);
+	       sar_irq_enable(sdata);
 	printk("after sar_irq_enable,probe end \n");
 
 	gpio_status = proc_create(GOIP_STATUS, 0644, NULL, &gpio_status_ops);
-	if (gpio_status == NULL) {
-		printk("tpd, create_proc_entry gpio_status_ops failed\n");
-	}
+		if (gpio_status == NULL)
+		{
+			printk("tpd, create_proc_entry gpio_status_ops failed\n");
+		}
 
 	return 1;
 }
@@ -268,7 +278,7 @@ static int __init virtualsar_init(void)
 	pr_debug("SAR  %s - Start driver initialization...\n", __func__);
 
 	ret = i2c_add_driver(&virtualsar_driver);
-	printk("ret : %d\n", ret);
+	printk("ret : %d\n",ret);
 	return ret;
 }
 

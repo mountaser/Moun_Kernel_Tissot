@@ -1,4 +1,5 @@
 /* Copyright (c) 2011-2016, 2018 The Linux Foundation. All rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -204,9 +205,9 @@ static int read_eeprom_memory(struct msm_eeprom_ctrl_t *e_ctrl,
 				emap[j].page.data, emap[j].page.data_t);
 
 				if (emap[j].page.delay > 20) {
-				    msleep(emap[j].page.delay);
+					msleep(emap[j].page.delay);
 				} else if (emap[j].page.delay) {
-				    usleep_range(emap[j].page.delay * 1000,
+					usleep_range(emap[j].page.delay * 1000,
 				(emap[j].page.delay * 1000) + 1000);
 				}
 
@@ -221,12 +222,12 @@ static int read_eeprom_memory(struct msm_eeprom_ctrl_t *e_ctrl,
 				&(e_ctrl->i2c_client), emap[j].pageen.addr,
 				emap[j].pageen.data, emap[j].pageen.data_t);
 
-			if (emap[j].pageen.delay > 20) {
-				msleep(emap[j].pageen.delay);
-			} else if (emap[j].pageen.delay) {
-				usleep_range(emap[j].pageen.delay * 1000,
-						(emap[j].pageen.delay * 1000) + 1000);
-			}
+					if (emap[j].pageen.delay > 20) {
+						msleep(emap[j].pageen.delay);
+					} else if (emap[j].pageen.delay) {
+						usleep_range(emap[j].pageen.delay * 1000,
+								(emap[j].pageen.delay * 1000) + 1000);
+					}
 
 			if (rc < 0) {
 				pr_err("%s: page enable failed\n", __func__);
@@ -235,10 +236,10 @@ static int read_eeprom_memory(struct msm_eeprom_ctrl_t *e_ctrl,
 		}
 		if (emap[j].poll.valid_size) {
 			e_ctrl->i2c_client.addr_type = emap[j].poll.addr_t;
-				rc = e_ctrl->i2c_client.i2c_func_tbl->i2c_poll(
-					&(e_ctrl->i2c_client), emap[j].poll.addr,
-					emap[j].poll.data, emap[j].poll.data_t,
-					emap[j].poll.delay);
+			rc = e_ctrl->i2c_client.i2c_func_tbl->i2c_poll(
+				&(e_ctrl->i2c_client), emap[j].poll.addr,
+				emap[j].poll.data, emap[j].poll.data_t,
+				emap[j].poll.delay);
 			if (rc < 0) {
 				pr_err("%s: poll failed\n", __func__);
 				return rc;
@@ -248,8 +249,8 @@ static int read_eeprom_memory(struct msm_eeprom_ctrl_t *e_ctrl,
 		if (emap[j].mem.valid_size) {
 			e_ctrl->i2c_client.addr_type = emap[j].mem.addr_t;
 			rc = e_ctrl->i2c_client.i2c_func_tbl->i2c_read_seq(
-					&(e_ctrl->i2c_client), emap[j].mem.addr,
-					memptr, emap[j].mem.valid_size);
+				&(e_ctrl->i2c_client), emap[j].mem.addr,
+				memptr, emap[j].mem.valid_size);
 			if (rc < 0) {
 				pr_err("%s: read failed\n", __func__);
 				return rc;
@@ -259,8 +260,8 @@ static int read_eeprom_memory(struct msm_eeprom_ctrl_t *e_ctrl,
 		if (emap[j].pageen.valid_size) {
 			e_ctrl->i2c_client.addr_type = emap[j].pageen.addr_t;
 			rc = e_ctrl->i2c_client.i2c_func_tbl->i2c_write(
-					&(e_ctrl->i2c_client), emap[j].pageen.addr,
-					0, emap[j].pageen.data_t);
+				&(e_ctrl->i2c_client), emap[j].pageen.addr,
+				0, emap[j].pageen.data_t);
 			if (rc < 0) {
 				pr_err("%s: page disable failed\n", __func__);
 				return rc;
@@ -409,12 +410,12 @@ static int eeprom_parse_memory_map(struct msm_eeprom_ctrl_t *e_ctrl,
 					eeprom_map->mem_settings[i].reg_data,
 					eeprom_map->mem_settings[i].data_type);
 
-				if (eeprom_map->mem_settings[i].delay > 20) {
-					msleep(eeprom_map->mem_settings[i].delay);
-				} else if (eeprom_map->mem_settings[i].delay) {
-					usleep_range(eeprom_map->mem_settings[i].delay * 1000,
-							(eeprom_map->mem_settings[i].delay * 1000) + 1000);
-				}
+					if (eeprom_map->mem_settings[i].delay > 20) {
+						msleep(eeprom_map->mem_settings[i].delay);
+					} else if (eeprom_map->mem_settings[i].delay) {
+						usleep_range(eeprom_map->mem_settings[i].delay * 1000,
+						(eeprom_map->mem_settings[i].delay * 1000) + 1000);
+					}
 
 				if (rc < 0) {
 					pr_err("%s: page write failed\n",
@@ -448,12 +449,12 @@ static int eeprom_parse_memory_map(struct msm_eeprom_ctrl_t *e_ctrl,
 					memptr,
 					eeprom_map->mem_settings[i].reg_data);
 
-				if (eeprom_map->mem_settings[i].delay > 20) {
-					msleep(eeprom_map->mem_settings[i].delay);
-				} else if (eeprom_map->mem_settings[i].delay) {
-					usleep_range(eeprom_map->mem_settings[i].delay * 1000,
-							(eeprom_map->mem_settings[i].delay * 1000) + 1000);
-				}
+					if (eeprom_map->mem_settings[i].delay > 20) {
+						msleep(eeprom_map->mem_settings[i].delay);
+					} else if (eeprom_map->mem_settings[i].delay) {
+						usleep_range(eeprom_map->mem_settings[i].delay * 1000,
+								(eeprom_map->mem_settings[i].delay * 1000) + 1000);
+					}
 
 				if (rc < 0) {
 					pr_err("%s: read failed\n",

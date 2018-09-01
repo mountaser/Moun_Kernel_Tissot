@@ -3,6 +3,7 @@
  * FocalTech fts TouchScreen driver.
  *
  * Copyright (c) 2010-2016, Focaltech Ltd. All rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -42,17 +43,20 @@ struct ft_chip_t chip_types;
 
 
 
-unsigned char CTPM_FW[] = {
+unsigned char CTPM_FW[] =
+{
 #include FTS_UPGRADE_FW_APP
 };
 
-unsigned char aucFW_PRAM_BOOT[] = {
+unsigned char aucFW_PRAM_BOOT[] =
+{
 #ifdef FTS_UPGRADE_PRAMBOOT
 #include FTS_UPGRADE_PRAMBOOT
 #endif
 };
 
-unsigned char CTPM_LCD_CFG[] = {
+unsigned char CTPM_LCD_CFG[] =
+{
 #ifdef FTS_UPGRADE_LCD_CFG
 #include FTS_UPGRADE_LCD_CFG
 #endif
@@ -81,7 +85,8 @@ void fts_ctpm_upgrade_delay(u32 i)
 {
 	do {
 		i--;
-	} while (i > 0);
+	}
+	while (i > 0);
 }
 
 /************************************************************************
@@ -267,7 +272,7 @@ int fts_GetFirmwareSize(char *firmware_name)
 * Output: data buf
 * Return: 0
 ***********************************************************************/
-int fts_ReadFirmware(char *firmware_name, unsigned char *firmware_buf)
+int fts_ReadFirmware(char *firmware_name,unsigned char *firmware_buf)
 {
 	struct file *pfile = NULL;
 	struct inode *inode;
@@ -455,22 +460,24 @@ static int fts_ctpm_check_fw_status(struct i2c_client *client)
 #if FTS_CHIP_IDC
 			&& (chip_id2 == chip_types.chip_idl)
 #endif
-		   ) {
+		   )
+		{
 			fw_status = FTS_RUN_IN_APP;
 			break;
 		}
 	}
 
 	FTS_DEBUG("[UPGRADE]: chip_id = %02x%02x, chip_types.chip_idh = %02x%02x",
-			 chip_id1, chip_id2, chip_types.chip_idh, chip_types.chip_idl);
+			  chip_id1, chip_id2, chip_types.chip_idh, chip_types.chip_idl);
 
 	/* I2C No ACK 5 times, then return -EIO */
 	if (i2c_noack_retry >= 5)
 		return -EIO;
 
 	/* I2C communication ok, but not get correct ID, need check pram/rom/bootloader */
-	if (i >= 5)
+	if (i >= 5) {
 		fw_status = fts_ctpm_get_pram_or_rom_id(client);
+	}
 
 	return fw_status;
 }
@@ -526,13 +533,16 @@ static char tp_info_summary[80] = "";
 
 	FTS_DEBUG("[UPGRADE]: uc_tp_fm_ver = 0x%x, uc_host_fm_ver = 0x%x!!", uc_tp_fm_ver, uc_host_fm_ver);
 
-	printk("fw_ver= %d\n", uc_tp_fm_ver);
+	printk("fw_ver= %d\n",uc_tp_fm_ver);
 
 
-	if (uc_tp_fm_ver < uc_host_fm_ver)
+	if (uc_tp_fm_ver < uc_host_fm_ver) {
 		return 1;
-	else
+	} else {
 		return 0;
+	}
+
+
 }
 
 /************************************************************************
@@ -627,12 +637,13 @@ int fts_ctpm_auto_upgrade(struct i2c_client *client)
 				break;
 			} else {
 				/* upgrade fail, reset to run ROM BOOT..
-				* if app in flash is ok, TP will work success
-				*/
+				 * if app in flash is ok, TP will work success
+				 */
 				FTS_ERROR("[UPGRADE]********************upgrade fail, reset now********************");
 				fts_ctpm_rom_or_pram_reset(client);
 			}
-		} while (uc_upgrade_times < 2);  /* if upgrade fail, upgrade again. then return */
+		}
+		while (uc_upgrade_times < 2);  /* if upgrade fail, upgrade again. then return */
 	}
 
 	return i_ret;
@@ -675,40 +686,42 @@ static void fts_ctpm_update_work_func(struct work_struct *work)
 	if (i_ret < 0)
 		FTS_ERROR("[UPGRADE]**********LCD cfg upgrade failed*********");
 #endif
-	fts_i2c_read_reg(fts_i2c_client, FTS_REG_FW_VER, &fw_ver);
+	fts_i2c_read_reg(fts_i2c_client, FTS_REG_FW_VER, &  fw_ver);
 
 	printk("fw_ver: %d",  fw_ver);
 
 	if (TP_vendor == 1) {
-		strcpy(tp_info_summary, "[Vendor]Sharp, [IC]FT8716, [FW]Ver");
+		strcpy(tp_info_summary,"[Vendor]Sharp,[IC]FT8716,[FW]Ver");
 	} else if (TP_vendor == 2) {
-		 strcpy(tp_info_summary, "[Vendor]Eggb, [IC]FT8716, [FW]Ver");
+		  strcpy(tp_info_summary,"[Vendor]Eggb,[IC]FT8716,[FW]Ver");
 	} else{
-		strcpy(tp_info_summary, "[Vendor]Unknown, [IC]FT8716, [FW]Ver");
+		strcpy(tp_info_summary,"[Vendor]Unknown,[IC]FT8716,[FW]Ver");
 	}
-	sprintf(tp_temp_info, "%d", fw_ver);
-		strcat(tp_info_summary, tp_temp_info);
-	strcat(tp_info_summary, "\0");
-	hq_regiser_hw_info(HWID_CTP, tp_info_summary);
+	sprintf(tp_temp_info, "%d",fw_ver);
+		strcat(tp_info_summary,tp_temp_info);
+	strcat(tp_info_summary,"\0");
+	hq_regiser_hw_info(HWID_CTP,tp_info_summary);
 
 #ifdef FTS_LOCK_DOWN_INFO
+	/*HQ-zmc change 20171019*/
 
-	if (strncmp("3833", ftp_lockdown_info, 4)) {
-		err = fts_i2c_write_reg(fts_i2c_client, 0x90, 0x20);
+
+	if (strncmp("3833",ftp_lockdown_info,4)) {
+		err = fts_i2c_write_reg(fts_i2c_client,0x90,0x20);
 		if (err < 0)
 			printk("[FTS] i2c write 0x90 err\n");
 
 		msleep(5);
 		auc_i2c_write_buf[0] = 0x99;
-		err = fts_i2c_read(fts_i2c_client, auc_i2c_write_buf, 1, r_buf, 8);
+		err = fts_i2c_read(fts_i2c_client,auc_i2c_write_buf,1,r_buf,8);
 		if (err < 0)
 			printk("[FTS] i2c read 0x99 err\n");
 
 		sprintf(ftp_lockdown_info, "%02x%02x%02x%02x%02x%02x%02x%02x", \
 				r_buf[0], r_buf[1], r_buf[2], r_buf[3], r_buf[4], r_buf[5], r_buf[6], r_buf[7]);
 
-		printk(" ft8716 get lockdown info after upgrade, tp_lockdown_info=%s\n", ftp_lockdown_info);
-	} else{
+		printk(" ft8716 get lockdown info after upgrade, tp_lockdown_info=%s\n",ftp_lockdown_info);
+	} else {
 		printk("FT8716 lockdown info is OK\n");
 	}
 #endif

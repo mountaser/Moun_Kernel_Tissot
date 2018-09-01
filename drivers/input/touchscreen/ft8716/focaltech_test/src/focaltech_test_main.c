@@ -1,5 +1,6 @@
 /************************************************************************
 * Copyright (C) 2012-2016, Focaltech Systems (R)£¬All Rights Reserved.
+* Copyright (C) 2018 XiaoMi, Inc.
 *
 * File Name: focaltech_test_main.c
 *
@@ -34,6 +35,7 @@ char *g_testparamstring_sharp = NULL;
 
 struct StTestFuncs g_stTestFuncs;
 
+
 int init_i2c_read_func_sharp(FTS_I2C_READ_FUNCTION fpI2C_Read)
 {
 	unsigned char value = 0;
@@ -48,9 +50,11 @@ int init_i2c_read_func_sharp(FTS_I2C_READ_FUNCTION fpI2C_Read)
 
 
 	recode = ReadReg_sharp(0xa6, &value);
-	if (recode != ERROR_CODE_OK) {
+	if (recode != ERROR_CODE_OK)
+	{
 		FTS_TEST_ERROR("[focal] ReadReg_sharp Error, code: %d ",  recode);
-	} else {
+	}
+	else {
 		FTS_TEST_DBG("[focal] ReadReg_sharp successed, Addr: 0xa6, value: 0x%02x ",  value);
 	}
 
@@ -115,9 +119,11 @@ int set_param_data_sharp(char *TestParamData)
 
 	if (IC_Capacitance_Type == Self_Capacitance) {
 		OnInit_SCap_DetailThreshold_sharp(g_testparamstring_sharp);
-	} else if (IC_Capacitance_Type == Mutual_Capacitance) {
+	}
+	else if (IC_Capacitance_Type == Mutual_Capacitance) {
 		OnInit_MCap_DetailThreshold_sharp(g_testparamstring_sharp);
-	} else if (IC_Capacitance_Type == IDC_Capacitance) {
+	}
+	else if (IC_Capacitance_Type == IDC_Capacitance) {
 		OnInit_Incell_DetailThreshold(g_testparamstring_sharp);
 	}
 
@@ -150,7 +156,8 @@ boolean start_test_tp_sharp(void)
 
 		bTestResult = g_stTestFuncs.Start_Test();
 
-	} else {
+	}
+	else {
 		FTS_TEST_DBG("[Focal]Start_Test func null!\n");
 		bTestResult = false;
 	}
@@ -178,7 +185,8 @@ int get_test_data_sharp(char *pTestData)
 
 		iLen = g_stTestFuncs.get_test_data_sharp(pTestData);
 
-	} else {
+	}
+	else {
 		FTS_TEST_DBG("[Focal]get_test_data_sharp func null!\n");
 	}
 
@@ -223,6 +231,16 @@ int focaltech_test_main_exit(void)
 
 	TestResultLen = 0;
 
+
+
+	/* The release of the contents of the file configuration parameters */
+	/*  if(NULL != g_testparamstring_sharp)
+		{
+			FTS_TEST_DBG("[FTS] release memory g_testparamstring_sharp.");
+			fts_free(g_testparamstring_sharp);
+			g_testparamstring_sharp = NULL;
+		}
+	*/
 	/* Release memory test results */
 	if (NULL != g_pStoreAllData) {
 		FTS_TEST_DBG("[FTS] release memory g_pStoreAllData.");

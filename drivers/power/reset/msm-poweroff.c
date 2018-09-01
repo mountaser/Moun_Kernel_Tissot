@@ -1,4 +1,5 @@
 /* Copyright (c) 2013-2018, The Linux Foundation. All rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -582,7 +583,7 @@ skip_sysfs_create:
 		tcsr_boot_misc_detect = mem->start;
 
 	qpnp_pon_set_restart_reason(
-								PON_RESTART_REASON_UNKNOWN);
+					            PON_RESTART_REASON_UNKNOWN);
 	__raw_writel(0x77665510, restart_reason);
 
 

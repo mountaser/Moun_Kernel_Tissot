@@ -1,5 +1,6 @@
 /************************************************************************
 * Copyright (C) 2012-2015, Focaltech Systems (R)£¬All Rights Reserved.
+* Copyright (C) 2018 XiaoMi, Inc.
 *
 * File Name: focaltech_test_supported_ic.c
 *
@@ -22,7 +23,7 @@
 
 
 #if (FTS_CHIP_TEST_TYPE == FT8607_TEST)
-void OnInit_FT8607_TestItem(char *strIniFile);
+void OnInit_FT8607_TestItem(char*  strIniFile);
 void OnInit_FT8607_BasicThreshold(char *strIniFile);
 void SetTestItem_FT8607(void);
 boolean FT8607_StartTest(void);

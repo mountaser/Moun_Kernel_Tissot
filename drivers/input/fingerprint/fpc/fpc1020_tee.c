@@ -18,6 +18,7 @@
  *
  *
  * Copyright (c) 2015 Fingerprint Cards AB <tech@fingerprints.com>
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License Version 2
@@ -477,7 +478,7 @@ static ssize_t compatible_all_set(struct device *dev,
 
 		rc = fpc1020_request_named_gpio(fpc1020, "fpc,gpio_rst",
 			&fpc1020->rst_gpio);
-		dev_err(dev, "fpc request reset result = %d\n", rc);
+		dev_err(dev, "fpc request reset result = %d\n",rc);
 		if (rc)
 			goto exit;
 		fpc1020->fingerprint_pinctrl = devm_pinctrl_get(dev);
@@ -541,7 +542,8 @@ static ssize_t compatible_all_set(struct device *dev,
 			devm_gpio_free(dev, fpc1020->irq_gpio);
 			pr_info("remove irq_gpio success\n");
 		}
-		if (gpio_is_valid(fpc1020->rst_gpio)) {
+		if (gpio_is_valid(fpc1020->rst_gpio))
+		{
 			devm_gpio_free(dev, fpc1020->rst_gpio);
 			pr_info("remove rst_gpio success\n");
 		}

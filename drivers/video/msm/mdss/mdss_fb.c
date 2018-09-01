@@ -2,6 +2,7 @@
  * Core MDSS framebuffer driver.
  *
  * Copyright (C) 2007 Google Incorporated
+ * Copyright (C) 2018 XiaoMi, Inc.
  * Copyright (c) 2008-2017, The Linux Foundation. All rights reserved.
  *
  * This software is licensed under the terms of the GNU General Public
@@ -805,7 +806,7 @@ static ssize_t mdss_fb_change_dispparam(struct device *dev,
 	struct dsi_panel_cmds *PM7_cmds_point;
 	struct dsi_panel_cmds *PM8_cmds_point;
 
-       sscanf(buf, "%x", &change_par_buf) ;
+	sscanf(buf, "%x", &change_par_buf) ;
 
 	CABC_on_cmds_point = &change_par_ctrl->CABC_on_cmds;
 	CABC_off_cmds_point = &change_par_ctrl->CABC_off_cmds;
@@ -831,41 +832,41 @@ static ssize_t mdss_fb_change_dispparam(struct device *dev,
 		LCM_effect[2] = change_par_buf;
 	}
 
-	switch (change_par_buf) {
-	case 0x0001:
-		mdss_dsi_panel_cmds_send(change_par_ctrl, warm_gamma_cmds_point, CMD_REQ_COMMIT); break;
-	case 0x0002:
-		mdss_dsi_panel_cmds_send(change_par_ctrl, default_gamma_cmds_point, CMD_REQ_COMMIT); break;
-	case 0x0003:
-		mdss_dsi_panel_cmds_send(change_par_ctrl, cold_gamma_cmds_point, CMD_REQ_COMMIT); break;
+	switch(change_par_buf) {
+		case 0x0001:
+			mdss_dsi_panel_cmds_send(change_par_ctrl, warm_gamma_cmds_point, CMD_REQ_COMMIT); break;
+		case 0x0002:
+			mdss_dsi_panel_cmds_send(change_par_ctrl, default_gamma_cmds_point, CMD_REQ_COMMIT); break;
+		case 0x0003:
+			mdss_dsi_panel_cmds_send(change_par_ctrl, cold_gamma_cmds_point, CMD_REQ_COMMIT); break;
 
-	case 0x0006:
-		mdss_dsi_panel_cmds_send(change_par_ctrl, PM1_cmds_point, CMD_REQ_COMMIT); break;
-	case 0x0007:
-		mdss_dsi_panel_cmds_send(change_par_ctrl, PM2_cmds_point, CMD_REQ_COMMIT); break;
-	case 0x0008:
-		mdss_dsi_panel_cmds_send(change_par_ctrl, PM3_cmds_point, CMD_REQ_COMMIT); break;
-	case 0x0009:
-		mdss_dsi_panel_cmds_send(change_par_ctrl, PM4_cmds_point, CMD_REQ_COMMIT); break;
-	case 0x000a:
-		mdss_dsi_panel_cmds_send(change_par_ctrl, PM5_cmds_point, CMD_REQ_COMMIT); break;
-	case 0x000b:
-		mdss_dsi_panel_cmds_send(change_par_ctrl, PM6_cmds_point, CMD_REQ_COMMIT); break;
-	case 0x000c:
-		mdss_dsi_panel_cmds_send(change_par_ctrl, PM7_cmds_point, CMD_REQ_COMMIT); break;
-	case 0x0005:
-		mdss_dsi_panel_cmds_send(change_par_ctrl, PM8_cmds_point, CMD_REQ_COMMIT); break;
-	case 0x0010:
-		mdss_dsi_panel_cmds_send(change_par_ctrl, CE_on_cmds_point, CMD_REQ_COMMIT); break;
-	case 0x00f0:
-		mdss_dsi_panel_cmds_send(change_par_ctrl, CE_off_cmds_point, CMD_REQ_COMMIT); break;
-	case 0x0100:
-		mdss_dsi_panel_cmds_send(change_par_ctrl, CABC_on_cmds_point, CMD_REQ_COMMIT); break;
-	case 0x0f00:
-		mdss_dsi_panel_cmds_send(change_par_ctrl, CABC_off_cmds_point, CMD_REQ_COMMIT); break;
+		case 0x0006:
+			mdss_dsi_panel_cmds_send(change_par_ctrl, PM1_cmds_point, CMD_REQ_COMMIT); break;
+		case 0x0007:
+			mdss_dsi_panel_cmds_send(change_par_ctrl, PM2_cmds_point, CMD_REQ_COMMIT); break;
+		case 0x0008:
+			mdss_dsi_panel_cmds_send(change_par_ctrl, PM3_cmds_point, CMD_REQ_COMMIT); break;
+		case 0x0009:
+			mdss_dsi_panel_cmds_send(change_par_ctrl, PM4_cmds_point, CMD_REQ_COMMIT); break;
+		case 0x000a:
+			mdss_dsi_panel_cmds_send(change_par_ctrl, PM5_cmds_point, CMD_REQ_COMMIT); break;
+		case 0x000b:
+			mdss_dsi_panel_cmds_send(change_par_ctrl, PM6_cmds_point, CMD_REQ_COMMIT); break;
+		case 0x000c:
+			mdss_dsi_panel_cmds_send(change_par_ctrl, PM7_cmds_point, CMD_REQ_COMMIT); break;
+		case 0x0005:
+			mdss_dsi_panel_cmds_send(change_par_ctrl, PM8_cmds_point, CMD_REQ_COMMIT); break;
+		case 0x0010:
+			mdss_dsi_panel_cmds_send(change_par_ctrl, CE_on_cmds_point, CMD_REQ_COMMIT); break;
+		case 0x00f0:
+			mdss_dsi_panel_cmds_send(change_par_ctrl, CE_off_cmds_point, CMD_REQ_COMMIT); break;
+		case 0x0100:
+			mdss_dsi_panel_cmds_send(change_par_ctrl, CABC_on_cmds_point, CMD_REQ_COMMIT); break;
+		case 0x0f00:
+			mdss_dsi_panel_cmds_send(change_par_ctrl, CABC_off_cmds_point, CMD_REQ_COMMIT); break;
 	}
 
-       return len;
+	return len;
 }
 
 static ssize_t mdss_fb_get_dispparam(struct device *dev,
@@ -875,7 +876,7 @@ static ssize_t mdss_fb_get_dispparam(struct device *dev,
 	int ret;
 
 	ret = scnprintf(buf, PAGE_SIZE, "%x%x%x\n",
-		LCM_effect[0] , LCM_effect[1] , LCM_effect[2]);
+		LCM_effect[0] , LCM_effect[1] ,LCM_effect[2]);
 
 	return ret;
 }
@@ -1749,7 +1750,7 @@ static int mdss_fb_pm_resume(struct device *dev)
 #endif
 
 static const struct dev_pm_ops mdss_fb_pm_ops = {
-		.prepare = mdss_fb_pm_prepare,
+	.prepare = mdss_fb_pm_prepare,
 	.complete = mdss_fb_pm_complete,
 	SET_SYSTEM_SLEEP_PM_OPS(mdss_fb_pm_suspend, mdss_fb_pm_resume)
 };
@@ -2828,7 +2829,7 @@ static int mdss_fb_register(struct msm_fb_data_type *mfd)
 	atomic_set(&mfd->commits_pending, 0);
 	atomic_set(&mfd->ioctl_ref_cnt, 0);
 	atomic_set(&mfd->kickoff_pending, 0);
-	atomic_set(&mfd->resume_pending, 0);
+		atomic_set(&mfd->resume_pending, 0);
 
 	init_timer(&mfd->no_update.timer);
 	mfd->no_update.timer.function = mdss_fb_no_update_notify_timer_cb;
@@ -2844,7 +2845,7 @@ static int mdss_fb_register(struct msm_fb_data_type *mfd)
 	init_waitqueue_head(&mfd->idle_wait_q);
 	init_waitqueue_head(&mfd->ioctl_q);
 	init_waitqueue_head(&mfd->kickoff_wait_q);
-	init_waitqueue_head(&mfd->resume_wait_q);
+		init_waitqueue_head(&mfd->resume_wait_q);
 
 	ret = fb_alloc_cmap(&fbi->cmap, 256, 0);
 	if (ret)
@@ -3514,7 +3515,7 @@ int mdss_fb_atomic_commit(struct fb_info *info,
 		(mfd->panel.type == MIPI_CMD_PANEL))) {
 		pr_err("commit is not supported when interface is in off state\n");
 		goto end;
-	}
+		}
 	pinfo = mfd->panel_info;
 
 	/* only supports version 1.0 */
@@ -5302,7 +5303,8 @@ int mdss_prim_panel_fb_unblank(int timeout)
 			atomic_set(&prim_panel_is_on, true);
 			if (timeout > 0) {
 				schedule_delayed_work(&prim_panel_work, msecs_to_jiffies(timeout));
-			} else
+			}
+			else
 				wake_unlock(&prim_panel_wakelock);
 		} else
 			wake_unlock(&prim_panel_wakelock);

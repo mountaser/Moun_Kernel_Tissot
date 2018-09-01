@@ -2,7 +2,8 @@
 #define HQSYS_PCBA
 
 
-typedef enum {
+typedef enum
+ {
 	PCBA_UNKNOW = 0,
 	PCBA_P0,
 	PCBA_P1,
@@ -20,7 +21,8 @@ typedef enum {
 
 } PCBA_CONFIG;
 
-struct pcba_info {
+struct pcba_info
+ {
 	PCBA_CONFIG pcba_config;
 	char pcba_name[32];
 };

@@ -1,7 +1,7 @@
 /*
  * bootinfo.c
  *
- * Copyright (C) 2011 Xiaomi Ltd.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -51,18 +51,18 @@ static struct kobj_attribute _name##_attr = {	\
 	.store	= NULL,				\
 }
 
-#define bootinfo_func_init(type, name, initval)   \
-	static type name = (initval);       \
-	type get_##name(void)               \
-	{                                   \
-		return name;                    \
-	}                                   \
-	void set_##name(type __##name)      \
-	{                                   \
-		name = __##name;                \
-	}                                   \
-	EXPORT_SYMBOL(set_##name);          \
-	EXPORT_SYMBOL(get_##name);
+#define bootinfo_func_init(type,name,initval)   \
+	    static type name = (initval);       \
+	    type get_##name(void)               \
+	    {                                   \
+	       return name;                    \
+	    }                                   \
+	    void set_##name(type __##name)      \
+	    {                                   \
+	       name = __##name;                \
+	    }                                   \
+	    EXPORT_SYMBOL(set_##name);          \
+	    EXPORT_SYMBOL(get_##name);
 
 int is_abnormal_powerup(void)
 {
@@ -80,6 +80,11 @@ static ssize_t powerup_reason_show(struct kobject *kobj, struct kobj_attribute *
 	int reset_reason_index = RS_REASON_MAX;
 
 	pu_reason = get_powerup_reason();
+	if ((qpnp_pon_is_lpk() &&
+		(pu_reason & BIT(PU_REASON_EVENT_HWRST))) || pu_reason == 0x801a1) {
+		pu_reason_index = PU_REASON_EVENT_LPK;
+		goto lpk;
+	}
 	if (((pu_reason & BIT(PU_REASON_EVENT_HWRST))
 		&& qpnp_pon_is_ps_hold_reset()) ||
 		(pu_reason & BIT(PU_REASON_EVENT_WARMRST))) {
@@ -93,10 +98,7 @@ static ssize_t powerup_reason_show(struct kobject *kobj, struct kobj_attribute *
 			goto out;
 		};
 	}
-	if (qpnp_pon_is_lpk() &&
-		(pu_reason & BIT(PU_REASON_EVENT_HWRST)))
-		pu_reason_index = PU_REASON_EVENT_LPK;
-	else if (pu_reason & BIT(PU_REASON_EVENT_HWRST))
+	if (pu_reason & BIT(PU_REASON_EVENT_HWRST))
 		pu_reason_index = PU_REASON_EVENT_HWRST;
 	else if (pu_reason & BIT(PU_REASON_EVENT_SMPL))
 		pu_reason_index = PU_REASON_EVENT_SMPL;
@@ -110,7 +112,8 @@ static ssize_t powerup_reason_show(struct kobject *kobj, struct kobj_attribute *
 		pu_reason_index = PU_REASON_EVENT_KPD;
 	else if (pu_reason & BIT(PU_REASON_EVENT_PON1))
 		pu_reason_index = PU_REASON_EVENT_PON1;
-	if (pu_reason_index < PU_REASON_MAX && pu_reason_index >= 0) {
+lpk:
+	if (pu_reason_index < PU_REASON_MAX && pu_reason_index >=0) {
 		s += sprintf(s, "%s", powerup_reasons[pu_reason_index]);
 		printk(KERN_DEBUG "%s: pu_reason [0x%x] index %d\n",
 			__func__, pu_reason, pu_reason_index);
@@ -145,14 +148,12 @@ bootinfo_attr(hw_version);
 bootinfo_func_init(u32, powerup_reason, 0);
 bootinfo_func_init(u32, hw_version, 0);
 
-unsigned int get_hw_version_major(void)
-{
+unsigned int get_hw_version_major(void) {
 	return ((get_hw_version() & HW_MAJOR_VERSION_MASK) >> HW_MAJOR_VERSION_SHIFT);
 }
 EXPORT_SYMBOL(get_hw_version_major);
 
-unsigned int get_hw_version_minor(void)
-{
+unsigned int get_hw_version_minor(void) {
 	return ((get_hw_version() & HW_MINOR_VERSION_MASK) >> HW_MINOR_VERSION_SHIFT);
 }
 

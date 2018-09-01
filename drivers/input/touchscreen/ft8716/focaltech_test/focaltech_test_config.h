@@ -1,5 +1,6 @@
 /************************************************************************
 * Copyright (C) 2012-2015, Focaltech Systems (R)£¬All Rights Reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
 *
 * File Name: focaltech_test_config.h
 *
@@ -30,7 +31,7 @@ IC Type Test
 #define FT8006_TEST     0x130
 
 
-#ifdef FTS_CHIP_TYPE
+#ifdef  FTS_CHIP_TYPE
 
 #if (FTS_CHIP_TYPE == _FT8716)
 #define FTS_CHIP_TEST_TYPE      FT8716_TEST

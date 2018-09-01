@@ -2,6 +2,7 @@
  * Synaptics DSX touchscreen driver
  *
  * Copyright (C) 2012-2016 Synaptics Incorporated. All rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * Copyright (C) 2012 Alexandra Chin <alexandra.chin@tw.synaptics.com>
  * Copyright (C) 2012 Scott Lin <scott.lin@tw.synaptics.com>
@@ -219,7 +220,7 @@
 
 #define show_prototype(propname)\
 static ssize_t concat(test_sysfs, _##propname##_show)(\
-		struct device *dev, \
+		struct device *dev,\
 		struct device_attribute *attr,\
 		char *buf);\
 \
@@ -230,18 +231,18 @@ static struct device_attribute dev_attr_##propname = \
 
 #define store_prototype(propname)\
 static ssize_t concat(test_sysfs, _##propname##_store)(\
-		struct device *dev, \
+		struct device *dev,\
 		struct device_attribute *attr,\
 		const char *buf, size_t count);\
 \
-static struct device_attribute dev_attr_##propname =\
+static struct device_attribute dev_attr_##propname = \
 		__ATTR(propname, (S_IWUSR | S_IWGRP),\
 		synaptics_rmi4_show_error,\
 		concat(test_sysfs, _##propname##_store));
 
 #define show_store_prototype(propname)\
 static ssize_t concat(test_sysfs, _##propname##_show)(\
-		struct device *dev, \
+		struct device *dev,\
 		struct device_attribute *attr,\
 		char *buf);\
 \
@@ -250,14 +251,14 @@ static ssize_t concat(test_sysfs, _##propname##_store)(\
 		struct device_attribute *attr,\
 		const char *buf, size_t count);\
 \
-static struct device_attribute dev_attr_##propname =\
+static struct device_attribute dev_attr_##propname = \
 		__ATTR(propname, (S_IRUGO | S_IWUSR | S_IWGRP),\
 		concat(test_sysfs, _##propname##_show),\
 		concat(test_sysfs, _##propname##_store));
 
 #define disable_cbc(ctrl_num)\
 do {\
-	retval = synaptics_rmi4_reg_read(rmi4_data, \
+	retval = synaptics_rmi4_reg_read(rmi4_data,\
 			f54->control.ctrl_num->address,\
 			f54->control.ctrl_num->data,\
 			sizeof(f54->control.ctrl_num->data));\
@@ -2661,7 +2662,7 @@ static ssize_t test_sysfs_read_report_show(struct device *dev,
 	unsigned int *report_data_u32;
 
 #ifdef SYNAPTICS_ESD_CHECK
-		printk("%s SYNAPTICS_ESD_CHECK is off\n", __func__);
+		printk("%s SYNAPTICS_ESD_CHECK is off\n",__func__);
 		cancel_delayed_work_sync(&(rmi4_data->esd_work));
 #endif
 
@@ -2737,15 +2738,15 @@ static ssize_t test_sysfs_read_report_show(struct device *dev,
 			count += cnt;
 		}
 		if (1 == check_ito_test_flag) {
-			cnt = snprintf(buf, PAGE_SIZE - count, "fail\n");
-			buf += cnt;
-			count += cnt;
-			printk("[synaptics]ITO test fail\n");
-		} else {
-			cnt = snprintf(buf, PAGE_SIZE - count, "pass\n");
-			buf += cnt;
-			count += cnt;
-			printk("[synaptics]ITO test pass\n");
+		cnt = snprintf(buf, PAGE_SIZE - count,"fail\n");
+		buf += cnt;
+		count += cnt;
+		printk("[synaptics]ITO test fail\n");
+		} else{
+		cnt = snprintf(buf, PAGE_SIZE - count,"pass\n");
+		buf += cnt;
+		count += cnt;
+		printk("[synaptics]ITO test pass\n");
 		}
 		break;
 	case F54_HIGH_RESISTANCE:
@@ -2885,7 +2886,7 @@ static ssize_t test_sysfs_read_report_show(struct device *dev,
 	snprintf(buf, PAGE_SIZE - count, "\n");
 	count++;
 #ifdef SYNAPTICS_ESD_CHECK
-	printk("%s SYNAPTICS_ESD_CHECK is on\n", __func__);
+	printk("%s SYNAPTICS_ESD_CHECK is on\n",__func__);
 			queue_delayed_work(rmi4_data->esd_workqueue, &(rmi4_data->esd_work), SYNAPTICS_ESD_CHECK_CIRCLE);
 #endif
 
@@ -2946,11 +2947,11 @@ static ssize_t test_sysfs_ito_test_result_show(struct device *dev,
 {
 
 		if (1 == check_ito_test_flag) {
-			return snprintf(buf, PAGE_SIZE, "%s\n", "fail");
+		return snprintf(buf, PAGE_SIZE, "%s\n","fail");
 		} else if (0 == check_ito_test_flag) {
-			return snprintf(buf, PAGE_SIZE, "%s\n", "pass");
-		} else {
-			return snprintf(buf, PAGE_SIZE, "%s\n", "");
+		return snprintf(buf, PAGE_SIZE, "%s\n","pass");
+		} else{
+		return snprintf(buf, PAGE_SIZE, "%s\n","");
 		}
 }
 

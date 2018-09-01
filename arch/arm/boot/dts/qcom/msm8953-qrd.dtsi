@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2015-2016, The Linux Foundation. All rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -90,7 +91,7 @@
 			vcc_i2c-supply = <&pm8953_l6>;
 			/* pins used by touchscreen */
 			pinctrl-names = "pmx_ts_active","pmx_ts_suspend",
-						"pmx_ts_release";
+			                                "pmx_ts_release";
 			pinctrl-0 = <&ts_int_active &ts_reset_active>;
 			pinctrl-1 = <&ts_int_suspend &ts_reset_suspend>;
 			pinctrl-2 = <&ts_release>;
@@ -180,7 +181,12 @@
 			synaptics,reset-delay-ms = <200>;
 			synaptics,reset-on-state = <0>;
 			synaptics,reset-active-ms = <20>;
+			/* uncomment and update line below as appropriate if there are 0D buttons */
+			/* synaptics,cap-button-codes = <102 158>; */
 			synaptics,cap-button-codes = <139 172 158>;
+			/* uncomment and update lines below as appropriate if there are virtual buttons */
+			/* synaptics,vir-button-codes = <102 100 900 100 60 158 300 900 100 60>; */
+			/* synaptics,max-y-for-2d = <800>; */
 		};
 	};
 
@@ -240,7 +246,7 @@
 		compatible = "peel_ir";
 		reg = <0x0>;
 		spi-max-frequency = <19200000>;
-		vdd-supply = <&pm8953_l8>;
+		vdd-supply = <&pm8953_l8>; //vdd
 		peel_ir,reg-id = "vdd";
 		peel_ir,lr-gpio = <73>;
 		peel_ir,lr-gpio-valid = <0>;
@@ -294,6 +300,8 @@
 &pmi8940_charger {
 	qcom,battery-data = <&qrd_batterydata>;
 	qcom,float-voltage-mv = <4400>;
+//	qcom,external-typec;
+//	qcom,typec-psy-name = "typec";
 	qcom,thermal-mitigation = <3000 2500 2000 1000 1000 500 0>;
 	status = "okay";
 };

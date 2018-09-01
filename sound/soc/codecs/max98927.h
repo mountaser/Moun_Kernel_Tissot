@@ -15,7 +15,8 @@
 #define MAX98927L 0
 #define MAX98927R 1
 
-typedef enum {
+typedef enum
+ {
 
 	MAX98927_Interrupt_Raw_1                                          = 0x0001,
 	MAX98927_Interrupt_Raw_1_BDE_ACTIVE_END_RAW                       = (0x1 << 0),

@@ -1,5 +1,6 @@
 /************************************************************************
 * Copyright (C) 2012-2015, Focaltech Systems (R)£¬All Rights Reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
 *
 * File Name: focaltech_test_main.h
 *
@@ -22,12 +23,14 @@
 #define false 0
 #define true  1
 
-enum NodeType {
+enum NodeType
+ {
 	NODE_INVALID_TYPE = 0,
 	NODE_VALID_TYPE = 1,
 	NODE_KEY_TYPE = 2,
 	NODE_AST_TYPE = 3,
 };
+
 
 typedef int (*FTS_I2C_READ_FUNCTION)(unsigned char *, int , unsigned char *, int);
 typedef int (*FTS_I2C_WRITE_FUNCTION)(unsigned char *, int);
@@ -37,6 +40,11 @@ extern FTS_I2C_WRITE_FUNCTION fts_i2c_write_test_sharp;
 
 extern int init_i2c_read_func_sharp(FTS_I2C_READ_FUNCTION fpI2C_Read);
 extern int init_i2c_write_func_sharp(FTS_I2C_WRITE_FUNCTION fpI2C_Write);
+
+
+
+
+
 
 int set_param_data_sharp(char *TestParamData);
 boolean start_test_tp_sharp(void);
@@ -88,7 +96,8 @@ read write max bytes per time
 #define BYTES_PER_TIME      128
 
 extern void fts_test_funcs(void);
-struct StTestFuncs {
+struct StTestFuncs
+ {
 	void (*OnInit_TestItem)(char *);
 	void (*OnInit_BasicThreshold)(char *) ;
 	void (*SetTestItem)(void) ;
@@ -97,7 +106,8 @@ struct StTestFuncs {
 };
 extern struct StTestFuncs g_stTestFuncs;
 
-struct StruScreenSeting {
+struct StruScreenSeting
+ {
 	int iSelectedIC;
 	int iTxNum;
 	int iRxNum;
@@ -109,7 +119,8 @@ struct StruScreenSeting {
 	unsigned char iKeyNum;
 };
 extern struct StruScreenSeting g_ScreenSetParam_sharp;
-struct stTestItem {
+struct stTestItem
+ {
 	unsigned char ItemType;
 	unsigned char TestNum;
 	unsigned char TestResult;
@@ -119,7 +130,8 @@ struct stTestItem {
 };
 extern struct stTestItem g_stTestItem_sharp[1][MAX_TEST_ITEM];
 
-struct structSCapConfEx {
+struct structSCapConfEx
+ {
 	unsigned char ChannelXNum;
 	unsigned char ChannelYNum;
 	unsigned char KeyNum;
@@ -133,12 +145,14 @@ struct structSCapConfEx {
 };
 extern struct structSCapConfEx g_stSCapConfEx_sharp;
 
-enum NORMALIZE_Type {
+enum NORMALIZE_Type
+ {
 	Overall_Normalize = 0,
 	Auto_Normalize = 1,
 };
 
-enum PROOF_TYPE {
+enum PROOF_TYPE
+ {
 	Proof_Normal,
 	Proof_Level0,
 	Proof_NoWaterProof,
@@ -147,7 +161,8 @@ enum PROOF_TYPE {
 /*-----------------------------------------------------------
 IC Capacitance Type  0:Self Capacitance, 1:Mutual Capacitance, 2:IDC
 -----------------------------------------------------------*/
-enum enum_Report_Protocol_Type {
+enum enum_Report_Protocol_Type
+ {
 	Self_Capacitance = 0,
 	Mutual_Capacitance = 1,
 	IDC_Capacitance = 2,
@@ -220,7 +235,7 @@ extern int TestResultLen;
 #define FTS_TEST_FUNC_ENTER() printk(KERN_ERR "[FTS][TEST]%s: Enter(%d)\n", __func__, __LINE__)
 #define FTS_TEST_FUNC_EXIT()  printk(KERN_ERR "[FTS][TEST]%s: Exit(%d)\n", __func__, __LINE__)
 #else
-#define FTS_TEST_DBG(fmt, args...) do {} while (0)
+#define FTS_TEST_DBG(fmt, args...) do {} while(0)
 #define FTS_TEST_FUNC_ENTER()
 #define FTS_TEST_FUNC_EXIT()
 #endif

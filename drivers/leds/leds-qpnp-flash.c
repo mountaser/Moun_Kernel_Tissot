@@ -1,4 +1,5 @@
 /* Copyright (c) 2014-2017, The Linux Foundation. All rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -1941,8 +1942,8 @@ static void mido_flash_led_brightness_set(struct led_classdev *led_cdev,
 						enum led_brightness value)
 {
 
-	qpnp_flash_led_brightness_set(led_cdev, value);
-	led_trigger_event(flashlight_switch_trigger, (value?1:0));
+	qpnp_flash_led_brightness_set(led_cdev,value);
+	led_trigger_event(flashlight_switch_trigger,(value?1:0));
 }
 /* lancelot add end*/
 
@@ -2609,7 +2610,7 @@ static int qpnp_flash_led_probe(struct spmi_device *spmi)
 			return rc;
 		}
 
-		if (!strncmp(led->flash_node[i].cdev.name, flashlight, strlen(flashlight))) {
+		if (!strncmp(led->flash_node[i].cdev.name,flashlight,strlen(flashlight))) {
 			led->flash_node[i].cdev.brightness_set = mido_flash_led_brightness_set;
 		}
 
@@ -2639,7 +2640,8 @@ static int qpnp_flash_led_probe(struct spmi_device *spmi)
 			goto error_led_register;
 		}
 
-		if (!strncmp(led->flash_node[i].cdev.name, flashlight_switch, strlen(flashlight_switch))) {
+		if (!strncmp(led->flash_node[i].cdev.name,flashlight_switch,strlen(flashlight_switch)))
+		{
 			flashlight_switch_trigger = led->flash_node[i].cdev.trigger;
 		}
 

@@ -3,6 +3,7 @@
  * FocalTech TouchScreen driver.
  *
  * Copyright (c) 2010-2016, Focaltech Ltd. All rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -72,7 +73,8 @@
 /*****************************************************************************
 * Private enumerations, structures and unions using typedef
 *****************************************************************************/
-struct fts_gesture_st {
+struct fts_gesture_st
+ {
 	u8 header[FTS_GESTRUE_POINTS_HEADER];
 	u16 coordinate_x[FTS_GESTRUE_POINTS];
 	u16 coordinate_y[FTS_GESTRUE_POINTS];
@@ -108,14 +110,16 @@ static DEVICE_ATTR (fts_gesture_mode, S_IRUGO|S_IWUSR, fts_gesture_show, fts_ges
  *   read example: cat  fts_gesture_buf        ---read gesture buf
  */
 static DEVICE_ATTR (fts_gesture_buf, S_IRUGO|S_IWUSR, fts_gesture_buf_show, fts_gesture_buf_store);
-static struct attribute *fts_gesture_mode_attrs[] = {
+static struct attribute *fts_gesture_mode_attrs[] =
+{
 
 	&dev_attr_fts_gesture_mode.attr,
 	&dev_attr_fts_gesture_buf.attr,
 	NULL,
 };
 
-static struct attribute_group fts_gesture_group = {
+static struct attribute_group fts_gesture_group =
+{
 	.attrs = fts_gesture_mode_attrs,
 };
 
@@ -161,11 +165,11 @@ static ssize_t fts_gesture_store(struct device *dev, struct device_attribute *at
 	if (FTS_SYSFS_ECHO_ON(buf)) {
 		FTS_INFO("[GESTURE]enable gesture");
 		fts_gesture_data.mode = ENABLE;
-		ft8716_gesture_func_on = 1;
+	ft8716_gesture_func_on = 1;
 	} else if (FTS_SYSFS_ECHO_OFF(buf)) {
 		FTS_INFO("[GESTURE]disable gesture");
 		fts_gesture_data.mode = DISABLE;
-		ft8716_gesture_func_on = 0;
+	ft8716_gesture_func_on = 0;
 	}
 	if (ft8716_gesture_func_on == 1)
 		printk("ft8716_gesture_func_on is on");
@@ -246,7 +250,8 @@ int fts_create_gesture_sysfs(struct i2c_client *client)
 *****************************************************************************/
 void fts_gesture_recovery(struct i2c_client *client)
 {
-	if (fts_gesture_data.mode && fts_gesture_data.active) {
+	if (fts_gesture_data.mode && fts_gesture_data.active)
+	{
 		fts_i2c_write_reg(client, 0xD1, 0xff);
 		fts_i2c_write_reg(client, 0xD2, 0xff);
 		fts_i2c_write_reg(client, 0xD5, 0xff);
@@ -267,15 +272,16 @@ int ft8716_gesture_switch(struct input_dev *dev, unsigned int type, unsigned int
 
 	mutex_lock(&fts_input_dev->mutex);
 
-	if (type == EV_SYN && code == SYN_CONFIG) {
+	if (type == EV_SYN && code == SYN_CONFIG)
+	{
 		if (value == WAKEUP_OFF) {
 			ft8716_gesture_func_on = 0;
-			FTS_INFO("[GESTURE]disable gesture");
-					fts_gesture_data.mode = DISABLE;
+			 FTS_INFO("[GESTURE]disable gesture");
+				 fts_gesture_data.mode = DISABLE;
 		} else if (value == WAKEUP_ON) {
 			ft8716_gesture_func_on  = 1;
 			FTS_INFO("[GESTURE]enable gesture");
-					fts_gesture_data.mode = ENABLE;
+				 fts_gesture_data.mode = ENABLE;
 		}
 	}
 	mutex_unlock(&fts_input_dev->mutex);
@@ -328,7 +334,7 @@ int fts_gesture_init(struct input_dev *input_dev, struct i2c_client *client)
 	fts_gesture_data.mode = 0;
 	fts_gesture_data.active = 0;
 
-	input_set_capability(input_dev, EV_KEY, KEY_WAKEUP);
+	 input_set_capability(input_dev, EV_KEY, KEY_WAKEUP);
 
 	input_dev->event = ft8716_gesture_switch;
 
@@ -356,73 +362,74 @@ int fts_gesture_exit(struct i2c_client *client)
 * Output: None
 * Return: None
 *****************************************************************************/
-static void fts_check_gesture(struct input_dev *input_dev, int gesture_id)
+static void fts_check_gesture(struct input_dev *input_dev,int gesture_id)
 {
 	char *envp[2];
 	int gesture;
 
 	FTS_FUNC_ENTER();
-	switch (gesture_id) {
-	case GESTURE_LEFT:
-		envp[0] = "GESTURE = LEFT";
-		gesture = KEY_GESTURE_LEFT;
-		break;
-	case GESTURE_RIGHT:
-		envp[0] = "GESTURE = RIGHT";
-		gesture = KEY_GESTURE_RIGHT;
-		break;
-	case GESTURE_UP:
-		envp[0] = "GESTURE = UP";
-		gesture = KEY_GESTURE_UP;
-		break;
-	case GESTURE_DOWN:
-		envp[0] = "GESTURE = DOWN";
-		gesture = KEY_GESTURE_DOWN;
-		break;
-	case GESTURE_DOUBLECLICK:
-		envp[0] = "GESTURE = DOUBLE_CLICK";
-		gesture = KEY_WAKEUP;
-		break;
-	case GESTURE_O:
-		envp[0] = "GESTURE = O";
-		gesture = KEY_GESTURE_O;
-		break;
-	case GESTURE_W:
-		envp[0] = "GESTURE = W";
-		gesture = KEY_GESTURE_W;
-		break;
-	case GESTURE_M:
-		envp[0] = "GESTURE = M";
-		gesture = KEY_GESTURE_M;
-		break;
-	case GESTURE_E:
-		envp[0] = "GESTURE = E";
-		gesture = KEY_GESTURE_E;
-		break;
-	case GESTURE_L:
-		envp[0] = "GESTURE = L";
-		gesture = KEY_GESTURE_L;
-		break;
-	case GESTURE_S:
-		envp[0] = "GESTURE = S";
-		gesture = KEY_GESTURE_S;
-		break;
-	case GESTURE_V:
-		envp[0] = "GESTURE = V";
-		gesture = KEY_GESTURE_V;
-		break;
-	case GESTURE_Z:
-		envp[0] = "GESTURE = Z";
-		gesture = KEY_GESTURE_Z;
-		break;
-	case  GESTURE_C:
-		envp[0] = "GESTURE = C";
-		gesture = KEY_GESTURE_C;
-		break;
-	default:
-		envp[0] = "GESTURE = NONE";
-		gesture = -1;
-		break;
+	switch (gesture_id)
+	{
+		case GESTURE_LEFT:
+			envp[0] = "GESTURE = LEFT";
+			gesture = KEY_GESTURE_LEFT;
+			break;
+		case GESTURE_RIGHT:
+			envp[0] = "GESTURE = RIGHT";
+			gesture = KEY_GESTURE_RIGHT;
+			break;
+		case GESTURE_UP:
+			envp[0] = "GESTURE = UP";
+			gesture = KEY_GESTURE_UP;
+			break;
+		case GESTURE_DOWN:
+			envp[0] = "GESTURE = DOWN";
+			gesture = KEY_GESTURE_DOWN;
+			break;
+		case GESTURE_DOUBLECLICK:
+			envp[0] = "GESTURE = DOUBLE_CLICK";
+			gesture = KEY_WAKEUP;
+			break;
+		case GESTURE_O:
+			envp[0] = "GESTURE = O";
+			gesture = KEY_GESTURE_O;
+			break;
+		case GESTURE_W:
+			envp[0] = "GESTURE = W";
+			gesture = KEY_GESTURE_W;
+			break;
+		case GESTURE_M:
+			envp[0] = "GESTURE = M";
+			gesture = KEY_GESTURE_M;
+			break;
+		case GESTURE_E:
+			envp[0] = "GESTURE = E";
+			gesture = KEY_GESTURE_E;
+			break;
+		case GESTURE_L:
+			envp[0] = "GESTURE = L";
+			gesture = KEY_GESTURE_L;
+			break;
+		case GESTURE_S:
+			envp[0] = "GESTURE = S";
+			gesture = KEY_GESTURE_S;
+			break;
+		case GESTURE_V:
+			envp[0] = "GESTURE = V";
+			gesture = KEY_GESTURE_V;
+			break;
+		case GESTURE_Z:
+			envp[0] = "GESTURE = Z";
+			gesture = KEY_GESTURE_Z;
+			break;
+		case  GESTURE_C:
+			envp[0] = "GESTURE = C";
+			gesture = KEY_GESTURE_C;
+			break;
+		default:
+			envp[0] = "GESTURE = NONE";
+			gesture = -1;
+			break;
 	}
 	FTS_DEBUG("envp[0]: %s", envp[0]);
 	/* report event key */
@@ -518,12 +525,12 @@ int fts_gesture_readdata(struct i2c_client *client)
 			return ret;
 		}
 
-		fts_check_gesture(fts_input_dev, gestrue_id);
+		fts_check_gesture(fts_input_dev,gestrue_id);
 		for (i = 0; i < pointnum; i++) {
 			fts_gesture_data.coordinate_x[i] = (((s16) buf[0 + (4 * i + 2)]) & 0x0F) << 8
-							| (((s16) buf[1 + (4 * i + 2)]) & 0xFF);
+					                           | (((s16) buf[1 + (4 * i + 2)]) & 0xFF);
 			fts_gesture_data.coordinate_y[i] = (((s16) buf[2 + (4 * i + 2)]) & 0x0F) << 8
-							| (((s16) buf[3 + (4 * i + 2)]) & 0xFF);
+					                           | (((s16) buf[3 + (4 * i + 2)]) & 0xFF);
 		}
 		FTS_FUNC_EXIT();
 		return 0;
@@ -531,7 +538,7 @@ int fts_gesture_readdata(struct i2c_client *client)
 	/* other IC's gestrue in driver */
 	if (0x24 == buf[0]) {
 		gestrue_id = 0x24;
-		fts_check_gesture(fts_input_dev, gestrue_id);
+		fts_check_gesture(fts_input_dev,gestrue_id);
 		FTS_DEBUG("[GESTURE]%d check_gesture gestrue_id", gestrue_id);
 		FTS_FUNC_EXIT();
 		return -EPERM;
@@ -548,15 +555,20 @@ int fts_gesture_readdata(struct i2c_client *client)
 		return ret;
 	}
 
+	/*
+	* Host Driver recognize gesture, need gesture lib.a
+	* Not use now for compatibility
+	gestrue_id = fetch_object_sample(buf, pointnum);
+	*/
 	gestrue_id = 0x24;
 	fts_check_gesture(fts_input_dev, gestrue_id);
 	FTS_DEBUG("[GESTURE]%d read gestrue_id", gestrue_id);
 
 	for (i = 0; i < pointnum; i++) {
 		fts_gesture_data.coordinate_x[i] =  (((s16) buf[0 + (4 * i+8)]) & 0x0F) << 8
-					| (((s16) buf[1 + (4 * i+8)]) & 0xFF);
+					                        | (((s16) buf[1 + (4 * i+8)])& 0xFF);
 		fts_gesture_data.coordinate_y[i] = (((s16) buf[2 + (4 * i+8)]) & 0x0F) << 8
-					| (((s16) buf[3 + (4 * i+8)]) & 0xFF);
+					                       | (((s16) buf[3 + (4 * i+8)]) & 0xFF);
 	}
 	FTS_FUNC_EXIT();
 	return -EPERM;
@@ -594,7 +606,7 @@ int fts_gesture_suspend(struct i2c_client *i2c_client)
 		fts_i2c_write_reg(i2c_client, FTS_REG_GESTURE_EN, 0x01);
 		msleep(1);
 		fts_i2c_read_reg(i2c_client, FTS_REG_GESTURE_EN, &state);
-		printk("FTS_REG_GESTURE_EN is : %d", state);
+		printk("FTS_REG_GESTURE_EN is : %d",state);
 		if (state == 1) {
 		printk("FTS_REG_GESTURE_EN write success\n");
 			break; }
