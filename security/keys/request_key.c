@@ -475,7 +475,6 @@ static struct key *construct_key_and_link(struct keyring_search_context *ctx,
 		ret = -ENOMEM;
 		goto error_put_dest_keyring;
 	}
-
 	ret = construct_alloc_key(ctx, dest_keyring, flags, user, &key);
 	key_user_put(user);
 

@@ -1,4 +1,5 @@
 /* Copyright (c) 2015-2017, The Linux Foundation. All rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -80,13 +81,13 @@ static struct switch_dev accdet_data;
 static void wcd_mbhc_jack_report(struct wcd_mbhc *mbhc,
 				struct snd_soc_jack *jack, int status, int mask)
 {
-	printk("[%s]===========status[%d]type[%d]\n", __FUNCTION__, status, jack->jack->type);
+	printk("[%s]===========status[%d]type[%d]\n",__FUNCTION__,status,jack->jack->type);
 	if (!status && (jack->jack->type&WCD_MBHC_JACK_MASK)) {
-		switch_set_state(&accdet_data, 0);
-		 is_jack_insert = false;
+		switch_set_state(&accdet_data,0);
+		is_jack_insert = false;
 	} else if (jack->jack->type&WCD_MBHC_JACK_MASK) {
-		switch_set_state(&accdet_data, status);
-		 is_jack_insert = true;
+		switch_set_state(&accdet_data,status);
+		is_jack_insert = true;
 	}
 	snd_soc_jack_report(jack, status, mask);
 }
@@ -180,13 +181,6 @@ static void wcd_enable_curr_micbias(const struct wcd_mbhc *mbhc,
 
 	switch (cs_mb_en) {
 	case WCD_MBHC_EN_CS:
-		 #if 0
-		WCD_MBHC_REG_UPDATE_BITS(WCD_MBHC_MICB_CTRL, 0);
-		WCD_MBHC_REG_UPDATE_BITS(WCD_MBHC_BTN_ISRC_CTL, 3);
-		/* Program Button threshold registers as per CS */
-		wcd_program_btn_threshold(mbhc, false);
-		break;
-		 #endif
 	case WCD_MBHC_EN_MB:
 		WCD_MBHC_REG_UPDATE_BITS(WCD_MBHC_BTN_ISRC_CTL, 0);
 		WCD_MBHC_REG_UPDATE_BITS(WCD_MBHC_FSM_EN, 1);
@@ -353,14 +347,15 @@ out_micb_en:
 					  &mbhc->event_state)))
 			/* enable pullup and cs, disable mb */
 			wcd_enable_curr_micbias(mbhc, WCD_MBHC_EN_PULLUP);
-		else {
+			else{
 			/* enable current source and disable mb, pullup*/
-			if (is_jack_insert) {
-				wcd_enable_curr_micbias(mbhc, WCD_MBHC_EN_MB);
-			} else {
+				if (is_jack_insert) {
+					wcd_enable_curr_micbias(mbhc, WCD_MBHC_EN_MB);
+				 }
+			else{
 				wcd_enable_curr_micbias(mbhc, WCD_MBHC_EN_NONE);
 			}
-		 }
+		}
 
 		/* configure cap settings properly when micbias is disabled */
 		if (mbhc->mbhc_cb->set_cap_mode)
@@ -375,13 +370,13 @@ out_micb_en:
 			hphlocp_off_report(mbhc, SND_JACK_OC_HPHL);
 		clear_bit(WCD_MBHC_EVENT_PA_HPHL, &mbhc->event_state);
 		/* check if micbias is enabled */
-		 if (true == is_jack_insert) {
+		if (true == is_jack_insert) {
 			/* Disable cs, pullup & enable micbias */
 			wcd_enable_curr_micbias(mbhc, WCD_MBHC_EN_MB);
-		 } else{
+		} else{
 			/* Disable micbias, pullup & enable cs */
 			wcd_enable_curr_micbias(mbhc, WCD_MBHC_EN_NONE);
-		 }
+		}
 		mutex_unlock(&mbhc->hphl_pa_lock);
 		break;
 	case WCD_EVENT_PRE_HPHR_PA_OFF:
@@ -393,13 +388,13 @@ out_micb_en:
 			hphrocp_off_report(mbhc, SND_JACK_OC_HPHR);
 		clear_bit(WCD_MBHC_EVENT_PA_HPHR, &mbhc->event_state);
 		/* check if micbias is enabled */
-		 if (true == is_jack_insert) {
+		if (true == is_jack_insert) {
 			/* Disable cs, pullup & enable micbias */
 			wcd_enable_curr_micbias(mbhc, WCD_MBHC_EN_MB);
-		 } else {
+		} else{
 			/* Disable micbias, pullup & enable cs */
 			wcd_enable_curr_micbias(mbhc, WCD_MBHC_EN_NONE);
-		 }
+		}
 		mutex_unlock(&mbhc->hphr_pa_lock);
 		break;
 	case WCD_EVENT_PRE_HPHL_PA_ON:
@@ -639,8 +634,8 @@ static void wcd_mbhc_report_plug(struct wcd_mbhc *mbhc, int insertion,
 		hphlocp_off_report(mbhc, SND_JACK_OC_HPHL);
 		mbhc->current_plug = MBHC_PLUG_TYPE_NONE;
 
-		pr_debug("%s [zoro] lsn ext_pa_gpio= %d\n", __func__, ext_pa_gpio);
-		gpio_set_value(ext_pa_gpio, EXT_PA_PULL_DOWN);
+		pr_debug("%s [zoro] lsn ext_pa_gpio= %d\n", __func__,ext_pa_gpio);
+		gpio_set_value(ext_pa_gpio,EXT_PA_PULL_DOWN);
 
 	} else {
 		/*
@@ -755,10 +750,10 @@ static void wcd_mbhc_report_plug(struct wcd_mbhc *mbhc, int insertion,
 				    WCD_MBHC_JACK_MASK);
 		wcd_mbhc_clr_and_turnon_hph_padac(mbhc);
 
-		pr_debug("%s [zoro] lsn ext_pa_gpio= %d   \n", __func__, ext_pa_status);
+		pr_debug("%s [zoro] lsn ext_pa_gpio= %d   \n", __func__,ext_pa_status);
 		msleep(500);
 		if (ext_pa_status == 1)
-			gpio_set_value(ext_pa_gpio, EXT_PA_PULL_UP);
+			gpio_set_value(ext_pa_gpio,EXT_PA_PULL_UP);
 
 	}
 	pr_debug("%s: leave hph_status %x\n", __func__, mbhc->hph_status);
@@ -1138,11 +1133,11 @@ static void wcd_enable_mbhc_supply(struct wcd_mbhc *mbhc,
 							WCD_MBHC_EN_CS);
 		} else if (plug_type == MBHC_PLUG_TYPE_HEADPHONE) {
 			wcd_enable_curr_micbias(mbhc, WCD_MBHC_EN_CS);
-		 } else if (is_jack_insert) {
+		} else if (is_jack_insert) {
 			wcd_enable_curr_micbias(mbhc, WCD_MBHC_EN_MB);
-		 } else {
+		} else {
 			wcd_enable_curr_micbias(mbhc, WCD_MBHC_EN_NONE);
-		 }
+		}
 	}
 }
 
@@ -1239,7 +1234,7 @@ static void wcd_correct_swch_plug(struct work_struct *work)
 	WCD_MBHC_REG_READ(WCD_MBHC_BTN_RESULT, btn_result);
 	WCD_MBHC_REG_READ(WCD_MBHC_HS_COMP_RESULT, hs_comp_res);
 
-	printk("%s, btn_pressed[%d]btn_result[%d]hs_comp_res[%d]\n", __func__, rc, btn_result, hs_comp_res);
+	printk("%s,btn_pressed[%d]btn_result[%d]hs_comp_res[%d]\n",__func__,rc,btn_result,hs_comp_res);
 
 	if (!rc) {
 		pr_debug("%s No btn press interrupt\n", __func__);
@@ -1501,7 +1496,7 @@ exit:
 		WCD_MBHC_RSC_UNLOCK(mbhc);
 	}
 	if (mbhc->mbhc_cb->set_cap_mode)
-		mbhc->mbhc_cb->set_cap_mode(codec, micbias1, micbias2);
+		mbhc->mbhc_cb->set_cap_mode(codec, micbias1, is_jack_insert);
 
 	if (mbhc->mbhc_cb->hph_pull_down_ctrl)
 		mbhc->mbhc_cb->hph_pull_down_ctrl(codec, true);
@@ -2051,10 +2046,10 @@ static irqreturn_t wcd_mbhc_release_handler(int irq, void *data)
 	 */
 	if (mbhc->current_plug == MBHC_PLUG_TYPE_HEADPHONE) {
 		wcd_mbhc_find_plug_and_report(mbhc, MBHC_PLUG_TYPE_HEADSET);
-		wcd_mbhc_jack_report(mbhc, &mbhc->headset_jack,
+				wcd_mbhc_jack_report(mbhc, &mbhc->headset_jack,
 				0, WCD_MBHC_JACK_MASK);
 		msleep(100);
-		wcd_mbhc_report_plug(mbhc, 1, SND_JACK_HEADSET);
+				wcd_mbhc_report_plug(mbhc, 1, SND_JACK_HEADSET);
 		goto exit;
 
 	}
@@ -2430,12 +2425,12 @@ int wcd_mbhc_init(struct wcd_mbhc *mbhc, struct snd_soc_codec *codec,
 
 	pr_debug("%s: enter\n", __func__);
 
-		accdet_data.name = "h2w";
+	accdet_data.name = "h2w";
 	accdet_data.index = 0;
 	accdet_data.state = 0;
 	ret = switch_dev_register(&accdet_data);
 	if (ret) {
-		dev_err(card->dev, "[Accdet]switch_dev_register returned:%d!\n", ret);
+		dev_err(card->dev,"[Accdet]switch_dev_register returned:%d!\n", ret);
 		return -EPERM;
 
 	}

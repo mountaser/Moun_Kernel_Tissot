@@ -2,6 +2,7 @@
  * Synaptics DSX touchscreen driver
  *
  * Copyright (C) 2012-2016 Synaptics Incorporated. All rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * Copyright (C) 2012 Alexandra Chin <alexandra.chin@tw.synaptics.com>
  * Copyright (C) 2012 Scott Lin <scott.lin@tw.synaptics.com>
@@ -4203,10 +4204,16 @@ struct synaptics_rmi4_data *rmi4_data =
 		esd_work);
 
 
+/*
+	struct synaptics_rmi4_data *rmi4_data =
+			container_of(work, struct synaptics_rmi4_data,
+			esd_work);
+
+*/
 	const struct synaptics_dsx_board_data *bdata =
 			rmi4_data->hw_if->board_data;
 
-	printk("[synaptics]Enter %s\n", __func__);
+	printk("[synaptics]Enter %s\n",__func__);
 
 	mutex_lock(&rmi4_data->rmi4_esd_mutex);
 
@@ -4218,15 +4225,15 @@ struct synaptics_rmi4_data *rmi4_data =
 			F01_STD_QUERY_LEN);
 
 	if (retval < 0) {
-		 dev_err(rmi4_data->pdev->dev.parent,
+		dev_err(rmi4_data->pdev->dev.parent,
 			"%s Failed to read product info, need to do HW RESET\n",
 			__func__);
 
-		gpio_set_value(bdata->reset_gpio, 1);
+		gpio_set_value(bdata->reset_gpio,1);
 		mdelay(20);
-		gpio_set_value(bdata->reset_gpio, 0);
+		gpio_set_value(bdata->reset_gpio,0);
 		mdelay(20);
-		gpio_set_value(bdata->reset_gpio, 1);
+		gpio_set_value(bdata->reset_gpio,1);
 		mdelay(200);
 
 	}
@@ -4517,7 +4524,7 @@ static int synaptics_rmi4_remove(struct platform_device *pdev)
 	flush_workqueue(rmi4_data->reset_workqueue);
 	destroy_workqueue(rmi4_data->reset_workqueue);
 #endif
-printk("Enter %s\n", __func__);
+printk("Enter %s\n",__func__);
 #ifdef SYNAPTICS_ESD_CHECK
 	cancel_delayed_work_sync(&(rmi4_data->esd_work));
 	flush_workqueue(rmi4_data->esd_workqueue);
@@ -4725,7 +4732,7 @@ static int synaptics_rmi4_suspend(struct device *dev)
 
 	if (rmi4_data->stay_awake)
 		return 0;
-	printk("[synaptics]Enter %s\n", __func__);
+	printk("[synaptics]Enter %s\n",__func__);
 
 #ifdef SYNAPTICS_ESD_CHECK
 	cancel_delayed_work_sync(&(rmi4_data->esd_work));
@@ -4763,7 +4770,7 @@ static int synaptics_rmi4_suspend(struct device *dev)
 					&device_ctrl,
 					sizeof(device_ctrl));
 		}
-		synaptics_rmi4_wakeup_gesture(rmi4_data, false);
+		synaptics_rmi4_wakeup_gesture(rmi4_data,false);
 		udelay(TDDI_LPWG_WAIT_US);
 #endif
 		synaptics_rmi4_irq_enable(rmi4_data, false, false);

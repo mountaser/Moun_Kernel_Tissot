@@ -157,7 +157,7 @@ config GENERIC_HWEIGHT
 	def_bool y
 
 config GENERIC_CSUM
-        def_bool y
+	def_bool y
 
 config GENERIC_CALIBRATE_DELAY
 	def_bool y
@@ -633,7 +633,7 @@ config ARM64_VA_BITS
 config CPU_BIG_ENDIAN
        bool "Build big-endian kernel"
        help
-         Say Y if you plan on running a kernel in big-endian mode.
+	 Say Y if you plan on running a kernel in big-endian mode.
 
 config ARM64_SEV_IN_LOCK_UNLOCK
 	bool "Add explicit SEV in the spinlock unlock code path"
@@ -689,14 +689,14 @@ config HOTPLUG_CPU
 # a multiplatform kernel, we just want the highest value required by the
 # selected platforms.
 config ARCH_NR_GPIO
-        int
-        default 1024 if ARCH_TEGRA
-        default 1024 if ARCH_MSM
-        default 256
-        help
-          Maximum number of GPIOs in the system.
+	int
+	default 1024 if ARCH_TEGRA
+	default 1024 if ARCH_MSM
+	default 256
+	help
+	  Maximum number of GPIOs in the system.
 
-          If unsure, leave the default value.
+	  If unsure, leave the default value.
 
 
 source kernel/Kconfig.preempt
@@ -997,7 +997,7 @@ config EFI
 	help
 	  This option provides support for runtime services provided
 	  by UEFI firmware (such as non-volatile variables, realtime
-          clock, and platform reset). A UEFI stub is also provided to
+	  clock, and platform reset). A UEFI stub is also provided to
 	  allow the kernel to be booted as an EFI application. This
 	  is only useful on systems that have UEFI firmware.
 
@@ -1140,8 +1140,8 @@ config BOOT_INFO
 	bool "Boot information from bootloader"
 	default y
 	help
-	  On embedded linux device, we try to collect more information from
-	  bootloader to kernel. eg. powerup reason.
+	 On embedded linux device, we try to collect more information from
+	 bootloader to kernel. eg. powerup reason.
 
 source "arch/arm64/mm/Kconfig"
 

@@ -1,4 +1,5 @@
 /* Copyright (c) 2013-2015, The Linux Foundation. All rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -380,7 +381,7 @@ struct device_node *of_batterydata_get_best_profile(
 				 * and also if the limits are in range
 				 * before selecting the best node.
 				 */
-				pr_err("dhx batt_ids.kohm = %d\n", batt_ids.kohm[i]);
+				pr_err("dhx batt_ids.kohm = %d\n",batt_ids.kohm[i]);
 				if (batt_ids.kohm[i] == 50)
 					default_node = node;
 				if ((delta < best_delta || !best_node)

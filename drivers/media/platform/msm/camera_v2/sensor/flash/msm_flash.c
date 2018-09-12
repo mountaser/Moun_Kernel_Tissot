@@ -1,4 +1,5 @@
 /* Copyright (c) 2009-2017, The Linux Foundation. All rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -1212,9 +1213,9 @@ static void flashlight_set_brightness(struct led_classdev *cdev,
 	int32_t	curr = 0;
 	int32_t torch0_curr = 200;
 	int32_t torch1_curr = 88;
-	 printk("flashlight_set_brightness brightness=%d\n", brightness);
-	 curr = brightness;
-	 cdev->brightness = brightness;
+		printk("flashlight_set_brightness brightness=%d\n",brightness);
+		curr = brightness;
+		cdev->brightness = brightness;
 
 	if ((brightness == LED_OFF) || brightness == 100) {
 				/* Turn off flash triggers */
@@ -1244,7 +1245,7 @@ static void flashlight_set_brightness(struct led_classdev *cdev,
 
 			if (flashlight->torch_trigger[1]) {
 				CDBG("flashlight set brightness torch1_curr %d", torch1_curr);
-							led_trigger_event(flashlight->torch_trigger[1], torch1_curr);
+					    	led_trigger_event(flashlight->torch_trigger[1], torch1_curr);
 			}
 
 			if (flashlight->switch_trigger)
@@ -1260,9 +1261,11 @@ static void flashlight_set_brightness(struct led_classdev *cdev,
 static struct led_classdev flashlight_led = {
 
 	.name = "flashlight",
+
 	.brightness_set = flashlight_set_brightness,
 
 };
+
 
 static int32_t msm_flash_platform_probe(struct platform_device *pdev)
 {
@@ -1339,16 +1342,16 @@ static int32_t msm_flash_platform_probe(struct platform_device *pdev)
 		rc = msm_torch_create_classdev(pdev, flash_ctrl);
 	/* register flashlight led class*/
 	rc = led_classdev_register(&pdev->dev, &flashlight_led);
-	 if (rc < 0) {
-		pr_err("Register flashlight led failed: %d\n", rc);
-		goto failed_unregister_flashlight_led;
-	 }
+		if (rc < 0) {
+				pr_err("Register flashlight led failed: %d\n", rc);
+				goto failed_unregister_flashlight_led;
+		}
 
 	CDBG("probe success\n");
 	return rc;
 
 failed_unregister_flashlight_led:
-	led_classdev_unregister(&flashlight_led);
+		led_classdev_unregister(&flashlight_led);
 
 	return rc;
 }

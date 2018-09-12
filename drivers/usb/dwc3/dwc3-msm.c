@@ -1,4 +1,5 @@
 /* Copyright (c) 2012-2018, The Linux Foundation. All rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -95,7 +96,7 @@ MODULE_PARM_DESC(dcp_max_current, "max current drawn for DCP charger");
 
 /* delay in msec before running DCD */
 int dcd_delay_ms = 500;
-module_param(dcd_delay_ms, int, S_IRUGO | S_IWUSR);
+module_param(dcd_delay_ms,int, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(dcd_delay_ms, "delay in msec before running DCD");
 
 /* XHCI registers */
@@ -280,7 +281,6 @@ struct dwc3_msm {
 	atomic_t                in_p3;
 	unsigned int		lpm_to_suspend_delay;
 	bool			init;
-	bool 			is_first_chg_hrtimer;
 	struct hrtimer 		chg_hrtimer;
 
 	u32                     pm_qos_latency;
@@ -1975,7 +1975,7 @@ static int dwc3_msm_prepare_suspend(struct dwc3_msm *mdwc)
 			&& mdwc->otg_state == OTG_STATE_B_SUSPEND)
 			|| (mdwc->vbus_active && mdwc->otg_state == OTG_STATE_B_PERIPHERAL))
 				&& dwc3_msm_is_superspeed(mdwc) && !mdwc->in_restart) {
-		pr_err("HQ----in dwce_msm 1907 host = %d vbus = %d otg = %d\n", mdwc->in_host_mode, mdwc->vbus_active, mdwc->otg_state);
+		pr_err("HQ----in dwce_msm 1907 host = %d vbus = %d otg = %d\n",mdwc->in_host_mode, mdwc->vbus_active, mdwc->otg_state);
 
 		if (!atomic_read(&mdwc->in_p3)) {
 			dev_err(mdwc->dev, "Not in P3,aborting LPM sequence\n");
@@ -2197,7 +2197,7 @@ static int dwc3_msm_suspend(struct dwc3_msm *mdwc)
 	if ((mdwc->vbus_active && mdwc->otg_state == OTG_STATE_B_SUSPEND)
 			 || (mdwc->vbus_active && mdwc->otg_state == OTG_STATE_B_PERIPHERAL)
 			|| mdwc->in_host_mode) {
-		pr_err("HQ----in dwce_msm 2118 vbus = %d otg = %d in_host_mode = %d\n", mdwc->vbus_active, mdwc->otg_state, mdwc->in_host_mode);
+		pr_err("HQ----in dwce_msm 2118 vbus = %d otg = %d in_host_mode = %d\n",mdwc->vbus_active, mdwc-> otg_state, mdwc->in_host_mode);
 		enable_irq_wake(mdwc->hs_phy_irq);
 		enable_irq(mdwc->hs_phy_irq);
 		if (mdwc->ss_phy_irq) {
@@ -2880,7 +2880,7 @@ static int dwc3_msm_get_clk_gdsc(struct dwc3_msm *mdwc)
 static enum hrtimer_restart chg_hrtimer_func(struct hrtimer *hrtimer)
 {
 	struct power_supply *usb_psy;
-	struct dwc3_msm *mdwc = container_of(hrtimer, struct dwc3_msm, chg_hrtimer);
+	struct dwc3_msm *mdwc = container_of(hrtimer, struct dwc3_msm,chg_hrtimer);
 	pr_debug("%s(): Inside timer expired. DO floating charger update!\n", __func__);
 	usb_psy = power_supply_get_by_name("usb");
 	if (!usb_psy)
@@ -3994,28 +3994,6 @@ static void dwc3_msm_otg_sm_work(struct work_struct *w)
 			pm_runtime_enable(mdwc->dev);
 			pm_runtime_get_noresume(mdwc->dev);
 			dwc3_initialize(mdwc);
-			dwc3_msm_gadget_vbus_draw(mdwc, 0);
-			msleep(dcd_delay_ms);
-
-			dcd = qusb_phy_run_dcd(mdwc->hs_phy);
-			pr_err("dhx---dcd = %d\n", dcd);
-			if (dcd == 0x1) {
-				mdwc->chg_type = DWC3_PROPRIETARY_CHARGER;
-				pm_runtime_put_sync(mdwc->dev);
-				dbg_event(0xFF, "BDCD-Fpsync",
-						atomic_read(&mdwc->dev->power.usage_count));
-				mdwc->otg_state = OTG_STATE_B_IDLE;
-				work = 1;
-				break;
-			} else if (dcd == 0x5) {
-				mdwc->chg_type = DWC3_DCP_CHARGER;
-				pm_runtime_put_sync(mdwc->dev);
-				dbg_event(0xFF, "BDCD-Dpsync", atomic_read(&mdwc->dev->power.usage_count));
-				mdwc->otg_state = OTG_STATE_B_IDLE;
-				work = 1;
-				break;
-			}
-
 			mdwc->otg_state = OTG_STATE_A_HOST;
 			ret = dwc3_otg_start_host(mdwc, 1);
 			pm_runtime_put_noidle(mdwc->dev);
@@ -4059,12 +4037,33 @@ static void dwc3_msm_otg_sm_work(struct work_struct *w)
 				pm_runtime_enable(mdwc->dev);
 				pm_runtime_get_noresume(mdwc->dev);
 				dwc3_initialize(mdwc);
+				dwc3_msm_gadget_vbus_draw(mdwc,0);
+				msleep(dcd_delay_ms);
+
+				dcd = qusb_phy_run_dcd(mdwc->hs_phy);
+				pr_err("dhx---dcd = %d\n",dcd);
+				if (dcd == 0x1) {
+					mdwc->chg_type = DWC3_PROPRIETARY_CHARGER;
+					pm_runtime_put_sync(mdwc->dev);
+					dbg_event(0xFF, "BDCD-Fpsync",
+						atomic_read(&mdwc->dev->power.usage_count));
+					mdwc->otg_state = OTG_STATE_B_IDLE;
+					work = 1;
+					break;
+				} else if (dcd == 0x5) {
+					mdwc->chg_type = DWC3_DCP_CHARGER;
+					pm_runtime_put_sync(mdwc->dev);
+					dbg_event(0xFF, "BDCD-Dpsync",atomic_read(&mdwc->dev->power.usage_count));
+					mdwc->otg_state = OTG_STATE_B_IDLE;
+					work = 1;
+					break;
+				}
 				/* check dp/dm for SDP & runtime_put if !SDP */
 				if (mdwc->detect_dpdm_floating &&
 					mdwc->chg_type == DWC3_SDP_CHARGER) {
 					dwc3_check_float_lines(mdwc);
-					if (mdwc->chg_type != DWC3_SDP_CHARGER)
-						break;
+
+
 				}
 				dwc3_otg_start_peripheral(mdwc, 1);
 				mdwc->otg_state = OTG_STATE_B_PERIPHERAL;
@@ -4126,11 +4125,11 @@ static void dwc3_msm_otg_sm_work(struct work_struct *w)
 				dbg_event(0xFF, "CHG gsync",
 					atomic_read(
 						&mdwc->dev->power.usage_count));
-				dwc3_msm_gadget_vbus_draw(mdwc, 0);
+				dwc3_msm_gadget_vbus_draw(mdwc,0);
 				msleep(dcd_delay_ms);
-				pr_err("dhx---mdwc = %d\n", mdwc->chg_type);
+				pr_err("dhx---mdwc = %d\n",mdwc->chg_type);
 				dcd = qusb_phy_run_dcd(mdwc->hs_phy);
-				pr_err("dhx---dcd = %d\n", dcd);
+				pr_err("dhx---dcd = %d\n",dcd);
 				if (dcd == 0x1) {
 					mdwc->chg_type = DWC3_PROPRIETARY_CHARGER;
 					pm_runtime_put_sync(mdwc->dev);
@@ -4142,7 +4141,7 @@ static void dwc3_msm_otg_sm_work(struct work_struct *w)
 				} else if (dcd == 0x5) {
 					mdwc->chg_type = DWC3_DCP_CHARGER;
 					pm_runtime_put_sync(mdwc->dev);
-					dbg_event(0xFF, "BDCD-Dpsync", atomic_read(&mdwc->dev->power.usage_count));
+					dbg_event(0xFF, "BDCD-Dpsync",atomic_read(&mdwc->dev->power.usage_count));
 					mdwc->otg_state = OTG_STATE_B_IDLE;
 					work = 1;
 					break;

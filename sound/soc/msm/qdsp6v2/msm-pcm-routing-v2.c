@@ -1,4 +1,5 @@
 /* Copyright (c) 2012-2018, The Linux Foundation. All rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -10257,7 +10258,7 @@ static const struct snd_soc_dapm_widget msm_qdsp6_widgets[] = {
 	SND_SOC_DAPM_AIF_OUT("QUAT_MI2S_UL_HL",
 		"Quaternary MI2S_TX Hostless Capture",
 		0, 0, 0, 0),
-		SND_SOC_DAPM_AIF_OUT("QUIN_MI2S_UL_HL",
+	SND_SOC_DAPM_AIF_OUT("QUIN_MI2S_UL_HL",
 		"Quinary MI2S_TX Hostless Capture",
 		0, 0, 0, 0),
 

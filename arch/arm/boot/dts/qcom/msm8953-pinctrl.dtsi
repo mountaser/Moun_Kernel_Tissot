@@ -777,6 +777,7 @@
 			};
 		};
 
+/* fingerprint pin function */
 		fpc_spi_active: fpc_spi_active {
 			mux {
 				pins = "gpio16", "gpio17", "gpio18", "gpio19";

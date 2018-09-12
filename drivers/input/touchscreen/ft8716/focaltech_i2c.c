@@ -3,6 +3,7 @@
  * FocalTech TouchScreen driver.
  *
  * Copyright (c) 2010-2016, FocalTech Systems, Ltd., all rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -69,7 +70,7 @@ static DEFINE_MUTEX(i2c_rw_access);
 * Output: get data in the 3rd buf
 * Return: fail <0
 ***********************************************************************/
-int fts_i2c_read(struct i2c_client *client, char *writebuf, int writelen, char *readbuf, int readlen)
+int fts_i2c_read(struct i2c_client *client, char *writebuf,int writelen, char *readbuf, int readlen)
 {
 	int ret;
 
@@ -77,7 +78,8 @@ int fts_i2c_read(struct i2c_client *client, char *writebuf, int writelen, char *
 
 	if (readlen > 0) {
 		if (writelen > 0) {
-			struct i2c_msg msgs[] = {
+			struct i2c_msg msgs[] =
+			{
 				{
 					.addr = client->addr,
 					.flags = 0,
@@ -96,7 +98,8 @@ int fts_i2c_read(struct i2c_client *client, char *writebuf, int writelen, char *
 				FTS_ERROR("[IIC]: i2c_transfer(write) error, ret=%d!!", ret);
 			}
 		} else {
-			struct i2c_msg msgs[] = {
+			struct i2c_msg msgs[] =
+			{
 				{
 					.addr = client->addr,
 					.flags = I2C_M_RD,
@@ -128,7 +131,8 @@ int fts_i2c_write(struct i2c_client *client, char *writebuf, int writelen)
 
 	mutex_lock(&i2c_rw_access);
 	if (writelen > 0) {
-		struct i2c_msg msgs[] = {
+		struct i2c_msg msgs[] =
+		{
 			{
 				.addr = client->addr,
 				.flags = 0,

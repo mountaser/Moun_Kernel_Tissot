@@ -1,4 +1,5 @@
 /* Copyright (c) 2014-2017, The Linux Foundation. All rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -2026,6 +2027,7 @@ static void fg_handle_battery_insertion(struct fg_chip *chip)
 	cancel_delayed_work(&chip->update_sram_data);
 	schedule_delayed_work(&chip->update_sram_data, msecs_to_jiffies(0));
 }
+
 
 static void batt_to_setpoint_adc(int vbatt_mv, u8 *data)
 {
@@ -6522,14 +6524,15 @@ wait:
 		pr_err("failed to read profile rc=%d\n", rc);
 		goto no_profile;
 	}
-	pr_err("present = %d\n", (int)chip->input_present);
+	pr_err("present = %d\n",(int)chip->input_present);
 	if (!chip->input_present) {
 		vbat_in_range = get_vbat_est_diff(chip)
 			< 80 * 1000;
 		pr_err("Vbat range: v_current_pred: %d, v:%d\n",
 				fg_data[FG_DATA_CPRED_VOLTAGE].value,
 				fg_data[FG_DATA_VOLTAGE].value);
-	} else{
+	}
+	else{
 		vbat_in_range = get_vbat_est_diff(chip)
 			< settings[FG_MEM_VBAT_EST_DIFF].value * 1000;
 		pr_err("Vbat range: v_current_pred: %d, v:%d\n",

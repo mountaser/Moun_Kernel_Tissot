@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2015 MediaTek Inc.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -104,7 +105,7 @@ struct hw_info{
 #define __INFO(_id, _hw_type_name) {				\
 		.hw_id = _id,				\
 		.attr = {.name = __stringify(_hw_type_name),				\
-				.mode = VERIFY_OCTAL_PERMISSIONS(S_IWUSR|S_IRUGO) },		\
+		 		.mode = VERIFY_OCTAL_PERMISSIONS(S_IWUSR|S_IRUGO) },		\
 		.hw_exist	= 0,						\
 		.hw_device_name	= NULL,						\
 	}
@@ -122,8 +123,8 @@ struct hw_info{
 
 
 
-int hq_regiser_hw_info(enum hardware_id id, char *device_name);
-int hq_deregister_hw_info(enum hardware_id id, char *device_name);
+int hq_regiser_hw_info(enum hardware_id id,char *device_name);
+int hq_deregister_hw_info(enum hardware_id id,char *device_name);
 int register_kboj_under_hqsysfs(struct kobject *kobj, struct kobj_type *ktype, const char *fmt, ...);
 
 

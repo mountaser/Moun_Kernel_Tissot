@@ -3,6 +3,7 @@
  * FocalTech ft5435 TouchScreen driver header file.
  *
  * Copyright (c) 2010  Focal tech Ltd.
+ * Copyright (C) 2018 XiaoMi, Inc.
  * Copyright (c) 2012-2014, The Linux Foundation. All rights reserved.
  *
  * This software is licensed under the terms of the GNU General Public

@@ -3,6 +3,7 @@
  * FocalTech fts TouchScreen driver.
  *
  * Copyright (c) 2010-2016, Focaltech Ltd. All rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -189,10 +190,10 @@ int fts_ctpm_pramboot_ecc(struct i2c_client *client)
 	msleep(2);
 	fts_i2c_read(client, auc_i2c_write_buf, 1, reg_val, 1);
 	if (reg_val[0] != upgrade_ecc) /*pramboot checksum != host checksum, upgrade fail*/ {
-		FTS_ERROR("[UPGRADE]: checksum fail : pramboot_ecc = %X, host_ecc = %X!!", reg_val[0], upgrade_ecc);
+		FTS_ERROR("[UPGRADE]: checksum fail : pramboot_ecc = %X, host_ecc = %X!!",reg_val[0],upgrade_ecc);
 		return -EIO;
 	}
-	FTS_DEBUG("[UPGRADE]: checksum success : pramboot_ecc = %X, host_ecc = %X!!", reg_val[0], upgrade_ecc);
+	FTS_DEBUG("[UPGRADE]: checksum success : pramboot_ecc = %X, host_ecc = %X!!",reg_val[0],upgrade_ecc);
 	msleep(100);
 
 	FTS_FUNC_EXIT();
@@ -450,7 +451,8 @@ int fts_ctpm_write_app_for_idc(struct i2c_client *client, u32 length, u8 *readbu
 }
 
 
-typedef enum {
+typedef enum
+ {
 	APP_LEN        = 0x00,
 	APP_LEN_NE     = 0x02,
 	APP_P1_ECC     = 0x04,
@@ -503,10 +505,10 @@ u16 crc_calc(u8 *pbt_buf, u32 addr, u16 length)
 	u16 cFcs = 0;
 	u16 i, j;
 
-	FTS_DEBUG("[UPGRADE][ECC] : %04x  data:%04x, len:%04x!!", (addr), data_word(pbt_buf, (addr)), length);
+	FTS_DEBUG("[UPGRADE][ECC] : %04x  data:%04x, len:%04x!!",(addr), data_word(pbt_buf, (addr)), length);
 	for (i = 0; i < length; i++) {
 		cFcs ^= data_word(pbt_buf, (addr+i*2));
-		for (j = 0; j < 16; j++) {
+		for (j = 0; j < 16; j ++) {
 			if (cFcs & 1) {
 				cFcs = (u16)((cFcs >> 1) ^ AL2_FCS_COEF);
 			} else {
@@ -583,7 +585,7 @@ bool fts_check_app_bin_valid_idc(u8 *pbt_buf)
 	}
 	len +=  ((u32)data_word(pbt_buf, APP_VERIF_ADDR+APP_LEN_H) << 16);
 #endif
-	FTS_DEBUG("%x %x %x %x", APP2_START, len, ((u32)data_word(pbt_buf, APP_VERIF_ADDR+APP_LEN_H) << 16), data_word(pbt_buf, APP_VERIF_ADDR+APP_LEN));
+	FTS_DEBUG("%x %x %x %x",APP2_START, len, ((u32)data_word(pbt_buf, APP_VERIF_ADDR+APP_LEN_H) << 16), data_word(pbt_buf, APP_VERIF_ADDR+APP_LEN));
 	len -= APP2_START;
 
 	return ecc_check(pbt_buf, APP2_START, len, APP2_ECC_ADDR);

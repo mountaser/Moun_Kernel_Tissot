@@ -3,6 +3,7 @@
  * FocalTech fts TouchScreen driver.
  *
  * Copyright (c) 2010-2016, Focaltech Ltd. All rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -47,7 +48,7 @@
 #define IC_SERIALS              (FTS_CHIP_TYPE & FLAGBITS(0, FLAG_ICSERIALS_LEN-1))
 #define FTS_CHIP_IDC            ((FTS_CHIP_TYPE & FLAGBIT(FLAG_IDC_BIT)) == FLAGBIT(FLAG_IDC_BIT))
 
-#define FTS_CHIP_TYPE_MAPPING {{0x05, 0x87, 0x16, 0x87, 0x16, 0x87, 0xA6, 0x00, 0x00} }
+#define FTS_CHIP_TYPE_MAPPING {{0x05,0x87, 0x16, 0x87, 0x16, 0x87, 0xA6, 0x00, 0x00} }
 
 #define I2C_BUFFER_LENGTH_MAXINUM           256
 #define FILE_NAME_LENGTH                    128
@@ -89,7 +90,8 @@
 /*****************************************************************************
 * Global variable or extern global variabls/functions
 *****************************************************************************/
-struct ft_chip_t {
+struct ft_chip_t
+ {
 	unsigned long type;
 	unsigned char chip_idh;
 	unsigned char chip_idl;
@@ -104,7 +106,7 @@ struct ft_chip_t {
 /* i2c communication*/
 int fts_i2c_write_reg(struct i2c_client *client, u8 regaddr, u8 regvalue);
 int fts_i2c_read_reg(struct i2c_client *client, u8 regaddr, u8 *regvalue);
-int fts_i2c_read(struct i2c_client *client, char *writebuf, int writelen, char *readbuf, int readlen);
+int fts_i2c_read(struct i2c_client *client, char *writebuf,int writelen, char *readbuf, int readlen);
 int fts_i2c_write(struct i2c_client *client, char *writebuf, int writelen);
 int fts_i2c_init(void);
 int fts_i2c_exit(void);
@@ -190,11 +192,11 @@ void fts_irq_enable(void);
 
 #define FTS_INFO(fmt, args...) do { \
 			if (g_show_log) {printk(KERN_ERR "[FTS][Info]"fmt"\n", ##args); } \
-		 }  while (0)
+		}  while (0)
 
 #define FTS_ERROR(fmt, args...)  do { \
 			 if (g_show_log) {printk(KERN_ERR "[FTS][Error]"fmt"\n", ##args); } \
-		 }  while (0)
+		}  while (0)
 
 
 #endif /* __LINUX_FOCALTECH_COMMON_H__ */

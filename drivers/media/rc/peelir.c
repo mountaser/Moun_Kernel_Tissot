@@ -1,5 +1,6 @@
 /*
 * Copyright (C) 2014  Peel Technologies Inc
+ * Copyright (C) 2018 XiaoMi, Inc.
 */
 
 #include <linux/init.h>
@@ -83,7 +84,9 @@ static int ir_regulator_set(bool enable)
 	if (ir_reg) {
 		if (enable) {
 			rc = regulator_enable(ir_reg);
-		} else {
+		}
+		else
+		{
 			rc = regulator_disable(ir_reg);
 		}
 

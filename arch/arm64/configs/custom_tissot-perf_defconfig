@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/arm64 3.18.115 Kernel Configuration
+# Linux/arm64 3.18.120 Kernel Configuration
 #
 CONFIG_CUSTOM=y
 CONFIG_ARM64=y
@@ -554,7 +554,7 @@ CONFIG_CPU_FREQ_GOV_CONSERVATIVE=y
 # CPU frequency scaling drivers
 #
 # CONFIG_CPUFREQ_DT is not set
-# CONFIG_CPU_BOOST is not set
+CONFIG_CPU_BOOST=y
 
 #
 # ARM CPU frequency scaling drivers
@@ -1827,6 +1827,7 @@ CONFIG_TOUCHSCREEN_FT5435=y
 CONFIG_TOUCHSCREEN_FTS=y
 CONFIG_VITURALSAR=y
 CONFIG_TOUCHSCREEN_TD4310=y
+# CONFIG_TOUCHSCREEN_HIMAX_CHIPSET is not set
 CONFIG_INPUT_MISC=y
 # CONFIG_INPUT_AD714X is not set
 # CONFIG_INPUT_BMA150 is not set
@@ -3496,6 +3497,7 @@ CONFIG_LEDS_CLASS=y
 CONFIG_LEDS_QPNP=y
 CONFIG_LEDS_QPNP_FLASH=y
 CONFIG_LEDS_QPNP_WLED=y
+# CONFIG_LEDS_MSM_GPIO_FLASH is not set
 CONFIG_LEDS_AW2013=y
 
 #
@@ -3752,7 +3754,6 @@ CONFIG_IPA=y
 # CONFIG_IPA3 is not set
 # CONFIG_GSI is not set
 CONFIG_RMNET_IPA=y
-# CONFIG_SSM is not set
 # CONFIG_MSM_MHI is not set
 # CONFIG_PFT is not set
 # CONFIG_I2C_MSM_PROF_DBG is not set

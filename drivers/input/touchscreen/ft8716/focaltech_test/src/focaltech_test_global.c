@@ -1,5 +1,6 @@
 /************************************************************************
 * Copyright (C) 2012-2015, Focaltech Systems (R)£¨All Rights Reserved.
+* Copyright (C) 2018 XiaoMi, Inc.
 *
 * File Name: focaltech_test_global.c
 *
@@ -48,7 +49,8 @@ int TestResultLen = 0;
 
 /*ƒ⁄¥Ê…Í«Î∑Ω Ω*/
 #define FTS_MALLOC_TYPE         1
-enum enum_malloc_mode {
+enum enum_malloc_mode
+ {
 	kmalloc_mode = 0,
 	vmalloc_mode = 1,
 };
@@ -71,12 +73,13 @@ int GetPrivateProfileString_sharp(char *section, char *ItemName, char *defaultva
 		return 0;
 	}
 
-	if (ini_get_key_sharp(IniFile, section, ItemName, value) < 0) {
-		if (NULL != defaultvalue)
-			memcpy(value, defaultvalue, strlen(defaultvalue));
+	if (ini_get_key_sharp(IniFile, section, ItemName, value) < 0)
+	{
+		if (NULL != defaultvalue) memcpy(value, defaultvalue, strlen(defaultvalue));
 		sprintf(returnValue, "%s", value);
 		return 0;
-	} else {
+	}
+	else {
 		len = sprintf(returnValue, "%s", value);
 	}
 
@@ -105,9 +108,11 @@ void *fts_malloc(size_t size)
 {
 	if (FTS_MALLOC_TYPE == kmalloc_mode) {
 		return kmalloc(size, GFP_ATOMIC);
-	} else if (FTS_MALLOC_TYPE == vmalloc_mode) {
+	}
+	else if (FTS_MALLOC_TYPE == vmalloc_mode) {
 		return vmalloc(size);
-	} else {
+	}
+	else {
 		FTS_TEST_DBG("invalid malloc. \n");
 		return NULL;
 	}
@@ -119,9 +124,11 @@ void fts_free(void *p)
 {
 	if (FTS_MALLOC_TYPE == kmalloc_mode) {
 		return kfree(p);
-	} else if (FTS_MALLOC_TYPE == vmalloc_mode) {
+	}
+	else if (FTS_MALLOC_TYPE == vmalloc_mode) {
 		return vfree(p);
-	} else {
+	}
+	else {
 		FTS_TEST_DBG("invalid free. \n");
 		return ;
 	}
@@ -134,11 +141,13 @@ void OnInit_InterfaceCfg_sharp(char *strIniFile)
 	char str[128] = {0};
 
 	FTS_TEST_FUNC_ENTER();
-	GetPrivateProfileString_sharp("Interface", "IC_Type", "FT5X36", str, strIniFile);
+
+	GetPrivateProfileString_sharp("Interface","IC_Type","FT5X36",str,strIniFile);
 	g_ScreenSetParam_sharp.iSelectedIC = fts_ic_table_get_ic_code_from_ic_name(str);
 	FTS_TEST_INFO(" IC code :0x%02x. ", g_ScreenSetParam_sharp.iSelectedIC);
 
-	GetPrivateProfileString_sharp("Interface", "Normalize_Type", 0, str, strIniFile);
+
+	GetPrivateProfileString_sharp("Interface","Normalize_Type",0,str,strIniFile);
 	g_ScreenSetParam_sharp.isNormalize = fts_atoi(str);
 
 	FTS_TEST_FUNC_EXIT();
@@ -212,7 +221,8 @@ unsigned char Comm_Base_IIC_IO_sharp(unsigned char *pWriteBuffer, int  iBytesToW
 
 	if (iBytesToRead > 0) {
 		iRet = fts_i2c_read_test_sharp(pWriteBuffer, iBytesToWrite, pReadBuffer, iBytesToRead);
-	} else {
+	}
+	else {
 		iRet = fts_i2c_write_test_sharp(pWriteBuffer, iBytesToWrite);
 	}
 
@@ -238,22 +248,27 @@ unsigned char EnterWork_sharp(void)
 	if (ReCode == ERROR_CODE_OK) {
 		if (((RunState>>4)&0x07) == 0x00) {
 			ReCode = ERROR_CODE_OK;
-		} else {
+		}
+		else {
 			ReCode = WriteReg_sharp(DEVIDE_MODE_ADDR, 0);
 			if (ReCode == ERROR_CODE_OK) {
 				ReCode = ReadReg_sharp(DEVIDE_MODE_ADDR, &RunState);
 				if (ReCode == ERROR_CODE_OK) {
 					if (((RunState>>4)&0x07) == 0x00) {
-						ReCode = ERROR_CODE_OK;
-					} else {
-						ReCode = ERROR_CODE_COMM_ERROR;
+					    ReCode = ERROR_CODE_OK;
 					}
-				} else
+					else {
+					    ReCode = ERROR_CODE_COMM_ERROR;
+					}
+				}
+				else
 					FTS_TEST_ERROR("EnterWork_sharp read DEVIDE_MODE_ADDR error 3.");
-			} else
+			}
+			else
 				FTS_TEST_ERROR("EnterWork_sharp write DEVIDE_MODE_ADDR error 2.");
 		}
-	} else
+	}
+	else
 		FTS_TEST_ERROR("EnterWork_sharp read DEVIDE_MODE_ADDR error 1.");
 
 	FTS_TEST_FUNC_EXIT();
@@ -279,27 +294,31 @@ unsigned char EnterFactory_sharp(void)
 	if (ReCode == ERROR_CODE_OK) {
 		if (((RunState>>4)&0x07) == 0x04) {
 			ReCode = ERROR_CODE_OK;
-		} else {
+		}
+		else {
 			ReCode = WriteReg_sharp(DEVIDE_MODE_ADDR, 0x40);
 			if (ReCode == ERROR_CODE_OK) {
 				for (index = 0; index < 20; ++index) {
 					ReCode = ReadReg_sharp(DEVIDE_MODE_ADDR, &RunState);
 					if (ReCode == ERROR_CODE_OK) {
-						if (((RunState>>4)&0x07) == 0x04) {
-							ReCode = ERROR_CODE_OK;
-							break;
-						} else {
-							ReCode = ERROR_CODE_COMM_ERROR;
-						}
+					    if (((RunState>>4)&0x07) == 0x04) {
+					        ReCode = ERROR_CODE_OK;
+					        break;
+					    }
+					    else {
+					        ReCode = ERROR_CODE_COMM_ERROR;
+					    }
 					}
 					SysDelay_sharp(50);
 				}
 				if (ReCode != ERROR_CODE_OK)
 					FTS_TEST_ERROR("EnterFactory_sharp read DEVIDE_MODE_ADDR error 3.");
-			} else
+			}
+			else
 				FTS_TEST_ERROR("EnterFactory_sharp write DEVIDE_MODE_ADDR error 2.");
 		}
-	} else
+	}
+	else
 		FTS_TEST_ERROR("EnterFactory_sharp read DEVIDE_MODE_ADDR error 1.");
 
 	FTS_TEST_FUNC_EXIT();
@@ -373,7 +392,7 @@ void InitStoreParamOfTestData(void)
 {
 	g_lenStoreMsgArea = 0;
 
-	g_lenStoreMsgArea += sprintf(g_pStoreMsgArea, "ECC, 85, 170, IC Name, %s, IC Code, %x\n",  g_strIcName_sharp,  g_ScreenSetParam_sharp.iSelectedIC);
+	g_lenStoreMsgArea += sprintf(g_pStoreMsgArea,"ECC, 85, 170, IC Name, %s, IC Code, %x\n",  g_strIcName_sharp,  g_ScreenSetParam_sharp.iSelectedIC);
 
 
 
@@ -398,20 +417,22 @@ void MergeAllTestData(void)
 	int iLen = 0;
 
 
-	iLen = sprintf(g_pTmpBuff, "TestItem, %d, ", m_iTestDataCount);
+	iLen = sprintf(g_pTmpBuff,"TestItem, %d, ", m_iTestDataCount);
 	memcpy(g_pStoreMsgArea+g_lenStoreMsgArea, g_pTmpBuff, iLen);
-	g_lenStoreMsgArea += iLen;
+	g_lenStoreMsgArea+=iLen;
 
 
 	memcpy(g_pStoreMsgArea+g_lenStoreMsgArea, g_pMsgAreaLine2, g_lenMsgAreaLine2);
-	g_lenStoreMsgArea += g_lenMsgAreaLine2;
+	g_lenStoreMsgArea+=g_lenMsgAreaLine2;
 
 
-	iLen = sprintf(g_pTmpBuff, "\n\n\n\n\n\n\n\n\n");
+	iLen = sprintf(g_pTmpBuff,"\n\n\n\n\n\n\n\n\n");
 	memcpy(g_pStoreMsgArea+g_lenStoreMsgArea, g_pTmpBuff, iLen);
-	g_lenStoreMsgArea += iLen;
+	g_lenStoreMsgArea+=iLen;
+
 
 	memcpy(g_pStoreAllData, g_pStoreMsgArea, g_lenStoreMsgArea);
+
 
 	if (0 != g_lenStoreDataArea) {
 		memcpy(g_pStoreAllData+g_lenStoreMsgArea, g_pStoreDataArea, g_lenStoreDataArea);
@@ -419,6 +440,7 @@ void MergeAllTestData(void)
 
 	FTS_TEST_DBG("lenStoreMsgArea=%d,  lenStoreDataArea = %d",  g_lenStoreMsgArea, g_lenStoreDataArea);
 }
+
 
 
 /************************************************************************
@@ -491,7 +513,4 @@ void FreeMemory(void)
 	if (NULL != g_pTmpBuff)
 		fts_free(g_pTmpBuff);
 }
-
-
-
 

@@ -1,4 +1,5 @@
 /* Copyright (c) 2012-2017, The Linux Foundation. All rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -638,31 +639,31 @@ int qpnp_pon_is_ps_hold_reset(void)
 	u8 reg = 0;
 
 	if (!pon)
-		return 0;
+			   return 0;
 
 	rc = spmi_ext_register_readl(pon->spmi->ctrl, pon->spmi->sid,
 					   QPNP_POFF_REASON1(pon), &reg, 1);
 	if (rc) {
-		dev_err(&pon->spmi->dev,
-				"Unable to read addr=%x, rc(%d)\n",
-				QPNP_POFF_REASON1(pon), rc);
-		return 0;
+			   dev_err(&pon->spmi->dev,
+					   "Unable to read addr=%x, rc(%d)\n",
+					   QPNP_POFF_REASON1(pon), rc);
+			   return 0;
 	}
 
 	/* The bit 1 is 1, means by PS_HOLD/MSM controlled shutdown */
 	if (reg & 0x2)
-		return 1;
+			   return 1;
 
 	dev_info(&pon->spmi->dev,
-				"hw_reset reason1 is 0x%x\n",
-				reg);
+					   "hw_reset reason1 is 0x%x\n",
+					   reg);
 
 	rc = spmi_ext_register_readl(pon->spmi->ctrl, pon->spmi->sid,
-				QPNP_POFF_REASON2(pon), &reg, 1);
+					   QPNP_POFF_REASON2(pon), &reg, 1);
 
 	dev_info(&pon->spmi->dev,
-				"hw_reset reason2 is 0x%x\n",
-				reg);
+					   "hw_reset reason2 is 0x%x\n",
+					   reg);
 	return 0;
 }
 EXPORT_SYMBOL(qpnp_pon_is_ps_hold_reset);
@@ -674,31 +675,31 @@ int qpnp_pon_is_lpk(void)
 	u8 reg = 0;
 
 	if (!pon)
-		return 0;
+			   return 0;
 
 	rc = spmi_ext_register_readl(pon->spmi->ctrl, pon->spmi->sid,
 					   QPNP_POFF_REASON1(pon), &reg, 1);
 	if (rc) {
-		dev_err(&pon->spmi->dev,
-				"Unable to read addr=%x, rc(%d)\n",
-				QPNP_POFF_REASON1(pon), rc);
-		return 0;
+			   dev_err(&pon->spmi->dev,
+					   "Unable to read addr=%x, rc(%d)\n",
+					   QPNP_POFF_REASON1(pon), rc);
+			   return 0;
 	}
 
 
 	if (reg & 0x80)
-		return 1;
+			   return 1;
 
 	dev_info(&pon->spmi->dev,
-				"hw_reset reason1 is 0x%x\n",
-				reg);
+					   "hw_reset reason1 is 0x%x\n",
+					   reg);
 
 	rc = spmi_ext_register_readl(pon->spmi->ctrl, pon->spmi->sid,
-				QPNP_POFF_REASON2(pon), &reg, 1);
+					   QPNP_POFF_REASON2(pon), &reg, 1);
 
 	dev_info(&pon->spmi->dev,
-				"hw_reset reason2 is 0x%x\n",
-				reg);
+					   "hw_reset reason2 is 0x%x\n",
+					   reg);
 	return 0;
 }
 EXPORT_SYMBOL(qpnp_pon_is_lpk);

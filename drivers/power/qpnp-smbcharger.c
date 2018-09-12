@@ -1,4 +1,5 @@
 /* Copyright (c) 2014-2018 The Linux Foundation. All rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -4559,12 +4560,12 @@ static void smbchg_cool_limit_work(struct work_struct *work)
 
 	if (temp > 0 && temp <= 50) {
 		mutex_lock(&chip->cool_current);
-		rc = smbchg_fastchg_current_comp_set(chip, 250);
+		rc = smbchg_fastchg_current_comp_set(chip,250);
 		mutex_unlock(&chip->cool_current);
 	}
 	if (temp > 50 && temp < 150) {
 		mutex_lock(&chip->cool_current);
-		rc = smbchg_fastchg_current_comp_set(chip, 900);
+		rc = smbchg_fastchg_current_comp_set(chip,900);
 		mutex_unlock(&chip->cool_current);
 	}
 
@@ -6574,10 +6575,10 @@ static irqreturn_t batt_warm_handler(int irq, void *_chip)
 	int rc;
 	/* set the warm float voltage compensation,set the warm float voltage to 4.1V */
 	if (chip->float_voltage_comp != -EINVAL) {
-		rc = smbchg_float_voltage_comp_set(chip, chip->float_voltage_comp);
+		rc = smbchg_float_voltage_comp_set(chip,chip->float_voltage_comp);
 		if (rc < 0)
-			dev_err(chip->dev, "Couldn't set float voltage comp rc = %d\n", rc);
-		pr_smb(PR_STATUS, "set float voltage comp to %d\n", chip->float_voltage_comp);
+			dev_err(chip->dev, "Couldn't set float voltage comp rc = %d\n",rc);
+		pr_smb(PR_STATUS, "set float voltage comp to %d\n",chip->float_voltage_comp);
 	}
 
 	smbchg_read(chip, &reg, chip->bat_if_base + RT_STS, 1);
@@ -6598,9 +6599,9 @@ static irqreturn_t batt_cool_handler(int irq, void *_chip)
 
 	int rc;
 	/* set the cool float voltage compensation ,set the cool float voltage to 4.4V*/
-	rc = smbchg_float_voltage_comp_set(chip, 0);
+	rc = smbchg_float_voltage_comp_set(chip,0);
 	if (rc < 0)
-		dev_err(chip->dev, "Couldn't set float voltage comp rc = %d\n", rc);
+		dev_err(chip->dev, "Couldn't set float voltage comp rc = %d\n",rc);
 
 	smbchg_read(chip, &reg, chip->bat_if_base + RT_STS, 1);
 	chip->batt_cool = !!(reg & COLD_BAT_SOFT_BIT);
@@ -8313,7 +8314,7 @@ static void dump_debug(struct smbchg_chip *chip)
 	smbchg_read(chip, &reg, chip->bat_if_base + RT_STS, 1);
 	pos += sprintf(chip->debug_dump + pos, "dump_reg:%s-%04X=%02X   ", "BAT_IF Status", chip->bat_if_base + RT_STS, reg);
 
-	pos -= 1;
+	pos-= 1;
 	smbchg_read(chip, &reg, chip->bat_if_base + CMD_CHG_REG, 1);
 	pos += sprintf(chip->debug_dump + pos , "dump_reg:%s-%04X=%02X   ", "BAT_IF Command", chip->bat_if_base + CMD_CHG_REG, reg);
 

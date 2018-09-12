@@ -2,6 +2,7 @@
  * Synaptics DSX touchscreen driver
  *
  * Copyright (C) 2012-2016 Synaptics Incorporated. All rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * Copyright (C) 2012 Alexandra Chin <alexandra.chin@tw.synaptics.com>
  * Copyright (C) 2012 Scott Lin <scott.lin@tw.synaptics.com>
@@ -73,7 +74,7 @@ static int parse_dt(struct device *dev, struct synaptics_dsx_board_data *bdata)
 	bdata->reset_gpio = of_get_named_gpio_flags(np,
 			"synaptics,rst-gpio", 0,
 			NULL);
-printk("reset gpio : %d\n", bdata->reset_gpio);
+printk("reset gpio : %d\n",bdata->reset_gpio);
 	retval = of_property_read_u32(np, "synaptics,irq-on-state",
 			&value);
 	if (retval < 0)

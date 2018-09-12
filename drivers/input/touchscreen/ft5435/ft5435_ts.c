@@ -702,7 +702,7 @@ static int ft5435_ts_resume(struct device *dev)
 #if FTS_RESUME_EN
 		ft5435_resume_queue_work();
 #else
-  		msleep(data->pdata->soft_rst_dly);
+		msleep(data->pdata->soft_rst_dly);
 		ft5x0x_write_reg(data->client, 0x8c, 0x01);
 		enable_irq_wake(data->client->irq);
 		data->suspended = false;

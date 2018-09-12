@@ -2,6 +2,7 @@
  * Synaptics DSX touchscreen driver
  *
  * Copyright (C) 2012-2016 Synaptics Incorporated. All rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * Copyright (C) 2012 Alexandra Chin <alexandra.chin@tw.synaptics.com>
  * Copyright (C) 2012 Scott Lin <scott.lin@tw.synaptics.com>
@@ -863,7 +864,8 @@ static int ctp_lockdown_proc_open (struct inode *inode, struct file *file)
 	return single_open(file, ctp_lockdown_proc_show, inode->i_private);
 }
 
-static const struct file_operations ctp_lockdown_proc_fops = {
+static const struct file_operations ctp_lockdown_proc_fops =
+{
 	.open = ctp_lockdown_proc_open,
 	.read = seq_read,
 };
@@ -3945,44 +3947,49 @@ static int fwu_do_read_customer_serialization_data(void)
 
 	pr_notice("%s: Start of customer serialization aquirement process\n", __func__);
 
-	retval = fwu_read_flash_status();
-	if (retval < 0)
-		goto exit;
-	fwu->config_area = PM_CONFIG_AREA;
-	block_count = fwu->blkcount.pm_config;
-	if (block_count == 0) {
-		dev_err(rmi4_data->pdev->dev.parent,
-				"%s: Invalid block count\n",
-				__func__);
-		goto exit;
-	}
-	fwu->config_size = fwu->block_size * block_count;
-	pr_notice("%s: Block size = %d\n", __func__, fwu->block_size);
-	pr_notice("%s: Permanent config block count = %d\n", __func__, block_count);
-	pr_notice("%s: Permanent config size = %d\n", __func__, fwu->config_size);
-	dev_info(rmi4_data->pdev->dev.parent,
-			"%s: permanent config size = %d\n",
-			__func__, fwu->config_size);
+		retval = fwu_read_flash_status();
+		if (retval < 0)
+			goto exit;
+/*
+		retval = fwu_enter_flash_prog();
+		if (retval < 0)
+			goto exit;
+*/
+		fwu->config_area = PM_CONFIG_AREA;
+		block_count = fwu->blkcount.pm_config;
+		if (block_count == 0) {
+			dev_err(rmi4_data->pdev->dev.parent,
+					"%s: Invalid block count\n",
+					__func__);
+			goto exit;
+		}
+		fwu->config_size = fwu->block_size * block_count;
+		pr_notice("%s: Block size = %d\n", __func__, fwu->block_size);
+		pr_notice("%s: Permanent config block count = %d\n", __func__, block_count);
+		pr_notice("%s: Permanent config size = %d\n", __func__, fwu->config_size);
+		dev_info(rmi4_data->pdev->dev.parent,
+				"%s: permanent config size = %d\n",
+				__func__, fwu->config_size);
 
-	retval = fwu_allocate_read_config_buf(fwu->config_size);
-	if (retval < 0) {
+		retval = fwu_allocate_read_config_buf(fwu->config_size);
+		if (retval < 0) {
 
-		goto exit;
-	}
+			goto exit;
+		}
 
-	retval = fwu_read_f34_blocks(block_count,
-			CMD_READ_CONFIG);
-	if (retval < 0) {
+		retval = fwu_read_f34_blocks(block_count,
+				CMD_READ_CONFIG);
+		if (retval < 0) {
 
-		goto exit;
-	}
+			goto exit;
+		}
 
-	for (ii = 0; ii < 10; ii++)
-		pr_notice("%s: Permanent config data[%d] = 0x%02x\n", __func__, ii, fwu->read_config_buf[ii]);
+		for (ii = 0; ii < 10; ii++)
+			pr_notice("%s: Permanent config data[%d] = 0x%02x\n", __func__, ii, fwu->read_config_buf[ii]);
 
-	sprintf(temp, "%02x%02x%02x%02x%02x%02x%02x%02x", fwu->read_config_buf[0], fwu->read_config_buf[1], fwu->read_config_buf[2], fwu->read_config_buf[3], fwu->read_config_buf[4], fwu->read_config_buf[5], fwu->read_config_buf[6], fwu->read_config_buf[7]);
-	printk("tp_lockdown info  : %s\n", temp);
-	strcpy(tp_lockdown_info, temp);
+ sprintf(temp,"%02x%02x%02x%02x%02x%02x%02x%02x", fwu->read_config_buf[0], fwu->read_config_buf[1], fwu->read_config_buf[2], fwu->read_config_buf[3], fwu->read_config_buf[4], fwu->read_config_buf[5], fwu->read_config_buf[6], fwu->read_config_buf[7]);
+printk("tp_lockdown info  : %s\n",temp);
+strcpy(tp_lockdown_info,temp);
 
 
 
@@ -4687,17 +4694,17 @@ exit:
 	pr_notice("%s: End of reflash process\n", __func__);
 
 	mutex_unlock(&rmi4_data->rmi4_exp_init_mutex);
-	synaptics_rmi4_reg_read(rmi4_data,
+			synaptics_rmi4_reg_read(rmi4_data,
 			0x000c,
 			config_ver,
 			1);
-	printk("config_ver info =%02x\n", config_ver[0]);
+	printk("config_ver info =%02x\n",config_ver[0]);
 
-	strcpy(tp_info_summary, "[Vendor]O-film, [IC]S3603(synaptics), [FW]Ver");
-	sprintf(tp_temp_info, "%02x", config_ver[0]);
-	strcat(tp_info_summary, tp_temp_info);
-	strcat(tp_info_summary, "\0");
-	hq_regiser_hw_info(HWID_CTP, tp_info_summary);
+	strcpy(tp_info_summary,"[Vendor]O-film,[IC]S3603(synaptics),[FW]Ver");
+	sprintf(tp_temp_info, "%02x",config_ver[0]);
+	strcat(tp_info_summary,tp_temp_info);
+	strcat(tp_info_summary,"\0");
+	hq_regiser_hw_info(HWID_CTP,tp_info_summary);
 
 	rmi4_data->stay_awake = false;
 
@@ -5827,11 +5834,11 @@ static int synaptics_rmi4_fwu_init(struct synaptics_rmi4_data *rmi4_data)
 printk("before get_tddi_lockdown_data");
 
 	if (get_tddi_lockdown_data(lockdown, 20) < 0) {
-		printk("read lockdown fail\n");
+	printk("read lockdown fail\n");
 	}
-	printk("lockdown info =%02x, %02x, %02x, %02x, %02x, %02x, %02x, %02x\n", lockdown[4], lockdown[5], lockdown[6], lockdown[7], lockdown[8], lockdown[9], lockdown[10], lockdown[11]);
+	printk("lockdown info =%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x\n",lockdown[4],lockdown[5],lockdown[6],lockdown[7],lockdown[8],lockdown[9],lockdown[10],lockdown[11]);
 
-	sprintf(tp_lockdown_info, "%02x%02x%02x%02x%02x%02x%02x%02x\n", lockdown[4], lockdown[5], lockdown[6], lockdown[7], lockdown[8], lockdown[9], lockdown[10], lockdown[11]);
+	sprintf(tp_lockdown_info,"%02x%02x%02x%02x%02x%02x%02x%02x\n",lockdown[4],lockdown[5],lockdown[6],lockdown[7],lockdown[8],lockdown[9],lockdown[10],lockdown[11]);
 
 	ctp_lockdown_status_proc = proc_create(CTP_PROC_LOCKDOWN_FILE, 0644, NULL, &ctp_lockdown_proc_fops);
 		if (ctp_lockdown_status_proc == NULL) {
