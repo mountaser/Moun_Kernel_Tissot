@@ -1,4 +1,5 @@
 /* Copyright (c) 2012-2018, The Linux Foundation. All rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -319,7 +320,7 @@ int acc_vreg = 0;
 		if (ret)
 			pr_err("%s: failed to disable vregs for %s\n",
 			__func__, __mdss_dsi_pm_name(DSI_PANEL_PM));
-	} else {
+	} else{
 		if (!ft8716_gesture_func_on && ft8716_suspend && acc_vreg) {
 			ret = msm_dss_enable_vreg(
 					ctrl_pdata->panel_power_data.vreg_config,
@@ -370,7 +371,8 @@ static int mdss_dsi_panel_power_on(struct mdss_panel_data *pdata)
 
 	ctrl_pdata = container_of(pdata, struct mdss_dsi_ctrl_pdata,
 				panel_data);
-	pr_err("%s SXF before acc_vreg : %d\n", __func__, acc_vreg);
+#if 1
+	pr_err("%s SXF before acc_vreg : %d\n",__func__,acc_vreg);
 	if (!acc_vreg) {
 		ret = msm_dss_enable_vreg(
 		ctrl_pdata->panel_power_data.vreg_config,
@@ -382,6 +384,17 @@ static int mdss_dsi_panel_power_on(struct mdss_panel_data *pdata)
 			return ret;
 		}
 	}
+#else
+printk("mido lite msm_dss_enable_vreg \n ");
+	ret = msm_dss_enable_vreg(
+		ctrl_pdata->panel_power_data.vreg_config,
+		ctrl_pdata->panel_power_data.num_vreg, 1);
+	if (ret) {
+		pr_err("%s: failed to enable vregs for %s\n",
+			__func__, __mdss_dsi_pm_name(DSI_PANEL_PM));
+		return ret;
+	}
+#endif
 
 	/*
 	 * If continuous splash screen feature is enabled, then we need to

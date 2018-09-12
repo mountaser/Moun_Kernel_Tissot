@@ -896,7 +896,7 @@ config QCOM_SMCINVOKE
 config SERIAL_NUM
 	bool "Enable Serial Number Proc Interface"
 	help
-	  Provide a interface for reading CPU serial number
+	Provide a interface for reading CPU serial number
 
 config QCOM_EARLY_RANDOM
 	bool "Initialize random pool very early"

@@ -1,4 +1,5 @@
 /* Copyright (c) 2012-2017, The Linux Foundation. All rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -41,7 +42,7 @@
 
 struct mdss_dsi_ctrl_pdata *change_par_ctrl ;
 int change_par_buf;
-int LCM_effect[3] = {0x2, 0xf0, 0xf00};
+int LCM_effect[3] = {0x2,0xf0,0xf00};
 DEFINE_LED_TRIGGER(bl_led_trigger);
 
 bool display_on = true;
@@ -499,6 +500,7 @@ int mdss_dsi_panel_reset(struct mdss_panel_data *pdata, int enable)
 			gpio_free(ctrl_pdata->disp_en_gpio);
 		}
 #if 1
+		printk("D2A set reset flag  \n ");
 
 		if ((panel_suspend_reset_flag == 2) || ((panel_suspend_reset_flag == 3) && (ft8716_gesture_func_on == 0))) {
 			if (ft8716_suspend || (panel_suspend_reset_flag == 2)) {
@@ -515,9 +517,17 @@ int mdss_dsi_panel_reset(struct mdss_panel_data *pdata, int enable)
 			gpio_set_value((ctrl_pdata->rst_gpio), 0);
 		}
 #elif defined CONFIG_PROJECT_VINCE
+	printk("E7 set reset flag  \n ");
+
+
+
+
 
 #else
-	if (panel_suspend_reset_flag == 0) {
+	printk("mido lite set reset flag  \n ");
+
+	if (panel_suspend_reset_flag == 0)
+	{
 		gpio_set_value((ctrl_pdata->rst_gpio), 0);
 	}
 
@@ -961,44 +971,44 @@ static int mdss_dsi_panel_on(struct mdss_panel_data *pdata)
 	PM7_cmds_point = &change_par_ctrl->PM7_cmds;
 	PM8_cmds_point = &change_par_ctrl->PM8_cmds;
 
-	switch (LCM_effect[0]) {
-	case 0x0001:
-		mdss_dsi_panel_cmds_send(change_par_ctrl, warm_gamma_cmds_point, CMD_REQ_COMMIT); break;
-	case 0x0002:
-		mdss_dsi_panel_cmds_send(change_par_ctrl, default_gamma_cmds_point, CMD_REQ_COMMIT); break;
-	case 0x0003:
-		mdss_dsi_panel_cmds_send(change_par_ctrl, cold_gamma_cmds_point, CMD_REQ_COMMIT); break;
+	switch(LCM_effect[0]) {
+		case 0x0001:
+			mdss_dsi_panel_cmds_send(change_par_ctrl, warm_gamma_cmds_point, CMD_REQ_COMMIT); break;
+		case 0x0002:
+			mdss_dsi_panel_cmds_send(change_par_ctrl, default_gamma_cmds_point, CMD_REQ_COMMIT); break;
+		case 0x0003:
+			mdss_dsi_panel_cmds_send(change_par_ctrl, cold_gamma_cmds_point, CMD_REQ_COMMIT); break;
 
-	case 0x0006:
-		mdss_dsi_panel_cmds_send(change_par_ctrl, PM1_cmds_point, CMD_REQ_COMMIT); break;
-	case 0x0007:
-		mdss_dsi_panel_cmds_send(change_par_ctrl, PM2_cmds_point, CMD_REQ_COMMIT); break;
-	case 0x0008:
-		mdss_dsi_panel_cmds_send(change_par_ctrl, PM3_cmds_point, CMD_REQ_COMMIT); break;
-	case 0x0009:
-		mdss_dsi_panel_cmds_send(change_par_ctrl, PM4_cmds_point, CMD_REQ_COMMIT); break;
-	case 0x000a:
-		mdss_dsi_panel_cmds_send(change_par_ctrl, PM5_cmds_point, CMD_REQ_COMMIT); break;
-	case 0x000b:
-		mdss_dsi_panel_cmds_send(change_par_ctrl, PM6_cmds_point, CMD_REQ_COMMIT); break;
-	case 0x000c:
-		mdss_dsi_panel_cmds_send(change_par_ctrl, PM7_cmds_point, CMD_REQ_COMMIT); break;
-	case 0x0005:
-		mdss_dsi_panel_cmds_send(change_par_ctrl, PM8_cmds_point, CMD_REQ_COMMIT); break;
+		case 0x0006:
+			mdss_dsi_panel_cmds_send(change_par_ctrl, PM1_cmds_point, CMD_REQ_COMMIT); break;
+		case 0x0007:
+			mdss_dsi_panel_cmds_send(change_par_ctrl, PM2_cmds_point, CMD_REQ_COMMIT); break;
+		case 0x0008:
+			mdss_dsi_panel_cmds_send(change_par_ctrl, PM3_cmds_point, CMD_REQ_COMMIT); break;
+		case 0x0009:
+			mdss_dsi_panel_cmds_send(change_par_ctrl, PM4_cmds_point, CMD_REQ_COMMIT); break;
+		case 0x000a:
+			mdss_dsi_panel_cmds_send(change_par_ctrl, PM5_cmds_point, CMD_REQ_COMMIT); break;
+		case 0x000b:
+			mdss_dsi_panel_cmds_send(change_par_ctrl, PM6_cmds_point, CMD_REQ_COMMIT); break;
+		case 0x000c:
+			mdss_dsi_panel_cmds_send(change_par_ctrl, PM7_cmds_point, CMD_REQ_COMMIT); break;
+		case 0x0005:
+			mdss_dsi_panel_cmds_send(change_par_ctrl, PM8_cmds_point, CMD_REQ_COMMIT); break;
 	}
 
-	switch (LCM_effect[1]) {
-	case 0x0010:
-		mdss_dsi_panel_cmds_send(change_par_ctrl, CE_on_cmds_point, CMD_REQ_COMMIT); break;
-	case 0x00f0:
-		mdss_dsi_panel_cmds_send(change_par_ctrl, CE_off_cmds_point, CMD_REQ_COMMIT); break;
+	switch(LCM_effect[1]) {
+		case 0x0010:
+			mdss_dsi_panel_cmds_send(change_par_ctrl, CE_on_cmds_point, CMD_REQ_COMMIT); break;
+		case 0x00f0:
+			mdss_dsi_panel_cmds_send(change_par_ctrl, CE_off_cmds_point, CMD_REQ_COMMIT); break;
 	}
 
-	switch (LCM_effect[2]) {
-	case 0x0100:
-		mdss_dsi_panel_cmds_send(change_par_ctrl, CABC_on_cmds_point, CMD_REQ_COMMIT); break;
-	case 0x0f00:
-		mdss_dsi_panel_cmds_send(change_par_ctrl, CABC_off_cmds_point, CMD_REQ_COMMIT); break;
+	switch(LCM_effect[2]) {
+		case 0x0100:
+			mdss_dsi_panel_cmds_send(change_par_ctrl, CABC_on_cmds_point, CMD_REQ_COMMIT); break;
+		case 0x0f00:
+			mdss_dsi_panel_cmds_send(change_par_ctrl, CABC_off_cmds_point, CMD_REQ_COMMIT); break;
 	}
 
 	if (pinfo->compression_mode == COMPRESSION_DSC)

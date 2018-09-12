@@ -2,6 +2,7 @@
  *  linux/drivers/video/fbmem.c
  *
  *  Copyright (C) 1994 Martin Schaller
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  *	2001 - Documented with DocBook
  *	- Brad Douglas <brad@neruo.com>
@@ -1054,7 +1055,7 @@ EXPORT_SYMBOL(fb_set_var);
 
 int
 fb_blank(struct fb_info *info, int blank)
-{
+{	
 	struct fb_event event;
 	int ret = -EINVAL, early_ret;
 

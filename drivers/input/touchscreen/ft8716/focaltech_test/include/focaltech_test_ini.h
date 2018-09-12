@@ -1,5 +1,6 @@
 /************************************************************************
 * Copyright (C) 2012-2015, Focaltech Systems (R)£¬All Rights Reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
 *
 * File Name: focaltech_test_ini.h
 *
@@ -41,7 +42,8 @@
 #define COPYF_ERR_READ_FILE             -12
 #define COPYF_ERR_WRITE_FILE            -13
 
-typedef struct _ST_INI_FILE_DATA {
+typedef struct _ST_INI_FILE_DATA
+ {
 	char pSectionName[MAX_KEY_NAME_LEN];
 	char pKeyName[MAX_KEY_NAME_LEN];
 	char pKeyValue[MAX_KEY_VALUE_LEN];

@@ -1,4 +1,5 @@
 /* Copyright (c) 2015-2017, The Linux Foundation. All rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -2441,7 +2442,7 @@ static struct snd_soc_dai_link msm8952_dai[] = {
 		.ignore_pmdown_time = 1,
 		.be_id = MSM_FRONTEND_DAI_MULTIMEDIA29,
 	},
-	{/* hw:x,41 */
+	{/* hw:x,43 */
 		.name = "Quinary MI2S TX_Hostless",
 		.stream_name = "Quinary MI2S_TX Hostless Capture",
 		.cpu_dai_name = "QUIN_MI2S_TX_HOSTLESS",
@@ -2456,7 +2457,7 @@ static struct snd_soc_dai_link msm8952_dai[] = {
 		.codec_dai_name = "snd-soc-dummy-dai",
 		.codec_name = "snd-soc-dummy",
 	},
-	{ /* hw:x,42 */
+	{ /* hw:x,44 */
 		.name = "Quinary MI2S_RX Hostless",
 		.stream_name = "Quinary MI2S_RX Hostless",
 		.cpu_dai_name = "QUIN_MI2S_RX_HOSTLESS",

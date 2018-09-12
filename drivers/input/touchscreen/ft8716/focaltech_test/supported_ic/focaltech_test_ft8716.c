@@ -1,5 +1,6 @@
 /************************************************************************
 * Copyright (C) 2012-2015, Focaltech Systems (R)£¬All Rights Reserved.
+* Copyright (C) 2018 XiaoMi, Inc.
 *
 * File Name: focaltech_test_ft8716.c
 *
@@ -27,6 +28,9 @@
 * Private constant and macro definitions using #define
 *****************************************************************************/
 #if (FTS_CHIP_TEST_TYPE == FT8716_TEST)
+
+
+
 
 
 #define DEVIDE_MODE_ADDR                0x00
@@ -58,7 +62,8 @@
 * Private enumerations, structures and unions using typedef
 *****************************************************************************/
 
-enum NOISE_TYPE {
+enum NOISE_TYPE
+ {
 	NT_AvgData = 0,
 	NT_MaxData = 1,
 	NT_MaxDevication = 2,
@@ -83,8 +88,8 @@ bool IsKeyAutoFit(void)
 * Static variables
 *****************************************************************************/
 
-static int m_RawData[TX_NUM_MAX][RX_NUM_MAX] = {{0,0}};
-static int m_CBData[TX_NUM_MAX][RX_NUM_MAX] = {{0,0}};
+static int m_RawData[TX_NUM_MAX][RX_NUM_MAX] = {{0,0} };
+static int m_CBData[TX_NUM_MAX][RX_NUM_MAX] = {{0,0} };
 static BYTE m_ucTempData[TX_NUM_MAX * RX_NUM_MAX*2] = {0};
 static int m_iTempRawData[TX_NUM_MAX * RX_NUM_MAX] = {0};
 
@@ -100,6 +105,7 @@ extern struct stCfg_FT8716_BasicThreshold g_stCfg_FT8716_BasicThreshold;
 /*****************************************************************************
 * Static function prototypes
 *****************************************************************************/
+
 
 static int StartScan(void);
 static unsigned char ReadRawData(unsigned char Freq, unsigned char LineNum, int ByteNum, int *pRevBuffer);
@@ -138,19 +144,23 @@ boolean FT8716_StartTest()
 	int iItemCount = 0;
 
 
+
 	if (InitTest() < 0) {
 		FTS_TEST_ERROR("[focal] Failed to init test.");
 		return false;
 	}
 
+
 	if (0 == g_TestItemNum_sharp)
 		bTestResult = false;
+
 
 	for (iItemCount = 0; iItemCount < g_TestItemNum_sharp; iItemCount++) {
 		m_ucTestItemCode = g_stTestItem_sharp[ucDevice][iItemCount].ItemCode;
 
+
 		if (Code_FT8716_ENTER_FACTORY_MODE == g_stTestItem_sharp[ucDevice][iItemCount].ItemCode
-		  ) {
+		   ) {
 			ReCode = FT8716_TestItem_EnterFactoryMode();
 			if (ERROR_CODE_OK != ReCode || (!bTempResult)) {
 				bTestResult = false;
@@ -160,8 +170,9 @@ boolean FT8716_StartTest()
 				g_stTestItem_sharp[ucDevice][iItemCount].TestResult = RESULT_PASS;
 		}
 
+
 		if (Code_FT8716_RAWDATA_TEST == g_stTestItem_sharp[ucDevice][iItemCount].ItemCode
-		  ) {
+		   ) {
 			ReCode = FT8716_TestItem_RawDataTest(&bTempResult);
 			if (ERROR_CODE_OK != ReCode || (!bTempResult)) {
 				bTestResult = false;
@@ -170,8 +181,9 @@ boolean FT8716_StartTest()
 				g_stTestItem_sharp[ucDevice][iItemCount].TestResult = RESULT_PASS;
 		}
 
+
 		if (Code_FT8716_CB_TEST == g_stTestItem_sharp[ucDevice][iItemCount].ItemCode
-		  ) {
+		   ) {
 			ReCode = FT8716_TestItem_CbTest(&bTempResult);
 			if (ERROR_CODE_OK != ReCode || (!bTempResult)) {
 				bTestResult = false;
@@ -182,7 +194,9 @@ boolean FT8716_StartTest()
 
 	}
 
+
 	FinishTest();
+
 
 	return bTestResult;
 
@@ -253,6 +267,7 @@ unsigned char FT8716_TestItem_RawDataTest(bool *bTestResult)
 
 	bIncludeKey = g_stCfg_FT8716_BasicThreshold.bRawDataTest_VKey_Check;
 
+
 	for (i = 0 ; i < 3; i++) {
 		ReCode = WriteReg_sharp(0x06, 0x00);
 		SysDelay_sharp(10);
@@ -263,6 +278,7 @@ unsigned char FT8716_TestItem_RawDataTest(bool *bTestResult)
 		FTS_TEST_ERROR("Failed to get Raw Data!! Error Code: %d",  ReCode);
 		return ReCode;
 	}
+
 
 
 	FTS_TEST_DBG("\nVA Channels: ");
@@ -283,64 +299,71 @@ unsigned char FT8716_TestItem_RawDataTest(bool *bTestResult)
 		}
 	}
 
+
+
+
+
 	for (iRow = 0; iRow < g_stSCapConfEx_sharp.ChannelXNum; iRow++) {
 
 		for (iCol = 0; iCol < g_stSCapConfEx_sharp.ChannelYNum; iCol++) {
-			if (g_stCfg_Incell_DetailThreshold.InvalidNode[iRow][iCol] == 0)
-				continue;
+			if (g_stCfg_Incell_DetailThreshold.InvalidNode[iRow][iCol] == 0)continue;
 			RawDataMin = g_stCfg_Incell_DetailThreshold.RawDataTest_Min[iRow][iCol];
 			RawDataMax = g_stCfg_Incell_DetailThreshold.RawDataTest_Max[iRow][iCol];
 			iValue = m_RawData[iRow][iCol];
+
 			if (iValue < RawDataMin || iValue > RawDataMax) {
 				btmpresult = false;
 				FTS_TEST_ERROR("rawdata test failure. Node=(%d,  %d), Get_value=%d,  Set_Range=(%d, %d) ",  \
-							iRow+1, iCol+1, iValue, RawDataMin, RawDataMax);
+					           iRow+1, iCol+1, iValue, RawDataMin, RawDataMax);
 			}
 		}
 	}
+
 
 	if (bIncludeKey) {
 
 		iRow = g_stSCapConfEx_sharp.ChannelXNum;
 		if (IsKeyAutoFit()) {
 			for (iCol = 0; iCol < g_stSCapConfEx_sharp.KeyNum; iCol++) {
-				if (g_stCfg_Incell_DetailThreshold.InvalidNode[iRow][iCol] == 0)
-					continue;
+				if (g_stCfg_Incell_DetailThreshold.InvalidNode[iRow][iCol] == 0)continue;
 				RawDataMin = g_stCfg_Incell_DetailThreshold.RawDataTest_Min[iRow][iCol];
 				RawDataMax = g_stCfg_Incell_DetailThreshold.RawDataTest_Max[iRow][iCol];
 				iValue = m_RawData[iRow][iCol];
+
 				if (iValue < RawDataMin || iValue > RawDataMax) {
 					btmpresult = false;
 					FTS_TEST_ERROR("rawdata test failure. Node=(%d,  %d), Get_value=%d,  Set_Range=(%d, %d) ",  \
-								iRow+1, iCol+1, iValue, RawDataMin, RawDataMax);
+					               iRow+1, iCol+1, iValue, RawDataMin, RawDataMax);
 				}
 			}
 		} else {
 			for (iCol = 0; iCol < g_stSCapConfEx_sharp.KeyNumTotal; iCol++) {
-				if (g_stCfg_Incell_DetailThreshold.InvalidNode[iRow][iCol] == 0)
-					continue;
+				if (g_stCfg_Incell_DetailThreshold.InvalidNode[iRow][iCol] == 0)continue;
 				RawDataMin = g_stCfg_Incell_DetailThreshold.RawDataTest_Min[iRow][iCol];
 				RawDataMax = g_stCfg_Incell_DetailThreshold.RawDataTest_Max[iRow][iCol];
 				iValue = m_RawData[iRow][iCol];
+
 				if (iValue < RawDataMin || iValue > RawDataMax) {
 					btmpresult = false;
 					FTS_TEST_ERROR("rawdata test failure. Node=(%d,  %d), Get_value=%d,  Set_Range=(%d, %d) ",  \
-								iRow+1, iCol+1, iValue, RawDataMin, RawDataMax);
+					               iRow+1, iCol+1, iValue, RawDataMin, RawDataMax);
 				}
 			}
 		}
 	}
 
+
 	Save_Test_Data(m_RawData, 0, g_stSCapConfEx_sharp.ChannelXNum+1, g_stSCapConfEx_sharp.ChannelYNum, 1);
 
-	TestResultLen += sprintf(TestResult+TestResultLen, "RawData Test is %s. \n\n", (btmpresult ? "OK" : "NG"));
+
+	TestResultLen += sprintf(TestResult+TestResultLen,"RawData Test is %s. \n\n", (btmpresult ? "OK" : "NG"));
 
 
 	if (btmpresult) {
-		*bTestResult = true;
+		* bTestResult = true;
 		FTS_TEST_INFO("\n\n//RawData Test is OK!");
 	} else {
-		*bTestResult = false;
+		* bTestResult = false;
 		FTS_TEST_INFO("\n\n//RawData Test is NG!");
 	}
 	return ReCode;
@@ -401,6 +424,7 @@ unsigned char FT8716_TestItem_CbTest(bool *bTestResult)
 	}
 
 	memset(m_CBData, 0, sizeof(m_CBData));
+
 	for (iRow = 0; iRow < g_stSCapConfEx_sharp.ChannelXNum; ++iRow) {
 		for (iCol = 0; iCol < g_stSCapConfEx_sharp.ChannelYNum; ++iCol) {
 			m_CBData[iRow][iCol] = m_ucTempData[ iRow * g_stSCapConfEx_sharp.ChannelYNum + iCol ];
@@ -410,13 +434,16 @@ unsigned char FT8716_TestItem_CbTest(bool *bTestResult)
 
 	for (iCol = 0; iCol < ReadKeyLen/*g_stSCapConfEx_sharp.KeyNumTotal*/; ++iCol) {
 		if (ucBits != 0) {
-			m_CBData[g_stSCapConfEx_sharp.ChannelXNum][iCol/2] = (short)((m_ucTempData[g_stSCapConfEx_sharp.ChannelXNum*g_stSCapConfEx_sharp.ChannelYNum + iCol] & 0x01)<<8) + m_ucTempData[g_stSCapConfEx_sharp.ChannelXNum*g_stSCapConfEx_sharp.ChannelYNum + iCol + 1];
+			m_CBData[g_stSCapConfEx_sharp.ChannelXNum][iCol/2] = (short)((m_ucTempData[ g_stSCapConfEx_sharp.ChannelXNum*g_stSCapConfEx_sharp.ChannelYNum + iCol ] & 0x01)<<8) + m_ucTempData[ g_stSCapConfEx_sharp.ChannelXNum*g_stSCapConfEx_sharp.ChannelYNum + iCol + 1 ];
 			iCol++;
 		} else {
-			m_CBData[g_stSCapConfEx_sharp.ChannelXNum][iCol] = m_ucTempData[g_stSCapConfEx_sharp.ChannelXNum*g_stSCapConfEx_sharp.ChannelYNum + iCol];
+			m_CBData[g_stSCapConfEx_sharp.ChannelXNum][iCol] = m_ucTempData[ g_stSCapConfEx_sharp.ChannelXNum*g_stSCapConfEx_sharp.ChannelYNum + iCol ];
 		}
 
 	}
+
+
+
 
 
 
@@ -441,6 +468,7 @@ unsigned char FT8716_TestItem_CbTest(bool *bTestResult)
 	}
 
 
+
 	for (iRow = 0; iRow < g_stSCapConfEx_sharp.ChannelXNum; iRow++) {
 		for (iCol = 0; iCol < g_stSCapConfEx_sharp.ChannelYNum; iCol++) {
 			if ((0 == g_stCfg_Incell_DetailThreshold.InvalidNode[iRow][iCol])) {
@@ -449,13 +477,15 @@ unsigned char FT8716_TestItem_CbTest(bool *bTestResult)
 			iMinValue = g_stCfg_Incell_DetailThreshold.CBTest_Min[iRow][iCol];
 			iMaxValue = g_stCfg_Incell_DetailThreshold.CBTest_Max[iRow][iCol];
 			iValue = focal_abs_sharp(m_CBData[iRow][iCol]);
+
 			if (iValue < iMinValue || iValue > iMaxValue) {
 				btmpresult = false;
 				FTS_TEST_ERROR("CB test failure. Node=(%d,  %d), Get_value=%d,  Set_Range=(%d, %d) ",  \
-							iRow+1, iCol+1, iValue, iMinValue, iMaxValue);
+					           iRow+1, iCol+1, iValue, iMinValue, iMaxValue);
 			}
 		}
 	}
+
 
 	if (bIncludeKey) {
 
@@ -468,38 +498,40 @@ unsigned char FT8716_TestItem_CbTest(bool *bTestResult)
 				iMinValue = g_stCfg_Incell_DetailThreshold.CBTest_Min[iRow][iCol];
 				iMaxValue = g_stCfg_Incell_DetailThreshold.CBTest_Max[iRow][iCol];
 				iValue = focal_abs_sharp(m_CBData[iRow][iCol]);
+
 				if (iValue < iMinValue || iValue > iMaxValue) {
 					btmpresult = false;
 					FTS_TEST_ERROR("CB test failure. Node=(%d,  %d), Get_value=%d,  Set_Range=(%d, %d) ",  \
-								iRow+1, iCol+1, iValue, iMinValue, iMaxValue);
+					               iRow+1, iCol+1, iValue, iMinValue, iMaxValue);
 				}
 			}
 		} else {
 			for (iCol = 0; iCol < g_stSCapConfEx_sharp.KeyNumTotal; iCol++) {
-				if (g_stCfg_Incell_DetailThreshold.InvalidNode[iRow][iCol] == 0)
-					continue;
+				if (g_stCfg_Incell_DetailThreshold.InvalidNode[iRow][iCol] == 0)continue;
 				iMinValue = g_stCfg_Incell_DetailThreshold.CBTest_Min[iRow][iCol];
 				iMaxValue = g_stCfg_Incell_DetailThreshold.CBTest_Max[iRow][iCol];
 				iValue = focal_abs_sharp(m_CBData[iRow][iCol]);
+
 				if (iValue < iMinValue || iValue > iMaxValue) {
 					btmpresult = false;
 					FTS_TEST_ERROR("CB test failure. Node=(%d,  %d), Get_value=%d,  Set_Range=(%d, %d) ",  \
-								iRow+1, iCol+1, iValue, iMinValue, iMaxValue);
+					               iRow+1, iCol+1, iValue, iMinValue, iMaxValue);
 				}
 			}
 		}
 	}
 
+
 	Save_Test_Data(m_CBData, 0, g_stSCapConfEx_sharp.ChannelXNum+1, g_stSCapConfEx_sharp.ChannelYNum, 1);
 
-	TestResultLen += sprintf(TestResult+TestResultLen, "CB Test is %s. \n\n", (btmpresult ? "OK" : "NG"));
+	TestResultLen += sprintf(TestResult+TestResultLen,"CB Test is %s. \n\n", (btmpresult ? "OK" : "NG"));
 
 
 	if (btmpresult) {
-		*bTestResult = true;
+		* bTestResult = true;
 		FTS_TEST_INFO("\n\n//CB Test is OK!");
 	} else {
-		*bTestResult = false;
+		* bTestResult = false;
 		FTS_TEST_INFO("\n\n//CB Test is NG!");
 	}
 
@@ -507,10 +539,10 @@ unsigned char FT8716_TestItem_CbTest(bool *bTestResult)
 
 TEST_ERR:
 
-	*bTestResult = false;
+	* bTestResult = false;
 	FTS_TEST_INFO("\n\n//CB Test is NG!");
 
-	TestResultLen += sprintf(TestResult+TestResultLen, "CB Test is NG. \n\n");
+	TestResultLen += sprintf(TestResult+TestResultLen,"CB Test is NG. \n\n");
 
 	return ReCode;
 }
@@ -577,20 +609,22 @@ static void Save_Test_Data(int iData[TX_NUM_MAX][RX_NUM_MAX], int iArrayIndex, u
 	int iLen = 0;
 	int i = 0, j = 0;
 
-	iLen = sprintf(g_pTmpBuff, "NA, %d, %d, %d, %d, %d, ", \
-				m_ucTestItemCode, Row, Col, m_iStartLine, ItemCount);
+
+	iLen = sprintf(g_pTmpBuff,"NA, %d, %d, %d, %d, %d, ", \
+				  m_ucTestItemCode, Row, Col, m_iStartLine, ItemCount);
 	memcpy(g_pMsgAreaLine2+g_lenMsgAreaLine2, g_pTmpBuff, iLen);
 	g_lenMsgAreaLine2 += iLen;
 
 	m_iStartLine += Row;
 	m_iTestDataCount++;
 
-	for (i = 0 + iArrayIndex; (i < Row+iArrayIndex) && (i < TX_NUM_MAX); i++) {
+
+	for (i = 0+iArrayIndex; (i < Row+iArrayIndex) && (i < TX_NUM_MAX); i++) {
 		for (j = 0; (j < Col) && (j < RX_NUM_MAX); j++) {
-			if (j == (Col - 1))
-				iLen = sprintf(g_pTmpBuff, "%d, \n",  iData[i][j]);
+			if (j == (Col -1))
+				iLen = sprintf(g_pTmpBuff,"%d, \n",  iData[i][j]);
 			else
-				iLen = sprintf(g_pTmpBuff, "%d, ", iData[i][j]);
+				iLen = sprintf(g_pTmpBuff,"%d, ", iData[i][j]);
 
 			memcpy(g_pStoreDataArea+g_lenStoreDataArea, g_pTmpBuff, iLen);
 			g_lenStoreDataArea += iLen;
@@ -598,6 +632,7 @@ static void Save_Test_Data(int iData[TX_NUM_MAX][RX_NUM_MAX], int iArrayIndex, u
 	}
 
 }
+
 
 /************************************************************************
 * Name: StartScan(Same function name as FT_MultipleTest)
@@ -614,17 +649,17 @@ static int StartScan(void)
 	unsigned char ReCode = ERROR_CODE_COMM_ERROR;
 
 
+
 	ReCode = ReadReg_sharp(DEVIDE_MODE_ADDR, &RegVal);
 	if (ReCode == ERROR_CODE_OK) {
 		RegVal |= 0x80;
-		ReCode = WriteReg_sharp(DEVIDE_MODE_ADDR, RegVal);
+		ReCode = WriteReg_sharp(DEVIDE_MODE_ADDR,RegVal);
 		if (ReCode == ERROR_CODE_OK) {
 			while (times++ < MaxTimes) {
 				SysDelay_sharp(8);
 				ReCode = ReadReg_sharp(DEVIDE_MODE_ADDR, &RegVal);
 				if (ReCode == ERROR_CODE_OK) {
-					if ((RegVal>>7) == 0)
-						break;
+					if ((RegVal>>7) == 0)    break;
 				} else {
 					break;
 				}
@@ -650,13 +685,13 @@ static unsigned char ReadRawData(unsigned char Freq, unsigned char LineNum, int 
 	unsigned char ReCode = ERROR_CODE_COMM_ERROR;
 	unsigned char I2C_wBuffer[3] = {0};
 	unsigned char pReadData[ByteNum];
+
 	int i, iReadNum;
-	unsigned short BytesNumInTestMode1=0;
+	unsigned short BytesNumInTestMode1 = 0;
 
 	iReadNum = ByteNum/BYTES_PER_TIME;
 
-	if (0 != (ByteNum%BYTES_PER_TIME))
-		iReadNum++;
+	if (0 != (ByteNum%BYTES_PER_TIME)) iReadNum++;
 
 	if (ByteNum <= BYTES_PER_TIME) {
 		BytesNumInTestMode1 = ByteNum;
@@ -665,6 +700,7 @@ static unsigned char ReadRawData(unsigned char Freq, unsigned char LineNum, int 
 	}
 
 	ReCode = WriteReg_sharp(REG_LINE_NUM, LineNum);
+
 
 
 	I2C_wBuffer[0] = REG_RawBuf0;
@@ -688,8 +724,12 @@ static unsigned char ReadRawData(unsigned char Freq, unsigned char LineNum, int 
 	}
 
 	if (ReCode == ERROR_CODE_OK) {
-		for (i=0; i < (ByteNum>>1); i++) {
+		for (i = 0; i < (ByteNum>>1); i++) {
 			pRevBuffer[i] = (pReadData[i<<1]<<8)+pReadData[(i<<1)+1];
+
+
+
+
 		}
 	}
 
@@ -714,8 +754,7 @@ static unsigned char GetTxRxCB(unsigned short StartNodeNo, unsigned short ReadNu
 
 	iReadNum = ReadNum/BYTES_PER_TIME;
 
-	if (0 != (ReadNum%BYTES_PER_TIME))
-		iReadNum++;
+	if (0 != (ReadNum%BYTES_PER_TIME)) iReadNum++;
 
 	wBuffer[0] = REG_CbBuf0;
 
@@ -727,27 +766,34 @@ static unsigned char GetTxRxCB(unsigned short StartNodeNo, unsigned short ReadNu
 		else
 			usReturnNum = BYTES_PER_TIME;
 
-		wBuffer[1] = (StartNodeNo+usTotalReturnNum) >> 8;
+		wBuffer[1] = (StartNodeNo+usTotalReturnNum) >>8;
 		wBuffer[2] = (StartNodeNo+usTotalReturnNum)&0xff;
 
 		ReCode = WriteReg_sharp(REG_CbAddrH, wBuffer[1]);
 		ReCode = WriteReg_sharp(REG_CbAddrL, wBuffer[2]);
+
 		ReCode = Comm_Base_IIC_IO_sharp(wBuffer, 1, pReadBuffer+usTotalReturnNum, usReturnNum);
 
 		usTotalReturnNum += usReturnNum;
 
-		if (ReCode != ERROR_CODE_OK)
-			return ReCode;
+		if (ReCode != ERROR_CODE_OK)return ReCode;
+
 
 	}
 
 	return ReCode;
 }
 
+
+
+
 static unsigned char GetPanelRows(unsigned char *pPanelRows)
 {
 	return ReadReg_sharp(REG_TX_NUM, pPanelRows);
 }
+
+
+
 
 static unsigned char GetPanelCols(unsigned char *pPanelCols)
 {
@@ -765,8 +811,11 @@ static unsigned char GetPanelCols(unsigned char *pPanelCols)
 static unsigned char GetChannelNum(void)
 {
 	unsigned char ReCode;
+
 	int i ;
 	unsigned char rBuffer[1];
+
+
 
 	for (i = 0; i < 3; i++) {
 		ReCode = GetPanelRows(rBuffer);
@@ -775,7 +824,7 @@ static unsigned char GetChannelNum(void)
 				g_stSCapConfEx_sharp.ChannelXNum = rBuffer[0];
 				if (g_stSCapConfEx_sharp.ChannelXNum > g_ScreenSetParam_sharp.iUsedMaxTxNum) {
 					FTS_TEST_ERROR("Failed to get Channel X number, Get num = %d, UsedMaxNum = %d",
-								g_stSCapConfEx_sharp.ChannelXNum, g_ScreenSetParam_sharp.iUsedMaxTxNum);
+					               g_stSCapConfEx_sharp.ChannelXNum, g_ScreenSetParam_sharp.iUsedMaxTxNum);
 					g_stSCapConfEx_sharp.ChannelXNum = 0;
 					return ERROR_CODE_INVALID_PARAM;
 				}
@@ -791,6 +840,7 @@ static unsigned char GetChannelNum(void)
 		}
 	}
 
+
 	for (i = 0; i < 3; i++) {
 		ReCode = GetPanelCols(rBuffer);
 		if (ReCode == ERROR_CODE_OK) {
@@ -799,7 +849,7 @@ static unsigned char GetChannelNum(void)
 				if (g_stSCapConfEx_sharp.ChannelYNum > g_ScreenSetParam_sharp.iUsedMaxRxNum) {
 
 					FTS_TEST_ERROR("Failed to get Channel Y number, Get num = %d, UsedMaxNum = %d",
-								g_stSCapConfEx_sharp.ChannelYNum, g_ScreenSetParam_sharp.iUsedMaxRxNum);
+					               g_stSCapConfEx_sharp.ChannelYNum, g_ScreenSetParam_sharp.iUsedMaxRxNum);
 					g_stSCapConfEx_sharp.ChannelYNum = 0;
 					return ERROR_CODE_INVALID_PARAM;
 				}
@@ -813,6 +863,7 @@ static unsigned char GetChannelNum(void)
 			SysDelay_sharp(150);
 		}
 	}
+
 
 	for (i = 0; i < 3; i++) {
 		unsigned char regData = 0;
@@ -858,7 +909,9 @@ static unsigned char GetChannelNum(void)
 		}
 	}
 
-	FTS_TEST_DBG("CH_X = %d, CH_Y = %d, Key = %d", g_stSCapConfEx_sharp.ChannelXNum, g_stSCapConfEx_sharp.ChannelYNum, g_stSCapConfEx_sharp.KeyNum);
+
+
+	FTS_TEST_DBG("CH_X = %d, CH_Y = %d, Key = %d",  g_stSCapConfEx_sharp.ChannelXNum ,g_stSCapConfEx_sharp.ChannelYNum, g_stSCapConfEx_sharp.KeyNum);
 	return ReCode;
 }
 
@@ -874,11 +927,13 @@ static unsigned char GetRawData(void)
 	int ReCode = ERROR_CODE_OK;
 	int iRow, iCol;
 
+
 	ReCode = EnterFactory_sharp();
 	if (ERROR_CODE_OK != ReCode) {
 		FTS_TEST_ERROR("Failed to Enter Factory Mode...");
 		return ReCode;
 	}
+
 
 
 	if (0 == (g_stSCapConfEx_sharp.ChannelXNum + g_stSCapConfEx_sharp.ChannelYNum)) {
@@ -889,11 +944,15 @@ static unsigned char GetRawData(void)
 		}
 	}
 
+
+
 	ReCode = StartScan();
 	if (ERROR_CODE_OK != ReCode) {
 		FTS_TEST_ERROR("Failed to Scan ...");
 		return ReCode;
 	}
+
+
 
 
 	memset(m_RawData, 0, sizeof(m_RawData));
@@ -909,6 +968,7 @@ static unsigned char GetRawData(void)
 			m_RawData[iRow][iCol] = m_iTempRawData[iRow * g_stSCapConfEx_sharp.ChannelYNum + iCol];
 		}
 	}
+
 
 	memset(m_iTempRawData, 0, sizeof(m_iTempRawData));
 	ReCode = ReadRawData(0, 0xAE, g_stSCapConfEx_sharp.KeyNumTotal * 2, m_iTempRawData);
@@ -926,30 +986,39 @@ static unsigned char GetRawData(void)
 }
 unsigned char FT8716_GetTestResult(void)
 {
+
 	unsigned char ucDevice = 0;
 	int iItemCount = 0;
 	unsigned char ucResultData = 0;
 
+
 	for (iItemCount = 0; iItemCount < g_TestItemNum_sharp; iItemCount++) {
+
 		if (Code_FT8716_RAWDATA_TEST == g_stTestItem_sharp[ucDevice][iItemCount].ItemCode
-		  ) {
+		   ) {
 			if (RESULT_PASS == g_stTestItem_sharp[ucDevice][iItemCount].TestResult)
 				ucResultData |= 0x01<<2;
 		}
+
 
 		if (Code_FT8716_CB_TEST == g_stTestItem_sharp[ucDevice][iItemCount].ItemCode) {
 			if (RESULT_PASS == g_stTestItem_sharp[ucDevice][iItemCount].TestResult)
 				ucResultData |= 0x01<<1;
 		}
 
+
 		if (Code_FT8716_SHORT_CIRCUIT_TEST == g_stTestItem_sharp[ucDevice][iItemCount].ItemCode
-		  ) {
+		   ) {
 			if (RESULT_PASS == g_stTestItem_sharp[ucDevice][iItemCount].TestResult)
 				ucResultData |= 0x01;
 		}
 	}
 
 	FTS_TEST_DBG("Test_result:  0x%02x", ucResultData);
+
+
+
+
 
 	return ucResultData;
 }

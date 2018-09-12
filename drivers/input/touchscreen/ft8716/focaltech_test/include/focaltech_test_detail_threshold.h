@@ -1,5 +1,6 @@
 /************************************************************************
 * Copyright (C) 2012-2015, Focaltech Systems (R)£¬All Rights Reserved.
+* Copyright (C) 2018 XiaoMi, Inc.
 *
 * File Name: focaltech_test_detail_threshold.h
 *
@@ -26,7 +27,8 @@
 
 #define FORCETOUCH_ROW  1
 
-struct stCfg_Incell_DetailThreshold {
+struct stCfg_Incell_DetailThreshold
+ {
 	unsigned char (*InvalidNode)[RX_NUM_MAX];
 
 
@@ -41,7 +43,8 @@ struct stCfg_Incell_DetailThreshold {
 
 };
 
-struct stCfg_MCap_DetailThreshold {
+struct stCfg_MCap_DetailThreshold
+ {
 	unsigned char (*InvalidNode)[RX_NUM_MAX];
 	unsigned char (*InvalidNode_SC)[RX_NUM_MAX];
 
@@ -75,7 +78,8 @@ struct stCfg_MCap_DetailThreshold {
 	int ForceTouch_SCapCbTest_OFF_Min[FORCETOUCH_ROW][RX_NUM_MAX];
 };
 
-struct stCfg_SCap_DetailThreshold {
+struct stCfg_SCap_DetailThreshold
+ {
 	int TempData[MAX_CHANNEL_NUM];
 	int RawDataTest_Max[MAX_CHANNEL_NUM];
 	int RawDataTest_Min[MAX_CHANNEL_NUM];

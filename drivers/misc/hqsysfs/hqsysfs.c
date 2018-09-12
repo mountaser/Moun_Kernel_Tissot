@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2015 MediaTek Inc.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -18,41 +19,41 @@
 
 #define HQ_SYS_FS_VER "2016-03-11 V0.2"
 
-static HW_INFO(HWID_VER, ver);
-static HW_INFO(HWID_SUMMARY, hw_summary);
-static HW_INFO(HWID_DDR, ram);
-static HW_INFO(HWID_EMMC, emmc);
-static HW_INFO(HWID_LCM, lcm);
+static HW_INFO(HWID_VER,ver);
+static HW_INFO(HWID_SUMMARY,hw_summary);
+static HW_INFO(HWID_DDR,ram);
+static HW_INFO(HWID_EMMC,emmc);
+static HW_INFO(HWID_LCM,lcm);
 
-static HW_INFO(HWID_CTP, ctp);
-static HW_INFO(HWID_MAIN_CAM, main_cam);
-static HW_INFO(HWID_MAIN_CAM_2, main_cam_2);
-static HW_INFO(HWID_MAIN_LENS, main_cam_len);
-static HW_INFO(HWID_FLASHLIGHT, flashlight);
-static HW_INFO(HWID_SUB_CAM, sub_cam);
-static HW_INFO(HWID_GSENSOR, gsensor);
-static HW_INFO(HWID_ALSPS, alsps);
-static HW_INFO(HWID_MSENSOR, msensor);
-static HW_INFO(HWID_GYRO, gyro);
-static HW_INFO(HWID_IRDA, irda);
-static HW_INFO(HWID_FUEL_GAUGE_IC, fuel_gauge_ic);
-static HW_INFO(HWID_NFC, nfc);
-static HW_INFO(HWID_FP, fingerprint);
+static HW_INFO(HWID_CTP,ctp);
+static HW_INFO(HWID_MAIN_CAM,main_cam);
+static HW_INFO(HWID_MAIN_CAM_2,main_cam_2);
+static HW_INFO(HWID_MAIN_LENS,main_cam_len);
+static HW_INFO(HWID_FLASHLIGHT,flashlight);
+static HW_INFO(HWID_SUB_CAM,sub_cam);
+static HW_INFO(HWID_GSENSOR,gsensor);
+static HW_INFO(HWID_ALSPS,alsps);
+static HW_INFO(HWID_MSENSOR,msensor);
+static HW_INFO(HWID_GYRO,gyro);
+static HW_INFO(HWID_IRDA,irda);
+static HW_INFO(HWID_FUEL_GAUGE_IC,fuel_gauge_ic);
+static HW_INFO(HWID_NFC,nfc);
+static HW_INFO(HWID_FP,fingerprint);
 
-static HW_INFO(HWID_PCBA, pcba_config);
+static HW_INFO(HWID_PCBA,pcba_config);
 
 
 struct pcba_info pcba[] = {
 
-	{PCBA_UNKNOW, "PCBA_UNKNOW"},
-	{PCBA_P0, "PCBA_P0"},
-	{PCBA_P1, "PCBA_P1"},
-	{PCBA_D2_MP1_CN, "PCBA_D2_MP1_CN"},
-		{PCBA_D2_MP1_GLOBAL, "PCBA_D2_MP1_GLOBAL"},
-	{PCBA_D2_MP1_IN, "PCBA_D2_MP1_IN"},
-		{PCBA_C6A_CN, "PCBA_C6A_CN"},
-		{PCBA_C6A_IN, "PCBA_C6A_IN"},
-		{PCBA_C6A_GLOBAL, "PCBA_C6A_GLOBAL"}
+	{PCBA_UNKNOW,"PCBA_UNKNOW"},
+	{PCBA_P0,"PCBA_P0"},
+	{PCBA_P1,"PCBA_P1"},
+	{PCBA_D2_MP1_CN,"PCBA_D2_MP1_CN"},
+		{PCBA_D2_MP1_GLOBAL,"PCBA_D2_MP1_GLOBAL"},
+	{PCBA_D2_MP1_IN,"PCBA_D2_MP1_IN"},
+	{PCBA_C6A_CN,"PCBA_C6A_CN"},
+	{PCBA_C6A_IN,"PCBA_C6A_IN"},
+		{PCBA_C6A_GLOBAL,"PCBA_C6A_GLOBAL"}
 
 
 
@@ -103,13 +104,13 @@ static ssize_t huaqin_show(struct kobject *kobj, struct attribute *a, char *buf)
 		struct hw_info *curent_hw = NULL;
 		struct attribute *attr = huaqin_attrs[iterator];
 
-		while (attr) {
+		while(attr) {
 			curent_hw = container_of(attr, struct hw_info , attr);
 			iterator += 1;
 			attr = huaqin_attrs[iterator];
 
 			if (curent_hw->hw_exist && (NULL != curent_hw->hw_device_name)) {
-				count += sprintf(buf+count, "%s: %s\n" , curent_hw->attr.name, curent_hw->hw_device_name);
+				count += sprintf(buf+count, "%s: %s\n" ,curent_hw->attr.name,curent_hw->hw_device_name);
 			}
 		}
 
@@ -117,20 +118,22 @@ static ssize_t huaqin_show(struct kobject *kobj, struct attribute *a, char *buf)
 
 		if (get_huaqin_pcba_config() > PCBA_UNKNOW && get_huaqin_pcba_config() < PCBA_END) {
 			huaqin_pcba_config = get_huaqin_pcba_config();
-		} else {
+		}
+		else
+		{
 			huaqin_pcba_config = PCBA_UNKNOW;
 		}
 
 		for (i = 0; i < sizeof(pcba)/sizeof(struct pcba_info); i++) {
 			if (huaqin_pcba_config == pcba[i].pcba_config) {
-				count = sprintf(buf, "%s\n", pcba[i].pcba_name);
+				count = sprintf(buf,"%s\n",pcba[i].pcba_name);
 				return count;
 			}
 		}
 
 
 
-		count = sprintf(buf, "%s\n", "PCBA_UNKNOW");
+		count = sprintf(buf,"%s\n","PCBA_UNKNOW");
 
 	} else{
 
@@ -139,7 +142,7 @@ static ssize_t huaqin_show(struct kobject *kobj, struct attribute *a, char *buf)
 		} else if (NULL == hw->hw_device_name) {
 			count = sprintf(buf, "Installed with no device Name\n");
 		} else{
-			count = sprintf(buf, "%s\n" , hw->hw_device_name);
+			count = sprintf(buf, "%s\n" ,hw->hw_device_name);
 		}
 	}
 
@@ -169,8 +172,7 @@ static struct class  *huaqin_class;
 static struct device *huaqin_hw_device;
 
 
-int register_kboj_under_hqsysfs(struct kobject *kobj, struct kobj_type *ktype, const char *fmt, ...)
-{
+int register_kboj_under_hqsysfs(struct kobject *kobj, struct kobj_type *ktype, const char *fmt, ...) {
 	return kobject_init_and_add(kobj, ktype, &(huaqin_hw_device->kobj), fmt);
 }
 
@@ -181,7 +183,7 @@ static int __init create_sysfs(void)
 	/* create class (device model) */
 	huaqin_class = class_create(THIS_MODULE, HUAQIN_CLASS_NAME);
 	if (IS_ERR(huaqin_class)) {
-		pr_err("%s fail to create class\n", __func__);
+		pr_err("%s fail to create class\n",__func__);
 		return -EPERM;
 	}
 
@@ -194,15 +196,14 @@ static int __init create_sysfs(void)
 	/* add kobject */
 	ret = kobject_init_and_add(&huaqin_kobj, &huaqin_ktype, &(huaqin_hw_device->kobj), HUAQIN_HWID_NAME);
 	if (ret < 0) {
-		pr_err("%s fail to add kobject\n", __func__);
+		pr_err("%s fail to add kobject\n",__func__);
 		return ret;
 	}
 
 	return 0;
 }
 
-int hq_deregister_hw_info(enum hardware_id id, char *device_name)
-{
+int hq_deregister_hw_info(enum hardware_id id,char *device_name) {
 	int ret = 0;
 	int find_hw_id = 0;
 	int iterator = 0;
@@ -211,12 +212,12 @@ int hq_deregister_hw_info(enum hardware_id id, char *device_name)
 	struct attribute *attr = huaqin_attrs[iterator];
 
 	if (NULL == device_name) {
-		pr_err("[%s]: device_name does not allow empty\n", __func__);
+		pr_err("[%s]: device_name does not allow empty\n",__func__);
 		ret = -2;
 		goto err;
 	}
 
-	while (attr) {
+	while(attr) {
 		hw = container_of(attr, struct hw_info , attr);
 
 		iterator += 1;
@@ -231,28 +232,29 @@ int hq_deregister_hw_info(enum hardware_id id, char *device_name)
 
 			if (0 == hw->hw_exist) {
 				pr_err("[%s]: device has not registed hw->id:0x%x . Cant be deregistered\n"
-					, __func__
-					, hw->hw_id);
+					,__func__
+					,hw->hw_id);
 
 				ret = -4;
 				goto err;
 			} else if (NULL == hw->hw_device_name) {
 
 				pr_err("[%s]:hw_id is 0x%x Device name cant be NULL\n"
-					, __func__
-					, hw->hw_id);
+					,__func__
+					,hw->hw_id);
 				ret = -5;
 				goto err;
-			} else{
-				if (0 == strncmp(hw->hw_device_name, device_name, strlen(hw->hw_device_name))) {
+			}
+			else{
+				if (0 == strncmp(hw->hw_device_name,device_name,strlen(hw->hw_device_name))) {
 					hw->hw_device_name = NULL;
 					hw->hw_exist = 0;
 				} else{
 					pr_err("[%s]: hw_id is 0x%x Registered device name %s , want to deregister: %s\n"
-						, __func__
-						, hw->hw_id
-						, hw->hw_device_name
-						, device_name);
+						,__func__
+						,hw->hw_id
+						,hw->hw_device_name
+						,device_name);
 					ret = -6;
 					goto err;
 				}
@@ -266,7 +268,7 @@ int hq_deregister_hw_info(enum hardware_id id, char *device_name)
 	}
 
 	if (0 == find_hw_id) {
-		pr_err("[%s]: Cant find correct hardware_id: 0x%x\n", __func__, id);
+		pr_err("[%s]: Cant find correct hardware_id: 0x%x\n",__func__,id);
 		ret = -3;
 	}
 
@@ -276,8 +278,7 @@ err:
 }
 
 
-int hq_regiser_hw_info(enum hardware_id id, char *device_name)
-{
+int hq_regiser_hw_info(enum hardware_id id,char *device_name) {
 
 	int ret = 0;
 	int find_hw_id = 0;
@@ -287,12 +288,12 @@ int hq_regiser_hw_info(enum hardware_id id, char *device_name)
 	struct attribute *attr = huaqin_attrs[iterator];
 
 	if (NULL == device_name) {
-		pr_err("[%s]: device_name does not allow empty\n", __func__);
+		pr_err("[%s]: device_name does not allow empty\n",__func__);
 		ret = -2;
 		goto err;
 	}
 
-	while (attr) {
+	while(attr) {
 		hw = container_of(attr, struct hw_info , attr);
 
 		iterator += 1;
@@ -307,21 +308,28 @@ int hq_regiser_hw_info(enum hardware_id id, char *device_name)
 
 			if (hw->hw_exist) {
 				pr_err("[%s]: device has already registed hw->id:0x%x hw_device_name:%s\n"
-					, __func__
-					, hw->hw_id
-					, hw->hw_device_name);
+					,__func__
+					,hw->hw_id
+					,hw->hw_device_name);
 				ret = -4;
 				goto err;
 			}
 
-			switch (hw->hw_id) {
-			case HWID_MAIN_CAM:
-			case HWID_SUB_CAM:
-			case HWID_MAIN_CAM_2:
-			case HWID_SUB_CAM_2:
-			default:
-				hw->hw_device_name = device_name;
-				break;
+			switch(hw->hw_id) {
+			    case HWID_MAIN_CAM:
+			    case HWID_SUB_CAM:
+			    case HWID_MAIN_CAM_2:
+			    case HWID_SUB_CAM_2:
+				/*
+					if(map_cam_drv_to_vendor(device_name))
+					    hw->hw_device_name = map_cam_drv_to_vendor(device_name);
+					else
+					    hw->hw_device_name = "Can't find Camera Vendor";
+			        break;
+				*/
+			    default:
+			        hw->hw_device_name = device_name;
+			        break;
 			}
 
 
@@ -334,7 +342,7 @@ int hq_regiser_hw_info(enum hardware_id id, char *device_name)
 	}
 
 	if (0 == find_hw_id) {
-		pr_err("[%s]: Cant find correct hardware_id: 0x%x\n", __func__, id);
+		pr_err("[%s]: Cant find correct hardware_id: 0x%x\n",__func__,id);
 		ret = -3;
 	}
 
@@ -361,7 +369,8 @@ static int boot_reason_proc_open (struct inode *inode, struct file *file)
 	return single_open(file, boot_reason_proc_show, inode->i_private);
 }
 
-static const struct file_operations boot_reason_proc_fops = {
+static const struct file_operations boot_reason_proc_fops =
+{
 	.open = boot_reason_proc_open,
 	.read = seq_read,
 };
@@ -382,7 +391,8 @@ static int __init hq_harware_init(void)
 	create_sysfs();
 
 	boot_reason_proc = proc_create(PROC_BOOT_REASON_FILE, 0644, NULL, &boot_reason_proc_fops);
-	if (boot_reason_proc == NULL) {
+	if (boot_reason_proc == NULL)
+	{
 		pr_err("[%s]: create_proc_entry boot_reason_proc failed\n", __func__);
 	}
 

@@ -3,6 +3,7 @@
  * FocalTech TouchScreen driver.
  *
  * Copyright (c) 2010-2016, Focaltech Ltd. All rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -102,16 +103,17 @@
 
 
 #define FTS_SYSFS_ECHO_ON(buf)      ((strnicmp(buf, "1", 1)  == 0) || \
-									    (strnicmp(buf, "on", 2) == 0))
+					                    (strnicmp(buf, "on", 2) == 0))
 #define FTS_SYSFS_ECHO_OFF(buf)     ((strnicmp(buf, "0", 1)  == 0) || \
-									    (strnicmp(buf, "off", 3) == 0))
+					                    (strnicmp(buf, "off", 3) == 0))
 
 /*****************************************************************************
 * Private enumerations, structures and unions using typedef
 *****************************************************************************/
 
 
-struct fts_ts_platform_data {
+struct fts_ts_platform_data
+ {
 	u32 irq_gpio;
 	u32 irq_gpio_flags;
 	u32 reset_gpio;
@@ -128,7 +130,8 @@ struct fts_ts_platform_data {
 	u32 max_touch_number;
 };
 
-struct ts_event {
+struct ts_event
+ {
 	u16 au16_x[FTS_MAX_POINTS]; /*x coordinate */
 	u16 au16_y[FTS_MAX_POINTS]; /*y coordinate */
 	u16 pressure[FTS_MAX_POINTS];
@@ -139,7 +142,8 @@ struct ts_event {
 	u8 point_num;
 };
 
-struct fts_ts_data {
+struct fts_ts_data
+ {
 	struct i2c_client *client;
 	struct input_dev *input_dev;
 	struct ts_event event;
@@ -168,7 +172,8 @@ struct fts_ts_data {
 
 
 #if FTS_PSENSOR_EN
-struct fts_psensor_platform_data {
+struct fts_psensor_platform_data
+ {
 	struct input_dev *input_psensor_dev;
 	struct sensors_classdev ps_cdev;
 	int tp_psensor_opened;

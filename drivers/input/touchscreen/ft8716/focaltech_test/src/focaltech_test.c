@@ -3,6 +3,7 @@
  * FocalTech TouchScreen driver.
  *
  * Copyright (c) 2010-2016, FocalTech Systems, Ltd., all rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -91,7 +92,7 @@ static int ito_result;
 #if 0
 
 extern struct i2c_client *fts_i2c_client;
-extern int fts_i2c_read(struct i2c_client *client, char *writebuf, int writelen, char *readbuf, int readlen);
+extern int fts_i2c_read(struct i2c_client *client, char *writebuf,int writelen, char *readbuf, int readlen);
 extern int fts_i2c_write(struct i2c_client *client, char *writebuf, int writelen);
 #endif
 static int fts_test_i2c_read(unsigned char *writebuf, int writelen, unsigned char *readbuf, int readlen)
@@ -171,7 +172,8 @@ static int fts_test_read_ini_data(char *config_name, char *config_buf)
 
 	memset(filepath, 0, sizeof(filepath));
 	sprintf(filepath, "%s%s", FTS_INI_FILE_PATH, config_name);
-	if (NULL == pfile) {
+	if (NULL == pfile)
+	{
 		pfile = filp_open(filepath, O_RDONLY, 0);
 	}
 	if (IS_ERR(pfile)) {
@@ -274,6 +276,8 @@ static int fts_test_get_testparam_from_ini(char *config_name)
 }
 
 
+
+
 static int fts_test_entry(char *ini_file_name)
 {
 	/* place holder for future use */
@@ -338,11 +342,11 @@ static int fts_test_entry(char *ini_file_name)
 
 	/*Start testing according to the test configuration*/
 	if (true == start_test_tp_sharp()) {
-		TestResultLen += sprintf(TestResult+TestResultLen, "Tp test pass. \n\n");
+		TestResultLen += sprintf(TestResult+TestResultLen,"Tp test pass. \n\n");
 		FTS_TEST_INFO("tp test pass");
 		ito_result = 1;
 	} else {
-		TestResultLen += sprintf(TestResult+TestResultLen, "Tp test failure. \n\n");
+		TestResultLen += sprintf(TestResult+TestResultLen,"Tp test failure. \n\n");
 		FTS_TEST_INFO("tp test failure");
 		ito_result = 0;
 	}
@@ -357,9 +361,10 @@ static int fts_test_entry(char *ini_file_name)
 	FTS_TEST_DBG("print test data: \n");
 	for (i = 0; i < iTestDataLen; i++) {
 		if (('\0' == testdata[i])
-			|| (icycle == FTS_TEST_PRINT_SIZE - 2)
+			|| (icycle == FTS_TEST_PRINT_SIZE -2)
 			|| (i == iTestDataLen-1)
-			) {
+		   )
+		{
 			if (icycle == 0) {
 				print_index++;
 			} else {
@@ -378,7 +383,7 @@ static int fts_test_entry(char *ini_file_name)
 
 
 	fts_test_save_test_data("testdata.csv", testdata, iTestDataLen);
-	fts_test_save_test_data("testresult.txt", TestResult, TestResultLen);
+	fts_test_save_test_data("testresult.txt", TestResult,TestResultLen);
 
 
 	/*Release memory */
@@ -386,20 +391,16 @@ static int fts_test_entry(char *ini_file_name)
 
 
 
-	if (NULL != testdata)
-		fts_free(testdata);
-	if (NULL != printdata)
-		fts_free(printdata);
+	if (NULL != testdata) fts_free(testdata);
+	if (NULL != printdata) fts_free(printdata);
 
 	FTS_TEST_FUNC_EXIT();
 
 	return 0;
 
 TEST_ERR:
-	if (NULL != testdata)
-		fts_free(testdata);
-	if (NULL != printdata)
-		fts_free(printdata);
+	if (NULL != testdata) fts_free(testdata);
+	if (NULL != printdata) fts_free(printdata);
 
 	FTS_TEST_FUNC_EXIT();
 
@@ -417,9 +418,9 @@ static ssize_t fts_test_show(struct device *dev, struct device_attribute *attr, 
 {
 	int result = 0;
 	if (ito_result)
-		 result = snprintf(buf, 5, "PASS\n");
+		  result = snprintf(buf, 5,"PASS\n");
 	else
-		result = snprintf(buf, 5, "FAIL\n");
+		result = snprintf(buf, 5,"FAIL\n");
 	return result;
 }
 
@@ -468,12 +469,14 @@ static ssize_t fts_test_store(struct device *dev, struct device_attribute *attr,
 static DEVICE_ATTR(fts_test, S_IRUGO|S_IWUSR, fts_test_show, fts_test_store);
 
 /* add your attr in here*/
-static struct attribute *fts_test_attributes[] = {
+static struct attribute *fts_test_attributes[] =
+{
 	&dev_attr_fts_test.attr,
 	NULL
 };
 
-static struct attribute_group fts_test_attribute_group = {
+static struct attribute_group fts_test_attribute_group =
+{
 	.attrs = fts_test_attributes
 };
 

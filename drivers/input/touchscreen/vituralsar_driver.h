@@ -51,7 +51,7 @@ static int virtualsar_probe(struct i2c_client *client,
 		const struct i2c_device_id *id);
 
 #define SAR_INT_TRIGGER    2
-#define SAR_IRQ_TAB                     {IRQ_TYPE_EDGE_RISING, IRQ_TYPE_EDGE_FALLING, IRQ_TYPE_EDGE_BOTH, IRQ_TYPE_LEVEL_LOW, IRQ_TYPE_LEVEL_HIGH}
+#define SAR_IRQ_TAB                     {IRQ_TYPE_EDGE_RISING, IRQ_TYPE_EDGE_FALLING,IRQ_TYPE_EDGE_BOTH, IRQ_TYPE_LEVEL_LOW, IRQ_TYPE_LEVEL_HIGH}
 
 static const char *sar_name = "vitural-sar";
 static const char *sar_input_phys = "input/sar";

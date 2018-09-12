@@ -1,5 +1,6 @@
 /************************************************************************
 * Copyright (C) 2012-2016, Focaltech Systems (R)£¬All Rights Reserved.
+* Copyright (C) 2018 XiaoMi, Inc.
 *
 * File Name: focaltech_flash.h
 *
@@ -73,7 +74,8 @@
 #define FTS_UPGRADE_55                               0x55
 #define FTXXXX_INI_FILEPATH_CONFIG                   "/sdcard/"
 
-enum FW_STATUS {
+enum FW_STATUS
+ {
 	FTS_RUN_IN_ERROR,
 	FTS_RUN_IN_APP,
 	FTS_RUN_IN_ROM,
@@ -81,7 +83,8 @@ enum FW_STATUS {
 	FTS_RUN_IN_BOOTLOADER
 };
 
-enum FILE_SIZE_TYPE {
+enum FILE_SIZE_TYPE
+ {
 	FW_SIZE,
 	PRAMBOOT_SIZE,
 	LCD_CFG_SIZE
@@ -103,7 +106,8 @@ enum FILE_SIZE_TYPE {
 *****************************************************************************/
 /* IC info */
 
-struct fts_upgrade_fun {
+struct fts_upgrade_fun
+ {
 	int (*get_app_bin_file_ver)(char *);
 	int (*get_app_i_file_ver)(void);
 	int (*upgrade_with_app_i_file)(struct i2c_client *);
@@ -146,7 +150,7 @@ int fts_ctpm_auto_clb_sharp(struct i2c_client *client);
 u32 fts_getsize(u8 fw_type);
 int fts_GetFirmwareSize(char *firmware_name);
 int fts_ctpm_i2c_hid2std(struct i2c_client *client);
-int fts_ReadFirmware(char *firmware_name, unsigned char *firmware_buf);
+int fts_ReadFirmware(char *firmware_name,unsigned char *firmware_buf);
 void fts_ctpm_rom_or_pram_reset(struct i2c_client *client);
 enum FW_STATUS fts_ctpm_get_pram_or_rom_id(struct i2c_client *client);
 #endif

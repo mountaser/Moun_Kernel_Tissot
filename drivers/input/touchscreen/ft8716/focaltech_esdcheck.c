@@ -3,6 +3,7 @@
  * FocalTech TouchScreen driver.
  *
  * Copyright (c) 2010-2016, FocalTech Systems, Ltd., all rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -46,7 +47,8 @@
 /*****************************************************************************
 * Private enumerations, structures and unions using typedef
 *****************************************************************************/
-struct fts_esdcheck_st {
+struct fts_esdcheck_st
+ {
 	u8      active              : 1;    /* 1- esd check active, need check esd 0- no esd check */
 	u8      suspend             : 1;
 	u8      proc_debug          : 1;    /* apk or adb is accessing I2C */
@@ -99,7 +101,8 @@ int idc_esdcheck_lcderror(void)
 	}
 
 	ret = fts_i2c_read_reg(fts_i2c_client, FTS_REG_ESD_SATURATE, &val);
-	if (ret < 0) {
+	if (ret < 0)
+	{
 		FTS_ERROR("[ESD]: Read ESD_SATURATE(0xED) failed ret=%d!", ret);
 		return -EIO;
 	}

@@ -20,7 +20,7 @@
 		} while (0)
 
 
-static int gf3208_request_named_gpio(struct gf_dev *gf_dev, const char *label, int *gpio)
+static int gf3208_request_named_gpio(struct gf_dev *gf_dev,const char *label, int *gpio)
 {
 	struct device *dev = &gf_dev->spi->dev;
 	struct device_node *np = dev->of_node;
@@ -48,7 +48,7 @@ static int select_pin_ctl(struct gf_dev *gf_dev, const char *name)
 	for (i = 0; i < ARRAY_SIZE(gf_dev->pinctrl_state); i++) {
 		const char *n = pctl_names[i];
 		if (!strncmp(n, name, strlen(n))) {
-			rc = pinctrl_select_state(gf_dev->fingerprint_pinctrl, gf_dev->pinctrl_state[i]);
+			rc = pinctrl_select_state(gf_dev->fingerprint_pinctrl,gf_dev->pinctrl_state[i]);
 
 			if (rc)
 				dev_err(dev, "cannot select '%s'\n", name);
@@ -74,13 +74,16 @@ int gf_parse_dts(struct gf_dev *gf_dev)
 	/*get reset resource*/
 	rc = gf3208_request_named_gpio(gf_dev, "goodix,gpio_reset", &gf_dev->reset_gpio);
 	if (rc) {
+
 		gf_dbg("Failed to request RESET GPIO. rc = %d\n", rc);
 		return -EPERM;
 	}
 
+
 	/*get irq resourece*/
 	rc = gf3208_request_named_gpio(gf_dev, "goodix,gpio_irq", &gf_dev->irq_gpio);
 	if (rc) {
+
 		gf_dbg("Failed to request IRQ GPIO. rc = %d\n", rc);
 		return -EPERM;
 	}
@@ -99,33 +102,37 @@ int gf_parse_dts(struct gf_dev *gf_dev)
 		gf_dev->pinctrl_state[i] = state;
 	}
 
-	rc = select_pin_ctl(gf_dev, "goodixfp_reset_active");
+	 rc = select_pin_ctl(gf_dev, "goodixfp_reset_active");
 	if (rc)
 		goto exit;
 	rc = select_pin_ctl(gf_dev, "goodixfp_irq_active");
 	if (rc)
 		goto exit;
-	pr_warn("--------gf_parse_dts end---OK.--------\n");
+
+
+
+
+		pr_warn("--------gf_parse_dts end---OK.--------\n");
 
 exit:
-	return rc;
+	 return rc;
 
 
 }
 
-void gf_cleanup(struct gf_dev *gf_dev)
+void gf_cleanup(struct gf_dev	* gf_dev)
 {
-	gf_dbg("[info]  enter%s\n", __func__);
+	gf_dbg("[info]  enter%s\n",__func__);
 
 	if (gpio_is_valid(gf_dev->irq_gpio)) {
 
-		devm_gpio_free(&gf_dev->spi->dev, gf_dev->irq_gpio);
+		devm_gpio_free(&gf_dev->spi->dev,gf_dev->irq_gpio);
 		gf_dbg("remove irq_gpio success\n");
 	}
 
 	if (gpio_is_valid(gf_dev->reset_gpio)) {
 
-		devm_gpio_free(&gf_dev->spi->dev, gf_dev->reset_gpio);
+		devm_gpio_free(&gf_dev->spi->dev,gf_dev->reset_gpio);
 		gf_dbg("remove reset_gpio success\n");
 	}
 
@@ -133,7 +140,7 @@ void gf_cleanup(struct gf_dev *gf_dev)
 		devm_pinctrl_put(gf_dev->fingerprint_pinctrl);
 		gf_dev->fingerprint_pinctrl = NULL;
 
-		gf_dbg("gx  fingerprint_pinctrl  release success\n");
+		 gf_dbg("gx  fingerprint_pinctrl  release success\n");
 	}
 }
 
@@ -162,7 +169,7 @@ static int hw_reset(struct  gf_dev *gf_dev)
 	int rc = select_pin_ctl(gf_dev, "goodixfp_reset_reset");
 	if (rc)
 		goto exit;
-	mdelay(3);
+	 mdelay(3);
 
 	rc = select_pin_ctl(gf_dev, "goodixfp_reset_active");
 	if (rc)

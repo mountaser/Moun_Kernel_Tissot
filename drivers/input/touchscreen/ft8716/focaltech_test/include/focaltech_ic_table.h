@@ -3,6 +3,7 @@
  * FocalTech TouchScreen driver.
  *
  * Copyright (c) 2010-2016, FocalTech Systems, Ltd., all rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -40,7 +41,8 @@
 /*-----------------------------------------------------------
 IC corresponding code, each of the IC code is 8 bit, high 4 bit on behalf of the same series, low 4 bit on behalf of the specific IC
 -----------------------------------------------------------*/
-enum IC_Type {
+enum IC_Type
+ {
 	IC_FT5X36 = 0x10,
 	IC_FT5X36i = 0x11,
 	IC_FT3X16 = 0x12,

@@ -1,5 +1,6 @@
 /************************************************************************
 * Copyright (C) 2012-2015, Focaltech Systems (R)£¬All Rights Reserved.
+* Copyright (C) 2018 XiaoMi, Inc.
 *
 * File Name: focaltech_test_ini.c
 *
@@ -70,9 +71,10 @@ int ini_get_key_sharp(char *filedata, char *section, char *key, char *value)
 {
 	int i = 0;
 	int ret = -2;
-	for (i = 0; i < g_used_key_num; i++) {
+	for (i = 0; i < g_used_key_num; i++)
+	{
 		if (fts_strncmp(section, g_st_ini_file_data_sharp[i].pSectionName,
-						g_st_ini_file_data_sharp[i].iSectionNameLen) != 0)
+					    g_st_ini_file_data_sharp[i].iSectionNameLen) != 0)
 			continue;
 
 		if (strlen(key) == g_st_ini_file_data_sharp[i].iKeyNameLen) {
@@ -98,22 +100,22 @@ Note:
 *************************************************************/
 char *ini_str_trim_r_sharp(char *buf)
 {
-	int len, i;
+	int len,i;
 	char tmp[512];
 
 	memset(tmp, 0, sizeof(tmp));
 	len = strlen(buf);
 
 
-	memset(tmp, 0x00, len);
+	memset(tmp,0x00,len);
 	for (i = 0; i < len; i++) {
 		if (buf[i] != ' ')
 			break;
 	}
 	if (i < len) {
-		strncpy(tmp, (buf+i), (len-i));
+		strncpy(tmp,(buf+i),(len-i));
 	}
-	strncpy(buf, tmp, len);
+	strncpy(buf,tmp,len);
 
 	return buf;
 }
@@ -127,23 +129,23 @@ Note:
 *************************************************************/
 char *ini_str_trim_l_sharp(char *buf)
 {
-	int len, i;
+	int len,i;
 	char tmp[512];
 
 	memset(tmp, 0, sizeof(tmp));
 	len = strlen(buf);
 
 
-	memset(tmp, 0x00, len);
+	memset(tmp,0x00,len);
 
 	for (i = 0; i < len; i++) {
 		if (buf[len-i-1] != ' ')
 			break;
 	}
 	if (i < len) {
-		strncpy(tmp, buf, len-i);
+		strncpy(tmp,buf,len-i);
 	}
-	strncpy(buf, tmp, len);
+	strncpy(buf,tmp,len);
 
 	return buf;
 }
@@ -174,10 +176,12 @@ static int ini_file_get_line(char *filedata, char *buffer, int maxlen)
 			}
 
 			break;
-		} else if (ch1 == 0x00) {
+		}
+		else if (ch1 == 0x00) {
 			iRetNum = -1;
 			break;
-		} else {
+		}
+		else {
 			buffer[i++] = ch1;    /* ignore carriage return */
 		}
 	}
@@ -190,16 +194,17 @@ int my_fts_atoi(const char *str)
 {
 	int result = 0;
 	int signal = 1; /* The default is positive number*/
-	if ((*str >= '0' && *str <= '9') || *str == '-' || *str == '+') {
+	if ((*str>='0' && *str<='9') || *str == '-' || *str == '+') {
 		if (*str == '-' || *str == '+') {
 			if (*str == '-')
 				signal = -1; /*enter negative number*/
 			str++;
 		}
-	} else
+	}
+	else
 		return 0;
 	/*start transform*/
-	while (*str >= '0' && *str <= '9')
+	while (*str>='0' && *str<='9')
 		result = result*10 + (*str++ - '0');
 
 	return signal*result;
@@ -215,7 +220,7 @@ static int isspace(int x)
 
 static int isdigit(int x)
 {
-	if (x <= '9' && x >= '0')
+	if (x<='9' && x>='0')
 		return 1;
 	else
 		return 0;
@@ -295,9 +300,9 @@ int print_key_data(void)
 	for (i = 0; i < MAX_KEY_NUM; i++) {
 
 		FTS_TEST_DBG("pSectionName_%d:%s, pKeyName_%d:%s\n,pKeyValue_%d:%s",
-					i, g_st_ini_file_data_sharp[i].pSectionName,
-					i, g_st_ini_file_data_sharp[i].pKeyName,
-					i, g_st_ini_file_data_sharp[i].pKeyValue
+					 i, g_st_ini_file_data_sharp[i].pSectionName,
+					 i, g_st_ini_file_data_sharp[i].pKeyName,
+					 i, g_st_ini_file_data_sharp[i].pKeyValue
 					);
 
 	}
@@ -333,7 +338,8 @@ int ini_get_key_data_sharp(char *filedata)
 	}
 
 	g_used_key_num = 0;
-	while (1) /*find section */ {
+	while (1) /*find section */
+	{
 		ret = CFG_ERR_READ_FILE;
 		n = ini_file_get_line(filedata+dataoff, buf1, MAX_CFG_BUF);
 
@@ -341,7 +347,8 @@ int ini_get_key_data_sharp(char *filedata)
 			goto cfg_scts_end;
 		if (n < 0)
 			break;/* file end */
-		if (n >= MAX_CFG_BUF) {
+		if (n >= MAX_CFG_BUF)
+		{
 			FTS_TEST_ERROR("Error Length:%d\n",  n);
 			goto cfg_scts_end;
 		}
@@ -353,15 +360,18 @@ int ini_get_key_data_sharp(char *filedata)
 			continue;       /* A blank line or a comment line */
 		ret = CFG_ERR_FILE_FORMAT;
 
-		if (n > 2 && ((buf1[0] == CFG_SSL && buf1[n-1] != CFG_SSR))) {
+		if (n > 2 && ((buf1[0] == CFG_SSL && buf1[n-1] != CFG_SSR)))
+		{
 			FTS_TEST_ERROR("Bad Section:%s\n",  buf1);
 			goto cfg_scts_end;
 		}
 
 
-		if (buf1[0] == CFG_SSL) {
+		if (buf1[0] == CFG_SSL)
+		{
 			g_st_ini_file_data_sharp[g_used_key_num].iSectionNameLen = n-2;
-			if (MAX_KEY_NAME_LEN < g_st_ini_file_data_sharp[g_used_key_num].iSectionNameLen) {
+			if (MAX_KEY_NAME_LEN < g_st_ini_file_data_sharp[g_used_key_num].iSectionNameLen)
+			{
 				ret = CFG_ERR_OUT_OF_LEN;
 				FTS_TEST_ERROR("MAX_KEY_NAME_LEN: CFG_ERR_OUT_OF_LEN\n");
 				goto cfg_scts_end;
@@ -379,8 +389,10 @@ int ini_get_key_data_sharp(char *filedata)
 		g_st_ini_file_data_sharp[g_used_key_num].iSectionNameLen = strlen(tmpSectionName);
 
 		iEqualSign = 0;
-		for (i = 0; i < n; i++) {
-			if (buf1[i] == CFG_EQS) {
+		for (i = 0; i < n; i++)
+		{
+			if (buf1[i] == CFG_EQS)
+			{
 				iEqualSign = i;
 				break;
 			}
@@ -389,29 +401,32 @@ int ini_get_key_data_sharp(char *filedata)
 			continue;
 		/* before equal sign is assigned to the key name*/
 		g_st_ini_file_data_sharp[g_used_key_num].iKeyNameLen = iEqualSign;
-		if (MAX_KEY_NAME_LEN < g_st_ini_file_data_sharp[g_used_key_num].iKeyNameLen) {
+		if (MAX_KEY_NAME_LEN < g_st_ini_file_data_sharp[g_used_key_num].iKeyNameLen)
+		{
 			ret = CFG_ERR_OUT_OF_LEN;
 			FTS_TEST_ERROR("MAX_KEY_NAME_LEN: CFG_ERR_OUT_OF_LEN\n");
 			goto cfg_scts_end;
 		}
 		memcpy(g_st_ini_file_data_sharp[g_used_key_num].pKeyName,
-			  buf1, g_st_ini_file_data_sharp[g_used_key_num].iKeyNameLen);
+			   buf1, g_st_ini_file_data_sharp[g_used_key_num].iKeyNameLen);
 
 		/* After equal sign is assigned to the key value*/
 		g_st_ini_file_data_sharp[g_used_key_num].iKeyValueLen = n-iEqualSign-1;
-		if (MAX_KEY_VALUE_LEN < g_st_ini_file_data_sharp[g_used_key_num].iKeyValueLen) {
+		if (MAX_KEY_VALUE_LEN < g_st_ini_file_data_sharp[g_used_key_num].iKeyValueLen)
+		{
 			ret = CFG_ERR_OUT_OF_LEN;
 			FTS_TEST_ERROR("MAX_KEY_VALUE_LEN: CFG_ERR_OUT_OF_LEN\n");
 			goto cfg_scts_end;
 		}
 		memcpy(g_st_ini_file_data_sharp[g_used_key_num].pKeyValue,
-			  buf1 + iEqualSign+1, g_st_ini_file_data_sharp[g_used_key_num].iKeyValueLen);
+			   buf1+ iEqualSign+1, g_st_ini_file_data_sharp[g_used_key_num].iKeyValueLen);
 
 
 		ret = g_used_key_num;
 
 		g_used_key_num++;   /*Parameter number accumulation*/
-		if (MAX_KEY_NUM < g_used_key_num) {
+		if (MAX_KEY_NUM < g_used_key_num)
+		{
 			ret = CFG_ERR_TOO_MANY_KEY_NUM;
 			FTS_TEST_ERROR("MAX_KEY_NUM: CFG_ERR_TOO_MANY_KEY_NUM\n");
 			goto cfg_scts_end;

@@ -3,6 +3,7 @@
  * FocalTech TouchScreen driver.
  *
  * Copyright (c) 2010-2016, FocalTech Systems, Ltd., all rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -57,7 +58,8 @@
 /*****************************************************************************
 * Static variables
 *****************************************************************************/
-static struct sensors_classdev __maybe_unused sensors_proximity_cdev = {
+static struct sensors_classdev __maybe_unused sensors_proximity_cdev =
+{
 	.name = "fts-proximity",
 	.vendor = "FocalTech",
 	.version = 1,
@@ -126,11 +128,11 @@ static void fts_psensor_enable(struct fts_ts_data *data, int enable)
 *  Return:
 *****************************************************************************/
 static int fts_psensor_enable_set(struct sensors_classdev *sensors_cdev,
-								 unsigned int enable)
+					              unsigned int enable)
 {
 	struct fts_psensor_platform_data *psensor_pdata =
 		container_of(sensors_cdev,
-					struct fts_psensor_platform_data, ps_cdev);
+					 struct fts_psensor_platform_data, ps_cdev);
 	struct fts_ts_data *data = psensor_pdata->data;
 	struct input_dev *input_dev = data->psensor_pdata->input_psensor_dev;
 
@@ -159,7 +161,7 @@ static int fts_read_tp_psensor_data(struct fts_ts_data *data)
 	int ret = 1;
 
 	fts_i2c_read_reg(data->client,
-					FTS_REG_PSENSOR_STATUS, &psensor_status);
+					 FTS_REG_PSENSOR_STATUS, &psensor_status);
 
 	tmp = data->psensor_pdata->tp_psensor_data;
 	if (psensor_status == FTS_PSENSOR_STATUS_NEAR)
@@ -187,8 +189,8 @@ int fts_sensor_read_data(struct fts_ts_data *data)
 				pm_wakeup_event(&data->client->dev, FTS_PSENSOR_WAKEUP_TIMEOUT);
 			}
 			input_report_abs(data->psensor_pdata->input_psensor_dev,
-							ABS_DISTANCE,
-							data->psensor_pdata->tp_psensor_data);
+					         ABS_DISTANCE,
+					         data->psensor_pdata->tp_psensor_data);
 			input_sync(data->psensor_pdata->input_psensor_dev);
 		}
 		return 1;
@@ -202,7 +204,8 @@ int fts_sensor_suspend(struct fts_ts_data *data)
 
 	if (fts_psensor_support_enabled()  &&
 		 device_may_wakeup(&data->client->dev) &&
-		 data->psensor_pdata->tp_psensor_opened) {
+		 data->psensor_pdata->tp_psensor_opened)
+	{
 		ret = enable_irq_wake(data->client->irq);
 		if (ret != 0) {
 			FTS_ERROR("%s: set_irq_wake failed", __func__);
@@ -242,8 +245,8 @@ int fts_sensor_init(struct fts_ts_data *data)
 	if (fts_psensor_support_enabled()) {
 		device_init_wakeup(&data->client->dev, 1);
 		psensor_pdata = devm_kzalloc(&data->client->dev,
-									sizeof(struct fts_psensor_platform_data),
-									GFP_KERNEL);
+					                 sizeof(struct fts_psensor_platform_data),
+					                 GFP_KERNEL);
 		if (!psensor_pdata) {
 			FTS_ERROR("Failed to allocate memory");
 			goto irq_free;

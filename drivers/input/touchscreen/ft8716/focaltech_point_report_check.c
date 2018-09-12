@@ -3,6 +3,7 @@
  * FocalTech TouchScreen driver.
  *
  * Copyright (c) 2010-2016, FocalTech Systems, Ltd., all rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -89,14 +90,14 @@ int i;
 	input_mt_sync(fts_input_dev);
 #endif
 	if (fts_wq_data->pdata->have_key) {
-		printk("point_num 1 = %d\n", (fts_wq_data->event).point_num);
+		printk("point_num 1 = %d\n",(fts_wq_data->event).point_num);
 
-		FTS_DEBUG("Keys All Up!");
-		for (i = 0; i < fts_wq_data->pdata->key_number; i++) {
-			input_report_key(fts_wq_data->input_dev, fts_wq_data->pdata->keys[i], 0);
+			               FTS_DEBUG("Keys All Up!");
+					for (i = 0; i < fts_wq_data->pdata->key_number; i++) {
+						input_report_key(fts_wq_data->input_dev, fts_wq_data->pdata->keys[i], 0);
+					}
+
 		}
-
-	}
 	input_report_key(fts_input_dev, BTN_TOUCH, 0);
 	input_sync(fts_input_dev);
 

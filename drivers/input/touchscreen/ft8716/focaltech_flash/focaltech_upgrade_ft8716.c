@@ -3,6 +3,7 @@
  * FocalTech fts TouchScreen driver.
  *
  * Copyright (c) 2010-2016, Focaltech Ltd. All rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -64,7 +65,8 @@ static int fts_ctpm_get_app_bin_file_ver(char *firmware_name);
 static int fts_ctpm_fw_upgrade_with_app_i_file(struct i2c_client *client);
 static int fts_ctpm_fw_upgrade_with_app_bin_file(struct i2c_client *client, char *firmware_name);
 
-struct fts_upgrade_fun fts_updatefun = {
+struct fts_upgrade_fun fts_updatefun =
+{
 	.get_app_bin_file_ver = fts_ctpm_get_app_bin_file_ver,
 	.get_app_i_file_ver = fts_ctpm_get_app_i_file_ver,
 	.upgrade_with_app_i_file = fts_ctpm_fw_upgrade_with_app_i_file,
@@ -156,7 +158,8 @@ static int fts_ctpm_get_vendor_id_flash(struct i2c_client *client)
 		if (i_ret < 0) {
 			FTS_DEBUG("[UPGRADE]: read flash : i_ret = %d!!", i_ret);
 			continue;
-		} else if ((vendorid[1] == FTS_VENDOR_1_ID) || (vendorid[1] == FTS_VENDOR_2_ID))
+		}
+		else if ((vendorid[1] == FTS_VENDOR_1_ID) || (vendorid[1] == FTS_VENDOR_2_ID))
 			break;
 	}
 
@@ -242,7 +245,7 @@ unsigned char ft8716_fw_LockDownInfo_get_from_boot(struct i2c_client *client, ch
 {
 	unsigned char auc_i2c_write_buf[10];
 	u8  r_buf[10] = {0};
-	unsigned char i = 0, j = 0;
+	unsigned char i = 0,j = 0;
 	int i_ret = 0;
 		int fw_len;
 	bool inpram = false;
@@ -250,6 +253,7 @@ unsigned char ft8716_fw_LockDownInfo_get_from_boot(struct i2c_client *client, ch
 
 
 		FTS_FUNC_ENTER();
+#if 1
 		/*write pramboot*/
 		fw_len = fts_getsize(PRAMBOOT_SIZE);
 		FTS_DEBUG("[UPGRADE]: pramboot size : %d!!", fw_len);
@@ -258,24 +262,25 @@ unsigned char ft8716_fw_LockDownInfo_get_from_boot(struct i2c_client *client, ch
 		if (i_ret != 0) {
 			FTS_ERROR("[UPGRADE]: write pram failed!!");
 			return -EIO;
-		  }
+		   }
 
-	/*upgrade init*/
-	dw_lenth = fts_getsize(FW_SIZE);
+	 /*upgrade init*/
+	 dw_lenth = fts_getsize(FW_SIZE);
 	i_ret = fts_ctpm_upgrade_idc_init(client, dw_lenth);
 	if (i_ret < 0) {
 		FTS_ERROR("[UPGRADE]: upgrade init error, upgrade fail!!");
 		return i_ret;
 	}
 
-	 /***Read lockdowninfo***/
+	  /***Read lockdowninfo***/
 
-	inpram = fts_ctpm_check_run_state(client, FTS_RUN_IN_PRAM);
+	 inpram = fts_ctpm_check_run_state(client, FTS_RUN_IN_PRAM);
 	if (!inpram) {
 		FTS_ERROR("[UPGRADE]: not run in pram, upgrade fail!!");
 		return -EIO;
 	}
 
+#endif
 
 	msleep(10);
 	auc_i2c_write_buf[0] = 0x03;
@@ -296,7 +301,7 @@ unsigned char ft8716_fw_LockDownInfo_get_from_boot(struct i2c_client *client, ch
 		}
 
 		for (j = 0; j < 8; j++) {
-			printk("%s: REG VAL = 0x%02x, j=%d\n", __func__, r_buf[j], j);
+			printk("%s: REG VAL = 0x%02x,j=%d\n", __func__,r_buf[j],j);
 		}
 		sprintf(pProjectCode, "%02x%02x%02x%02x%02x%02x%02x%02x", \
 				r_buf[0], r_buf[1], r_buf[2], r_buf[3], r_buf[4], r_buf[5], r_buf[6], r_buf[7]);
@@ -357,13 +362,15 @@ static int fts_ctpm_write_app(struct i2c_client  *client, u8 *pbt_buf, u32 dw_le
 		return i_ret;
 	}
 
+	/*HQ-zmc 20171019 change*/
+
+
 	/*read vendor id from flash, if vendor id error, can not upgrade*/
 	i_ret = fts_ctpm_get_vendor_id_flash(client);
 	if (i_ret < 0) {
 		FTS_ERROR("[UPGRADE]: read vendor id in flash fail!!");
 		return i_ret;
 	}
-
 
 	/*erase the app erea in flash*/
 	i_ret = fts_ctpm_erase_flash(client);
@@ -453,7 +460,8 @@ static int fts_ctpm_fw_upgrade_with_app_i_file(struct i2c_client *client)
 	i_ret = fts_ctpm_fw_upgrade_use_buf(client, CTPM_FW, fw_len);
 	if (i_ret != 0) {
 		FTS_ERROR("[UPGRADE] upgrade app.i failed");
-	} else {
+	}
+	else {
 		FTS_INFO("[UPGRADE]: upgrade app.i succeed");
 	}
 
@@ -512,7 +520,8 @@ static int fts_ctpm_fw_upgrade_with_app_bin_file(struct i2c_client *client, char
 	/*check the app.bin invalid or not*/
 	ecc_ok = fts_check_app_bin_valid_idc(pbt_buf);
 
-	if (ecc_ok) {
+	if (ecc_ok)
+	{
 		FTS_INFO("[UPGRADE] app.bin ecc ok");
 		i_ret = fts_ctpm_fw_upgrade_use_buf(client, pbt_buf, fwsize);
 		if (i_ret != 0) {

@@ -1,4 +1,5 @@
 /* Copyright (c) 2012-2017, The Linux Foundation. All rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -961,7 +962,8 @@ int afe_dsm_setget_params(uint8_t *payload, int size, int dir)
 		this_afe.dsm_payload = payload;
 
 		config = (uint32_t *)get;
-	} else {
+	}
+	else{
 		set = (struct afe_dsm_set_command *) (payload - sizeof(*set));
 
 		memset(set, 0 , sizeof(*set));
@@ -1007,7 +1009,7 @@ int afe_dsm_setget_params(uint8_t *payload, int size, int dir)
 	ret = 0;
 
 fail_cmd:
-	pr_debug("%s: status %d 0x%x\n", __func__, ret, dst_port);
+	pr_debug("%s: status %d 0x%x\n",__func__, ret, dst_port);
 
 	this_afe.dsm_payload = NULL;
 

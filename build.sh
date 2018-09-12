@@ -159,7 +159,7 @@ echo " ";
 
 ##########################################
 
-echo " Started Building Tissot ! ";
+echo " Started Building TissotCustom ! ";
 echo " ";
 echo " ";
 echo " ";

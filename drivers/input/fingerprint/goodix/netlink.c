@@ -17,10 +17,10 @@ int flag = 0;
 
 
 struct gf_uk_channel{
-	int channel_id;
-	int reserved;
-	char buf[3*1024];
-	int len;
+		int channel_id;
+		int reserved;
+		char buf[3*1024];
+		int len;
 };
 
 
@@ -34,26 +34,28 @@ void sendnlmsg(char *message)
 	if (!message || !nl_sk || !pid) {
 		return ;
 	}
-	skb_1 = alloc_skb(len, GFP_KERNEL);
+	skb_1 = alloc_skb(len,GFP_KERNEL);
 	if (!skb_1) {
 		printk(KERN_ERR "my_net_link:alloc_skb_1 error\n");
 	}
 	slen = strlen(message);
-	nlh = nlmsg_put(skb_1, 0, 0, 0, MAX_MSGSIZE, 0);
+	nlh = nlmsg_put(skb_1,0,0,0,MAX_MSGSIZE,0);
 
 	NETLINK_CB(skb_1).portid = 0;
 	NETLINK_CB(skb_1).dst_group = 0;
 
 	message[slen] = '\0';
-	memcpy(NLMSG_DATA(nlh), message, slen+1);
+	memcpy(NLMSG_DATA(nlh),message,slen+1);
 
 
-	ret = netlink_unicast(nl_sk, skb_1, pid, MSG_DONTWAIT);
+	ret = netlink_unicast(nl_sk,skb_1,pid,MSG_DONTWAIT);
 	if (!ret) {
 
 		printk("send msg from kernel to usespace failed ret 0x%x \n", ret);
 	}
+
 }
+
 
 void nl_data_ready(struct sk_buff *__skb)
 {
@@ -68,11 +70,13 @@ void nl_data_ready(struct sk_buff *__skb)
 		pid = nlh->nlmsg_pid;
 
 		if (pid)
-			printk("Message pid %d received:%s\n", pid, str) ;
+			printk("Message pid %d received:%s\n",pid, str) ;
+
 		kfree_skb(skb);
 	}
 
 }
+
 
 int netlink_init(void)
 {
