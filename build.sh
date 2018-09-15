@@ -124,7 +124,6 @@ echo " ";
 echo " ";
 echo " ";
 echo " Setting up the compiler ";
-rm -rf ~/Toolchain
 echo " ";
 git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9 ~/Toolchain
 echo " ";
