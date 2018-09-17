@@ -888,7 +888,6 @@ config MSM_BAM_DMUX
 		allows for G-Link communication with remote subsystems that are
 		external to the System-on-Chip.
 
-<<<<<<< HEAD
 	config MSM_BGCOM_INTERFACE
 	bool "Driver support for Blackghost Communication"
 	depends on MSM_BGCOM
@@ -933,3 +932,10 @@ config BIG_CLUSTER_MIN_FREQ_ADJUST
 	  This driver is used to set the floor of the min frequency of big cluster
 	  to the user specified value when the cluster is not power collapsed. When
 	  the cluster is power collpsed it resets the value to physical limits.
+
+config STATE_NOTIFIER
+	bool "State Notifier"
+	default n
+	help
+	  A unified display state notifier for kernel drivers for easy porting
+	  between different devices.
