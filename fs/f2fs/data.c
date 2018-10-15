@@ -29,26 +29,6 @@
 #include <trace/events/f2fs.h>
 #include <trace/events/android_fs.h>
 
-static bool __is_cp_guaranteed(struct page *page)
-{
-	struct address_space *mapping = page->mapping;
-	struct inode *inode;
-	struct f2fs_sb_info *sbi;
-
-	if (!mapping)
-		return false;
-
-	inode = mapping->host;
-	sbi = F2FS_I_SB(inode);
-
-	if (inode->i_ino == F2FS_META_INO(sbi) ||
-			inode->i_ino ==  F2FS_NODE_INO(sbi) ||
-			S_ISDIR(inode->i_mode) ||
-			is_cold_data(page))
-		return true;
-	return false;
-}
-
 #define NUM_PREALLOC_POST_READ_CTXS	128
 
 static struct kmem_cache *bio_post_read_ctx_cache;
@@ -723,6 +703,7 @@ struct page *f2fs_get_read_data_page(struct inode *inode, pgoff_t index,
 						int op_flags, bool for_write)
 {
 	struct address_space *mapping = inode->i_mapping;
+	struct dnode_of_data dn;
 	struct page *page;
 	struct extent_info ei = {0,0,0};
 	int err;
@@ -750,6 +731,7 @@ got_it:
 	if (PageUptodate(page)) {
 		unlock_page(page);
 		return page;
+	}
 
 	/*
 	 * A new dentry page is allocated but not able to be written, since its
@@ -2591,33 +2573,6 @@ int f2fs_release_page(struct page *page, gfp_t wait)
 	set_page_private(page, 0);
 	ClearPagePrivate(page);
 	return 1;
-}
-
-/*
- * This was copied from __set_page_dirty_buffers which gives higher performance
- * in very high speed storages. (e.g., pmem)
- */
-void f2fs_set_page_dirty_nobuffers(struct page *page)
-{
-	struct address_space *mapping = page->mapping;
-	unsigned long flags;
-
-	if (unlikely(!mapping))
-		return;
-
-	spin_lock(&mapping->private_lock);
-	SetPageDirty(page);
-	spin_unlock(&mapping->private_lock);
-
-	spin_lock_irqsave(&mapping->tree_lock, flags);
-	WARN_ON_ONCE(!PageUptodate(page));
-	account_page_dirtied(page, mapping);
-	radix_tree_tag_set(&mapping->page_tree,
-			page_index(page), PAGECACHE_TAG_DIRTY);
-	spin_unlock_irqrestore(&mapping->tree_lock, flags);
-
-	__mark_inode_dirty(mapping->host, I_DIRTY_PAGES);
-	return;
 }
 
 static int f2fs_set_data_page_dirty(struct page *page)

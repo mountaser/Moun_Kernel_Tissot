@@ -179,7 +179,7 @@ static inline void bio_set_op_attrs(struct bio *bio, unsigned op,
 static inline int wbc_to_write_flags(struct writeback_control *wbc)
 {
 	if (wbc->sync_mode == WB_SYNC_ALL)
-		return WRITE_SYNC;
+		return REQ_SYNC;
 	return 0;
 }
 
@@ -217,9 +217,9 @@ static inline void inode_unlock(struct inode *inode)
  *
  * Please refer to the comment for waitqueue_active.
  */
-static inline bool wq_has_sleeper(wait_queue_head_t *wq) 
+static inline bool wq_has_sleeper(wait_queue_head_t *wq)
 {
-	/*   
+	/*
 	 * We need to be sure we are in sync with the
 	 * add_wait_queue modifications to the wait queue.
 	 *
@@ -233,11 +233,6 @@ static inline bool wq_has_sleeper(wait_queue_head_t *wq)
 static inline struct dentry *file_dentry(const struct file *file)
 {
 	return file->f_path.dentry;
-}
-
-static inline void inode_nohighmem(struct inode *inode)
-{
-	mapping_set_gfp_mask(inode->i_mapping, GFP_USER);
 }
 
 /**
@@ -256,8 +251,8 @@ static inline struct timespec current_time(struct inode *inode)
 
 	if (unlikely(!inode->i_sb)) {
 		WARN(1, "current_time() called with uninitialized super_block in the inode");
-		return now; 
-	}    
+		return now;
+	}
 
 	return timespec_trunc(now, inode->i_sb->s_time_gran);
 }
@@ -631,9 +626,6 @@ enum {
 #define F2FS_LINK_MAX	0xffffffff	/* maximum link count per file */
 
 #define MAX_DIR_RA_PAGES	4	/* maximum ra pages of dir */
-
-/* vector size for gang look-up from extent cache that consists of radix tree */
-#define EXT_TREE_VEC_SIZE	64
 
 /* for in-memory extent cache entry */
 #define F2FS_MIN_EXTENT_LEN	64	/* minimum extent length */
@@ -1350,9 +1342,6 @@ struct f2fs_sb_info {
 	/* threshold for gc trials on pinned files */
 	u64 gc_pin_file_threshold;
 
-	/* threshold for converting bg victims for fg */
-	u64 fggc_threshold;
-
 	/* maximum # of trials to find a victim segment for SSR and GC */
 	unsigned int max_victim_search;
 
@@ -1699,7 +1688,7 @@ static inline bool enabled_nat_bits(struct f2fs_sb_info *sbi,
 
 static inline void f2fs_lock_op(struct f2fs_sb_info *sbi)
 {
-	return __is_set_ckpt_flags(F2FS_CKPT(sbi), f);
+	down_read(&sbi->cp_rwsem);
 }
 
 static inline int f2fs_trylock_op(struct f2fs_sb_info *sbi)
@@ -1709,25 +1698,17 @@ static inline int f2fs_trylock_op(struct f2fs_sb_info *sbi)
 
 static inline void f2fs_unlock_op(struct f2fs_sb_info *sbi)
 {
-	unsigned int ckpt_flags;
-
-	ckpt_flags = le32_to_cpu(cp->ckpt_flags);
-	ckpt_flags |= f;
-	cp->ckpt_flags = cpu_to_le32(ckpt_flags);
+	up_read(&sbi->cp_rwsem);
 }
 
-static inline void set_ckpt_flags(struct f2fs_sb_info *sbi, unsigned int f)
+static inline void f2fs_lock_all(struct f2fs_sb_info *sbi)
 {
 	down_write(&sbi->cp_rwsem);
 }
 
-static inline void __clear_ckpt_flags(struct f2fs_checkpoint *cp, unsigned int f)
+static inline void f2fs_unlock_all(struct f2fs_sb_info *sbi)
 {
-	unsigned int ckpt_flags;
-
-	ckpt_flags = le32_to_cpu(cp->ckpt_flags);
-	ckpt_flags &= (~f);
-	cp->ckpt_flags = cpu_to_le32(ckpt_flags);
+	up_write(&sbi->cp_rwsem);
 }
 
 static inline int __get_cp_reason(struct f2fs_sb_info *sbi)
@@ -2199,9 +2180,6 @@ static inline struct bio *f2fs_bio_alloc(struct f2fs_sb_info *sbi,
 		f2fs_show_injection_info(FAULT_ALLOC_BIO);
 		return NULL;
 	}
-#endif
-	return bio_alloc(GFP_KERNEL, npages);
-}
 
 	return bio_alloc(GFP_KERNEL, npages);
 }

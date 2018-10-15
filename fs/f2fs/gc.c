@@ -228,10 +228,6 @@ static unsigned int check_bg_victims(struct f2fs_sb_info *sbi)
 	for_each_set_bit(secno, dirty_i->victim_secmap, MAIN_SECS(sbi)) {
 		if (sec_usage_check(sbi, secno))
 			continue;
-
-		if (no_fggc_candidate(sbi, secno))
-			continue;
-
 		clear_bit(secno, dirty_i->victim_secmap);
 		return GET_SEG_FROM_SEC(sbi, secno);
 	}
@@ -1255,8 +1251,6 @@ stop:
 
 void f2fs_build_gc_manager(struct f2fs_sb_info *sbi)
 {
-	u64 main_count, resv_count, ovp_count;
-
 	DIRTY_I(sbi)->v_ops = &default_v_ops;
 
 	sbi->gc_pin_file_threshold = DEF_GC_FAILED_PINNED_FILES;
