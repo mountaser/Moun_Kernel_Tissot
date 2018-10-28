@@ -59,12 +59,12 @@ fail_read:
 	return 0;
 }
 
-static inline bool is_compatible(char *compat)
+inline bool is_compatible(char *compat)
 {
 	return !!of_find_compatible_node(NULL, NULL, compat);
 }
 
-static inline enum imem_type read_imem_type(struct platform_device *pdev)
+inline enum imem_type read_imem_type(struct platform_device *pdev)
 {
 	return is_compatible("qcom,msm-ocmem") ? IMEM_OCMEM :
 		is_compatible("qcom,msm-vmem") ? IMEM_VMEM :
@@ -624,7 +624,7 @@ error:
 }
 
 /* A comparator to compare loads (needed later on) */
-static int cmp_load_freq_table(const void *a, const void *b)
+int cmp_load_freq_table(const void *a, const void *b)
 {
 	/* want to sort in reverse so flip the comparison */
 	return ((struct load_freq_table *)b)->load -
