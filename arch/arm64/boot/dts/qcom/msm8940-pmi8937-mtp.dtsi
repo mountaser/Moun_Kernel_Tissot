@@ -12,7 +12,6 @@
  */
 
 #include "pmi8937.dtsi"
-#include "msm8937-mtp.dtsi"
 #include "msm8940-mtp.dtsi"
 
 &soc {

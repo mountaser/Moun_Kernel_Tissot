@@ -26,7 +26,7 @@ static void __init msm8940_init(void)
 }
 
 DT_MACHINE_START(MSM8940_DT,
-	"Qualcomm Technologies, Inc. MSM8940-PMI8950 MTP")
+	"Qualcomm Technologies, Inc. MSM8940 MTP")
 	.init_machine = msm8940_init,
 	.dt_compat = msm8940_dt_match,
 MACHINE_END
