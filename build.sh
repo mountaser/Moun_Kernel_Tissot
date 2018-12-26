@@ -124,7 +124,6 @@ echo " ";
 echo " ";
 echo " ";
 echo " Setting up the compiler ";
-rm -rf ~/Toolchain
 echo " ";
 git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9 ~/Toolchain
 echo " ";
@@ -176,7 +175,7 @@ echo " ";
 echo " ";
 echo " ";
 echo " ";
-make -C $(pwd) O=outputdTissot-4.9-Custom custom_tissot-perf_defconfig
+make -C $(pwd) O=outputdTissot-4.9-Custom tissot_defconfig
 make -j32 -C $(pwd) O=outputdTissot-4.9-Custom
 ##########################################
 
@@ -233,7 +232,7 @@ cd ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot-4.9-Custom
 zip -r9 Moun_Kernel_V$KV-Tissot-4.9-Custom.zip * -x Moun_Kernel_V$KV-Tissot-4.9-Custom.zip
 
 echo " uploading to Mega "; 
-
+megamkdir /Root/XDA/Moun_Kernel_Tissot/$KV
 megaput --path /Root/XDA/Moun_Kernel_Tissot/$KV ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot-4.9-Custom/Moun_Kernel_V$KV-Tissot-4.9-Custom.zip
 
 
