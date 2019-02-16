@@ -59,6 +59,7 @@ insert_line $overlay/init.rc "init.spectrum.rc" before "import /init.usb.rc" "im
 
 # fix selinux denials for /init.*.sh
 "$bin/magiskpolicy" --load "/system/sepolicy" --save "$overlay/sepolicy" \
+"allow init sysfs_devices_system_cpu file write" \
 "allow init rootfs file execute_no_trans" \
 "allow toolbox toolbox capability sys_admin" \
 "allow toolbox property_socket sock_file write" \
