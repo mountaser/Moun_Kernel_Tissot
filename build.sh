@@ -140,11 +140,11 @@ echo " ";
 echo " ";
 echo " ";
 echo " ";
-mkdir outputdTissot-4.9-Custom-Treble
+mkdir outputdTissot-4.9-Custom
 
 mkdir ~/Moun_Kernel
 
-mkdir ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot-4.9-Custom-Treble
+mkdir ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot-4.9-Custom
 echo " Started Building the Kernels ! ";
 echo " ";
 echo " ";
@@ -156,7 +156,7 @@ echo " ";
 
 ##########################################
 
-echo " Started Building Tissot-4.9-Custom-Treble ! ";
+echo " Started Building Tissot-4.9-Custom ! ";
 echo " ";
 echo " ";
 echo " ";
@@ -177,8 +177,8 @@ echo " ";
 echo " ";
 echo " ";
 echo " ";
-make -C $(pwd) O=outputdTissot-4.9-Custom-Treble tissot_defconfig
-make -j32 -C $(pwd) O=outputdTissot-4.9-Custom-Treble
+make -C $(pwd) O=outputdTissot-4.9-Custom tissot_defconfig
+make -j32 -C $(pwd) O=outputdTissot-4.9-Custom
 ##########################################
 
 echo " copying zImage and dtb and the template over to the output directory ";
@@ -197,9 +197,9 @@ echo " ";
 echo " ";
 
 
-cp outputdTissot-4.9-Custom-Treble/arch/arm64/boot/Image.gz-dtb ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot-4.9-Custom-Treble/Image.gz-dtb
+cp outputdTissot-4.9-Custom/arch/arm64/boot/Image.gz-dtb ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot-4.9-Custom/Image.gz-dtb
 
-cp -r template/. ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot-4.9-Custom-Treble
+cp -r template/. ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot-4.9-Custom
 
 echo " Zipping Kernel Files ";
 echo " ";
@@ -230,12 +230,12 @@ echo " ";
 echo " ";
 
 ##########################################
-cd ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot-4.9-Custom-Treble
-zip -r9 Moun_Kernel_V$KV-Tissot-4.9-Custom-Treble.zip * -x Moun_Kernel_V$KV-Tissot-4.9-Custom-Treble.zip
+cd ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot-4.9-Custom
+zip -r9 Moun_Kernel_V$KV-Tissot-4.9-Custom.zip * -x Moun_Kernel_V$KV-Tissot-4.9-Custom.zip
 
 echo " uploading to Mega "; 
 megamkdir /Root/XDA/Moun_Kernel_Tissot/$KV
-megaput --path /Root/XDA/Moun_Kernel_Tissot/$KV ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot-4.9-Custom-Treble/Moun_Kernel_V$KV-Tissot-4.9-Custom-Treble.zip
+megaput --path /Root/XDA/Moun_Kernel_Tissot/$KV ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot-4.9-Custom/Moun_Kernel_V$KV-Tissot-4.9-Custom.zip
 
 
 echo " ";
