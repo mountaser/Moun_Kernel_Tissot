@@ -125,12 +125,14 @@ echo " ";
 echo " ";
 echo " Setting up the compiler ";
 echo " ";
-git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9 ~/Toolchain
+git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9 ~/Toolchain/64
+git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9 ~/Toolchain/32
 echo " ";
 echo " ";
 ##########################################
 export ARCH=arm64
-export CROSS_COMPILE=~/Toolchain/bin/aarch64-linux-android-
+export CROSS_COMPILE_ARM32=~/Toolchain/32/bin/arm-linux-androideabi-
+export CROSS_COMPILE=~/Toolchain/64/bin/aarch64-linux-android-
 ##########################################
 echo " Creating directories ";
 echo " ";
