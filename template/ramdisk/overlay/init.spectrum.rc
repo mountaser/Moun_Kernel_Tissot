@@ -9,7 +9,7 @@ on property:sys.boot_completed=1
    # Enable Spectrum support
    setprop spectrum.support 1
    # Add kernel name
-   setprop persist.spectrum.kernel Moun 
+   setprop persist.spectrum.kernel Moun
 
  #Kcal
    write /sys/devices/platform/kcal_ctrl.0/kcal 256 256 256
@@ -42,11 +42,11 @@ on property:persist.spectrum.profile=0
    write /sys/block/mmcblk1/queue/scheduler maple
 
  #GPU
-   write /sys/class/kgsl/kgsl-3d0/devfreq/governor msm-adreno-tz
+   write /sys/class/kgsl/kgsl-3d0/devfreq/governor simple_ondemand
    write /sys/module/adreno_idler/parameters/adreno_idler_active 1
    write /sys/module/adreno_idler/parameters/adreno_idler_idlewait 30
    write /sys/module/adreno_idler/parameters/adreno_idler_idleworkload 4000
-   write /sys/class/kgsl/kgsl-3d0/devfreq/min_freq 133330000
+   write /sys/class/kgsl/kgsl-3d0/devfreq/min_freq 19200000
    write /sys/class/kgsl/kgsl-3d0/max_gpuclk 650000000
 
 # Performance
@@ -74,7 +74,7 @@ on property:persist.spectrum.profile=1
    write /sys/module/adreno_idler/parameters/adreno_idler_active 0
    write /sys/module/adreno_idler/parameters/adreno_idler_idlewait 15
    write /sys/module/adreno_idler/parameters/adreno_idler_idleworkload 7000
-   write /sys/class/kgsl/kgsl-3d0/devfreq/min_freq 133330000
+   write /sys/class/kgsl/kgsl-3d0/devfreq/min_freq 19200000
    write /sys/class/kgsl/kgsl-3d0/max_gpuclk 650000000
 
 # Battery
@@ -100,10 +100,10 @@ on property:persist.spectrum.profile=2
 
  #GPU
    write /sys/class/kgsl/kgsl-3d0/devfreq/governor simple_ondemand
-   write /sys/class/kgsl/kgsl-3d0/devfreq/min_freq 133330000
+   write /sys/class/kgsl/kgsl-3d0/devfreq/min_freq 19200000
    write /sys/class/kgsl/kgsl-3d0/max_gpuclk  650000000
    write /sys/module/adreno_idler/parameters/adreno_idler_active 1
-   write /sys/module/adreno_idler/parameters/adreno_idler_idlewait 20
+   write /sys/module/adreno_idler/parameters/adreno_idler_idlewait 15
    write /sys/module/adreno_idler/parameters/adreno_idler_idleworkload 4000
 
 # Gaming
