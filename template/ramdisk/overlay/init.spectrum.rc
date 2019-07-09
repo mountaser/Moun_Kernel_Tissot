@@ -42,7 +42,7 @@ on property:persist.spectrum.profile=0
    write /sys/block/mmcblk1/queue/scheduler maple
 
  #GPU
-   write /sys/class/kgsl/kgsl-3d0/devfreq/governor simple_ondemand
+   write /sys/class/kgsl/kgsl-3d0/devfreq/governor msm-adreno-tz
    write /sys/module/adreno_idler/parameters/adreno_idler_active 1
    write /sys/module/adreno_idler/parameters/adreno_idler_idlewait 30
    write /sys/module/adreno_idler/parameters/adreno_idler_idleworkload 4000
