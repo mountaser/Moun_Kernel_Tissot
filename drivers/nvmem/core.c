@@ -201,7 +201,6 @@ err:
 
 	return rval;
 }
-
 /**
  * nvmem_register() - Register a nvmem device for given nvmem_config.
  * Also creates an binary entry in /sys/bus/nvmem/devices/dev-name/nvmem
