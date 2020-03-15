@@ -118,3 +118,6 @@ all.config
 
 # fetched Android config fragments
 kernel/configs/android-*.cfg
+
+# out build dir
+outputdTissot-4.9-Custom-Hybrid
