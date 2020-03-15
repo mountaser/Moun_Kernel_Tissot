@@ -120,6 +120,7 @@ echo " Cleaning old build directories ";
 echo " ";
 echo " ";
 echo " ";
+rm -rf outputdTissot-4.9-Custom-Hybrid
 echo " ";
 echo " ";
 echo " ";
@@ -129,6 +130,11 @@ git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_a
 git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9 ~/Toolchain/32
 echo " ";
 echo " ";
+echo "Picking Hybrid Commits";
+##########################################
+git cherry-pick fd4cd91a5a0f816aa48479afdc29e02a51e99221
+git cherry-pick 6205db338c6a8b87ec3243d13d6646666fd8cae7
+##########################################
 ##########################################
 export ARCH=arm64
 export CROSS_COMPILE_ARM32=~/Toolchain/32/bin/arm-linux-androideabi-
@@ -140,11 +146,11 @@ echo " ";
 echo " ";
 echo " ";
 echo " ";
-mkdir outputdTissot-4.9-Custom
+mkdir outputdTissot-4.9-Custom-Hybrid
 
 mkdir ~/Moun_Kernel
 
-mkdir ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot-4.9-Custom
+mkdir ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot-4.9-Custom-Hybrid
 echo " Started Building the Kernels ! ";
 echo " ";
 echo " ";
@@ -156,7 +162,7 @@ echo " ";
 
 ##########################################
 
-echo " Started Building Tissot-4.9-Custom ! ";
+echo " Started Building Tissot-4.9-Custom-Hybrid ! ";
 echo " ";
 echo " ";
 echo " ";
@@ -177,8 +183,8 @@ echo " ";
 echo " ";
 echo " ";
 echo " ";
-make -C $(pwd) O=outputdTissot-4.9-Custom tissot_defconfig
-make -j32 -C $(pwd) O=outputdTissot-4.9-Custom
+make -C $(pwd) O=outputdTissot-4.9-Custom-Hybrid tissot_defconfig
+make -j$(nproc) -C $(pwd) O=outputdTissot-4.9-Custom-Hybrid
 ##########################################
 
 echo " copying zImage and dtb and the template over to the output directory ";
@@ -196,10 +202,11 @@ echo " ";
 echo " ";
 echo " ";
 
+cp -r template/. ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot-4.9-Custom-Hybrid
 
-cp outputdTissot-4.9-Custom/arch/arm64/boot/Image.gz-dtb ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot-4.9-Custom/Image.gz-dtb
-
-cp -r template/. ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot-4.9-Custom
+cp outputdTissot-4.9-Custom-Hybrid/arch/arm64/boot/Image.gz ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot-4.9-Custom-Hybrid/kernel/Image.gz
+cp outputdTissot-4.9-Custom-Hybrid/arch/arm64/boot/dts/qcom/msm8953-qrd-sku3-tissot-nontreble.dtb ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot-4.9-Custom-Hybrid/dtb-nontreble
+cp outputdTissot-4.9-Custom-Hybrid/arch/arm64/boot/dts/qcom/msm8953-qrd-sku3-tissot-treble.dtb ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot-4.9-Custom-Hybrid/dtb-treble
 
 echo " Zipping Kernel Files ";
 echo " ";
@@ -230,20 +237,23 @@ echo " ";
 echo " ";
 
 ##########################################
-cd ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot-4.9-Custom
-zip -r9 Moun_Kernel_V$KV-Tissot-4.9-Custom.zip * -x Moun_Kernel_V$KV-Tissot-4.9-Custom.zip
+cd ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot-4.9-Custom-Hybrid
+zip -r9 Moun_Kernel_V$KV-Tissot-4.9-Custom-Hybrid.zip * -x Moun_Kernel_V$KV-Tissot-4.9-Custom-Hybrid.zip
 
 echo " uploading to Mega "; 
 megamkdir /Root/XDA/Moun_Kernel_Tissot/$KV
-megaput --path /Root/XDA/Moun_Kernel_Tissot/$KV ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot-4.9-Custom/Moun_Kernel_V$KV-Tissot-4.9-Custom.zip
-
-
+megaput --path /Root/XDA/Moun_Kernel_Tissot/$KV ~/Moun_Kernel/Moun_Kernel_V$KV-Tissot-4.9-Custom-Hybrid/Moun_Kernel_V$KV-Tissot-4.9-Custom-Hybrid.zip
 echo " ";
 echo " ";
 echo " ";
 echo " ";
 echo " ";
 echo " ";
+echo "Reset Hybrid Commits";
+##########################################
+git reset --hard HEAD~ 
+git reset --hard HEAD~ 
+##########################################
 echo " ";
 echo " ";
 echo " ";
@@ -345,3 +355,4 @@ echo " ";
 echo " ";
 echo " ";
 echo " Compiling and uploading is done !! ";
+
