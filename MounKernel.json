@@ -1,0 +1,13 @@
+{
+  "kernel": {
+    "name": "Moun Kernel",
+    "version": "v10.0",
+    "link": "https://github.com/mountaser/Moun_Kernel_Tissot/releases/download/10.0/Moun_Kernel_V10.0-Tissot-4.9-Custom-Hybrid.zip",
+    "changelog_url": "https://github.com/mountaser/Moun_Kernel_Tissot/releases/tag/10.0",
+    "date": "2020-03-15",
+    "sha1": "33B21BF9806FB79934647C5C0C060A6C2A321806"
+  },
+  "support": {
+    "link": "https://t.me/mounkernel"
+  }
+}
